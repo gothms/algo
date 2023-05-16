@@ -1,7 +1,11 @@
 package tree
 
-// lc-144
-func preorderTraversal(root *TreeNode) []int {
+/*
+lc-144
+*/
+
+// PreorderTraversal 二叉树前序遍历
+func PreorderTraversal(root *TreeNode) []int {
 	// Morris：未破坏原二叉树结构
 	preorder, curr := make([]int, 0), root
 	var pre *TreeNode

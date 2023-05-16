@@ -1,8 +1,12 @@
 package tree
 
-// lc-145
+/*
+lc-145
+*/
+
+// PostorderTraversal 二叉树后序遍历
 func PostorderTraversal(root *TreeNode) []int {
-	// Morris
+	// Morris：未破坏原二叉树结构
 	postorder, curr := make([]int, 0), root
 	var pre *TreeNode
 	for curr != nil {

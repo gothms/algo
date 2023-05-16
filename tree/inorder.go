@@ -1,7 +1,11 @@
 package tree
 
-// lc-94
-func inorderTraversal(root *TreeNode) []int {
+/*
+lc-94
+*/
+
+// InorderTraversal 二叉树中序遍历
+func InorderTraversal(root *TreeNode) []int {
 	// Morris：破坏了原二叉树结构（多平行单链）
 	inorder, curr := make([]int, 0), root
 	var pre *TreeNode
