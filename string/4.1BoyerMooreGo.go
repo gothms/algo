@@ -71,11 +71,7 @@ func makeStringFinder(pattern string) ([256]int, []int) {
 	*/
 	for i := 0; i < last; i++ { // i == last，包含在了前缀表的情况（错）
 		lenSuffix := longestCommonSuffix(pattern, pattern[1:i+1]) // case 1：模式串存在与好后缀完全匹配的子串
-		//fmt.Println(i, pattern, pattern[1:i+1], lenSuffix)
-		//fmt.Println("p:", pattern[1:i+1])
-		if pattern[i-lenSuffix] != pattern[last-lenSuffix] { // pattern[i-lenSuffix] == pattern[last-lenSuffix]：说明是前缀
-			//fmt.Printf("%c %c\n", pattern[i-lenSuffix], pattern[last-lenSuffix])
-			//fmt.Println("last-lenSuffix", last-lenSuffix)
+		if pattern[i-lenSuffix] != pattern[last-lenSuffix] {      // pattern[i-lenSuffix] == pattern[last-lenSuffix]：说明是前缀
 			// (last-i) is the shift, and lenSuffix is len(suffix).
 			goodSuffixSkip[last-lenSuffix] = lenSuffix + last - i // last-lenSuffix：修正后缀表的索引，lenSuffix：回移到比较的起始位置，last - i：下一次比较的右移距离
 		}
@@ -95,7 +91,6 @@ func longestCommonSuffix(a, b string) (i int) {
 }
 func next(pattern, text string) []int {
 	badCharSkip, goodSuffixSkip := makeStringFinder(pattern)
-	//fmt.Println(badCharSkip, goodSuffixSkip)
 	ans, n := make([]int, 0), len(pattern)-1
 	for i := n; i < len(text); { // text的索引
 		j := n                                // pattern的索引
@@ -104,13 +99,10 @@ func next(pattern, text string) []int {
 			j--
 		}
 		if j < 0 { // 匹配成功
-			//fmt.Println("i,j:", i, j)
 			i, j = i+1, 0 // 重置 i j，匹配下一个
 			ans = append(ans, i)
 		}
-		//fmt.Println(i, badCharSkip[text[i]], j, goodSuffixSkip[j])
 		i += max(badCharSkip[text[i]], goodSuffixSkip[j]) // 根据好后缀、坏字符规则，挪动 i
-		//fmt.Println(i, j)
 	}
 	return ans
 }
