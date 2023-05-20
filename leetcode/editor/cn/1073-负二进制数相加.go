@@ -70,11 +70,8 @@ func addNegabinary(arr1 []int, arr2 []int) []int {
 		case 0, 1:
 			arr1[i] = v
 			pre = 0
-		case 2: // 2 3 进位是 -1
-			arr1[i] = 0
-			pre = -1
-		case 3:
-			arr1[i] = 1
+		case 2, 3: // 2 3 进位是 -1
+			arr1[i] = v - 2
 			pre = -1
 		case -1: // 不够减，2^n - 2^(n-1)
 			arr1[i] = 1
