@@ -51,3 +51,18 @@ func dfsInorder(root *TreeNode, inorder *[]int) {
 	*inorder = append(*inorder, root.Val)
 	dfsInorder(root.Right, inorder)
 }
+func InorderStackTest(root *TreeNode) []int {
+	inorder, stack := make([]int, 0), make([]*TreeNode, 0)
+	curr := root
+	for curr != nil || len(stack) > 0 {
+		if curr != nil {
+			for curr.Left != nil {
+				curr, stack = curr.Left, append(stack, curr)
+			}
+		} else {
+			curr, stack = stack[len(stack)-1], stack[:len(stack)-1]
+		}
+		inorder, curr = append(inorder, curr.Val), curr.Right
+	}
+	return inorder
+}
