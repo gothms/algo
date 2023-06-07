@@ -127,11 +127,12 @@ func kthSmallest(mat [][]int, k int) int {
 				}
 			}
 		}
+		sort.Ints(kArr[:idx])  // 4
 		for ; idx < k; idx++ { // 3.3
 			kArr[idx] = kth
 		}
-		arr = kArr     // 3.4
-		sort.Ints(arr) // 4
+		arr = kArr // 3.4
+		//sort.Ints(arr) // 4
 	}
 	for i := 1; i < m; i++ {
 		binarySearch(mat[i], k) // 1
