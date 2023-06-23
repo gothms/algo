@@ -1,4 +1,4 @@
-package bigo
+package beauty
 
 /*
 事后统计法：局限性
