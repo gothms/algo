@@ -34,6 +34,7 @@ package beauty
 	O(n^k)：k次方阶
 
 空间复杂度：渐进空间复杂度，表示算法的存储空间与数据规模之间的增长关系
+	除了原本的数据存储空间外，算法运行还需要额外的存储空间
 
 最好情况时间复杂度（best case time complexity）
 	在最理想的情况下，执行这段代码的时间复杂度
@@ -49,18 +50,18 @@ package beauty
 
 // add 示例函数，仅用于分析均摊时间复杂度
 func add(v int) {
-	if i >= l {
-		l <<= 1
-		nArr := make([]int, l)
-		copy(nArr, arr)
-		arr = nArr
+	if i_02 >= l_02 {
+		l_02 <<= 1
+		nArr := make([]int, l_02)
+		copy(nArr, arr_02)
+		arr_02 = nArr
 	}
-	arr[i] = v
-	i++
+	arr_02[i_02] = v
+	i_02++
 }
 
 var (
-	arr = make([]int, 1)
-	i   int
-	l   = len(arr)
+	arr_02 = make([]int, 1)
+	i_02   int
+	l_02   = len(arr_02)
 )
