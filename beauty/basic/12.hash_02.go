@@ -1,4 +1,4 @@
-package beauty
+package basic
 
 /*
 哈希算法在分布式系统中有哪些应用？

@@ -1,4 +1,4 @@
-package beauty
+package basic
 
 /*
 LRU 缓存淘汰算法

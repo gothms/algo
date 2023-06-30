@@ -1,4 +1,4 @@
-package beauty
+package basic
 
 /*
 如何选择合适的排序算法？

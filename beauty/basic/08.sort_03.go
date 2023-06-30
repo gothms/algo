@@ -1,4 +1,4 @@
-package beauty
+package basic
 
 /*
 桶排序（Bucket sort）

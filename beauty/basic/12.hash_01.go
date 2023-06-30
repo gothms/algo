@@ -1,4 +1,4 @@
-package beauty
+package basic
 
 /*
 什么是哈希算法？

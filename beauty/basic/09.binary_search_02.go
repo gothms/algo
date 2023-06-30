@@ -1,4 +1,4 @@
-package beauty
+package basic
 
 /*
 正确的二分

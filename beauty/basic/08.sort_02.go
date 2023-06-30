@@ -1,4 +1,4 @@
-package beauty
+package basic
 
 /*
 归并排序原理（Merge Sort）

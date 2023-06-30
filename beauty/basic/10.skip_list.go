@@ -1,4 +1,4 @@
-package beauty
+package basic
 
 /*
 跳表（Skip list）

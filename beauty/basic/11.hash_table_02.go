@@ -1,4 +1,4 @@
-package beauty
+package basic
 
 /*
 散列表碰撞攻击基本原理

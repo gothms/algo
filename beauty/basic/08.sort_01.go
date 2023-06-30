@@ -1,4 +1,4 @@
-package beauty
+package basic
 
 /*
 如何分析一个“排序算法”？

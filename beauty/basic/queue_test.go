@@ -1,6 +1,8 @@
-package beauty
+package basic
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestCQ(t *testing.T) {
 	cq := New(5)

@@ -1,4 +1,4 @@
-package beauty
+package basic
 
 /*
 散列表（Hash Table）

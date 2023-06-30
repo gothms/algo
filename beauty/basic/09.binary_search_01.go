@@ -1,4 +1,4 @@
-package beauty
+package basic
 
 /*
 二分查找

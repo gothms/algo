@@ -1,4 +1,4 @@
-package beauty
+package basic
 
 /*
 写出正确的链表代码

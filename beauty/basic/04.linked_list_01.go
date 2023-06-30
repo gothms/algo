@@ -1,4 +1,4 @@
-package beauty
+package basic
 
 /*
 Linked list
