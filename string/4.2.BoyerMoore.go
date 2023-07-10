@@ -40,8 +40,8 @@ Boyer-Moore：博伊尔-摩尔算法（后缀字符串匹配）
 					"ABABCBA" vs "BABCBAB"：lastIdx - i + prefixIdx = 7 - 0 + 6
 				补丁：只有最后一个字符的好后缀，后移位数为 p 的长度 8；而prefixIdx只出现了8、6两个值
 			2.1.2.前缀和好后缀匹配，则修正prefixIdx
-			2.1.3.修正 goodSuffix[i] 的值
-				lastIdx - i：回移到匹配的起始位置
+	重点		2.1.3.修正 goodSuffix[i] 的值，goodSuffix[i] = lastIdx - i + prefixIdx
+				lastIdx - i：回移到匹配的起始位置(后缀匹配，p 的 lastIdx 对应 s 的位置)
 				prefixIdx：下一次匹配的右移距离（可理解为last+1 - 前缀的长度）
 				示例：p = "ABABCBAB"，s = "oooXBABCBABoooooy"，经过计算后的 goodSuffix = [13 12 11 10 9 8 9 8]
 					sIdx = 3：oooXBABCBABoooooy
@@ -55,6 +55,7 @@ Boyer-Moore：博伊尔-摩尔算法（后缀字符串匹配）
 		2.2.好后缀规则3：不存在与好后缀匹配的子串
 			同2.1
 		2.3.好后缀规则1：存在与好后缀完全匹配的子串
+			计算好后缀：
 			计算非前缀的完全匹配字符串：i == last，包含在了前缀表的情况
 			j：计算完全匹配字符串的长度（即好后缀的长度，suffix len）
 			j：回移到匹配的起始位置
@@ -79,6 +80,9 @@ Boyer-Moore：博伊尔-摩尔算法（后缀字符串匹配）
 					移动后开始新的一次匹配：
 					sIdx = 14：oooXBABBBABoooy
 					pIdx = 7：        ABABCBAB
+	重点			补充：goodSuffix[lastIdx-j] = j + lastIdx - i
+					j：回到尾部对齐的位置
+					lastIdx - i：右移距离，i + (lastIdx - i) = last
 	3.根据坏字符数组、好后缀数组，匹配字符串
 		3.1.开始匹配
 		3.2.匹配成功：重置 s、p 的索引，准备下一次匹配
@@ -121,7 +125,7 @@ func bmHelper(p string) ([256]int, []int) {
 	prefixIdx := len(p)
 	goodSuffix[lastIdx] = prefixIdx
 	for i := lastIdx - 1; i >= 0; i-- { // 2.1 & 2.2
-		j := 0
+		j := 0 // 是否可以只初始化一次？参考示例：prefixIdx只出现了8、6两个值，且参考源码
 		//fmt.Println(p[j:lastIdx-i], p[i+1+j:])
 		for ; j < lastIdx-i; j++ { // 2.1.1
 			if p[j] != p[i+1+j] {
