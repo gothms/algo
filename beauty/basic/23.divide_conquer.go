@@ -1,6 +1,8 @@
 package basic
 
 /*
+分治算法：谈一谈大规模计算框架MapReduce中的分治思想
+
 Google 大数据处理的三驾马车
 	MapReduce
 	GFS

@@ -1,6 +1,8 @@
 package basic
 
 /*
+贪心算法：如何用贪心算法实现Huffman压缩编码？
+
 贪心算法（greedy algorithm）
 	霍夫曼编码（Huffman Coding）
 	Prim

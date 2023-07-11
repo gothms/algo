@@ -1,6 +1,8 @@
 package basic
 
 /*
+回溯算法：从电影《蝴蝶效应》中学习回溯算法的核心思想
+
 回溯算法（Back tracking Algorithms）
 	正则表达式匹配
 	编译原理中的语法分析

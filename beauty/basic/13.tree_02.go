@@ -1,6 +1,8 @@
 package basic
 
 /*
+二叉树基础（下）：有了如此高效的散列表，为什么还需要二叉树？
+
 二叉查找树（Binary Search Tree）
 	二叉搜索树
 	二叉排序树

@@ -1,6 +1,8 @@
 package basic
 
 /*
+队列：队列在线程池等有限资源池中的应用
+
 queue
 	先进者先出
 	操作受限的线性表数据结构，只允许队头入队 enqueue() 和队尾出队 dequeue()

@@ -1,6 +1,8 @@
 package basic
 
 /*
+二叉树基础（上）：什么样的二叉树适合用数组来存储？
+
 树（Tree）
 	高度（Height）
 	深度（Depth）
