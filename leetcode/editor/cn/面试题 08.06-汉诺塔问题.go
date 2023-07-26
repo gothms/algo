@@ -40,10 +40,32 @@ func main() {
 }
 
 /*
-汉诺塔问题：递归的典范
+汉诺塔问题
+思路：递归
+	1.对于任意个盘子 n，要把它们从 from 柱子，移动到 to 柱子
+		只需要把 n-1 个盘子从 from 先移动到 other 柱子
+		再把最大的盘子从 from 移动到 to
+		最后再把 n-1 个盘子，从 other 移动到 to
+	2.递归精髓
+		在于 n 到 n-1 的过程，以及 1 的边界条件
+		而不是人肉递归 n 到 1 的过程
 */
 //leetcode submit region begin(Prohibit modification and deletion)
 func hanota(A []int, B []int, C []int) []int {
+	// recursive
+	var dfs func(*[]int, *[]int, *[]int, int)
+	dfs = func(f *[]int, t *[]int, o *[]int, i int) {
+		if i == 1 {
+			*f, *t = (*f)[:len(*f)-1], append(*t, (*f)[len(*f)-1])
+			return
+		}
+		dfs(f, o, t, i-1)
+		*f, *t = (*f)[:len(*f)-1], append(*t, (*f)[len(*f)-1])
+		dfs(o, t, f, i-1)
+	}
+	dfs(&A, &C, &B, len(A))
+	return C
+}
 	// 没有扩容
 	//n := len(A)
 	//if n == 0 {
@@ -65,22 +87,22 @@ func hanota(A []int, B []int, C []int) []int {
 	//dfs(A, C, B, &i, &j, &k, n)
 	//return C
 
-	n := len(A)
-	if n == 0 {
-		return C
-	}
-	var dfs func(*[]int, *[]int, *[]int, int)
-	dfs = func(f, t, o *[]int, i int) {
-		if i == 1 {
-			*t, *f = append(*t, (*f)[len(*f)-1]), (*f)[:len(*f)-1]
-			return
-		}
-		dfs(f, o, t, i-1)
-		*t, *f = append(*t, (*f)[len(*f)-1]), (*f)[:len(*f)-1]
-		dfs(o, t, f, i-1)
-	}
-	dfs(&A, &C, &B, n)
-	return C
+	//n := len(A)
+	//if n == 0 {
+	//	return C
+	//}
+	//var dfs func(*[]int, *[]int, *[]int, int)
+	//dfs = func(f, t, o *[]int, i int) {
+	//	if i == 1 {
+	//		*t, *f = append(*t, (*f)[len(*f)-1]), (*f)[:len(*f)-1]
+	//		return
+	//	}
+	//	dfs(f, o, t, i-1)
+	//	*t, *f = append(*t, (*f)[len(*f)-1]), (*f)[:len(*f)-1]
+	//	dfs(o, t, f, i-1)
+	//}
+	//dfs(&A, &C, &B, n)
+	//return C
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

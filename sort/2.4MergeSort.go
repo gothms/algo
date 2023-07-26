@@ -10,6 +10,7 @@ func MergeSort(arr []int, l, r int) {
 	merge(arr, l, mid, r)
 }
 
+// merge 请利用哨兵，简化编程
 func merge(arr []int, l, m, r int) {
 	temp := make([]int, r-l+1)
 	j, k := m+1, 0

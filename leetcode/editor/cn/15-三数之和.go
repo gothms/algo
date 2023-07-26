@@ -62,37 +62,82 @@ func main() {
 	fmt.Println(sum)
 }
 
-//leetcode submit region begin(Prohibit modification and deletion)
+/*
+思路：排序+双指针
+	1.在非降序的数组中，0 <= i < j < k < n，sum = nums[i]+nums[j]+nums[k]
+		sum==0：找到三元组，j++ k--
+		sum>0：k--
+		sum<0：j++
+	2.关键点在于不能有重复三元组
+		2.1.当 i > 0 && nums[i] == nums[i-1]，跳过
+		2.2.当找到三元组时
+			对于索引j：j < k && nums[j] == nums[j-1] 跳过
+			对于索引k：j < k && nums[k] == nums[k+1] 跳过
+*/
+// leetcode submit region begin(Prohibit modification and deletion)
 func threeSum(nums []int) [][]int {
 	// 双指针
-	sort.Ints(nums)
+	sort.Ints(nums) // 排序
 	ans, n := make([][]int, 0), len(nums)-2
 	for i := 0; i < n; i++ {
-		if nums[i] > 0 {
+		if nums[i] > 0 { // 剪枝
 			break
 		}
-		if i > 0 && nums[i] == nums[i-1] {
+		if i > 0 && nums[i] == nums[i-1] { // 避免重复三元组
 			continue
 		}
-		for l, r := i+1, n+1; l < r; {
-			if sum := nums[i] + nums[l] + nums[r]; sum < 0 {
-				l++
-			} else if sum > 0 {
-				r--
-			} else if sum == 0 {
-				ans = append(ans, []int{nums[i], nums[l], nums[r]})
-				l++
-				r--
-				for nums[l] == nums[l-1] && l < r {
-					l++
+		for j, k := i+1, n+1; j < k; {
+			if sum := nums[i] + nums[j] + nums[k]; sum > 0 {
+				k--
+			} else if sum < 0 {
+				j++
+			} else {
+				ans = append(ans, []int{nums[i], nums[j], nums[k]})
+				if nums[j] == nums[k] { // j k 互为哨兵
+					break
 				}
-				for nums[r] == nums[r+1] && l < r {
-					r--
+				j++
+				for nums[j] == nums[j-1] { // 避免重复三元组
+					j++
+				}
+				k--
+				for nums[k] == nums[k+1] {
+					k--
 				}
 			}
 		}
 	}
 	return ans
+
+	// 双指针
+	//sort.Ints(nums)
+	//ans, n := make([][]int, 0), len(nums)-2
+	//for i := 0; i < n; i++ {
+	//	if nums[i] > 0 {
+	//		break
+	//	}
+	//	if i > 0 && nums[i] == nums[i-1] {
+	//		continue
+	//	}
+	//	for l, r := i+1, n+1; l < r; {
+	//		if sum := nums[i] + nums[l] + nums[r]; sum < 0 {
+	//			l++
+	//		} else if sum > 0 {
+	//			r--
+	//		} else if sum == 0 {
+	//			ans = append(ans, []int{nums[i], nums[l], nums[r]})
+	//			l++
+	//			r--
+	//			for nums[l] == nums[l-1] && l < r {
+	//				l++
+	//			}
+	//			for nums[r] == nums[r+1] && l < r {
+	//				r--
+	//			}
+	//		}
+	//	}
+	//}
+	//return ans
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

@@ -90,7 +90,7 @@ func miceAndCheese(reward1 []int, reward2 []int, k int) int {
 	}
 	kQuickSort(cache, 0, n-1, k)
 	for i := 0; i < k; i++ {
-		sum += cache[i] // b)加上 tokK
+		sum += cache[i] // b)加上 topK
 	}
 	return sum
 }

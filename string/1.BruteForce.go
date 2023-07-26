@@ -9,6 +9,10 @@ package string
 	3.KMP算法
 	4.Boyer-Moore算法
 	5.Rabin-Karp算法
+多模式串匹配算法
+	Trie
+	AC 自动机
+
 Go 字符串匹配算法：https://juejin.cn/post/6844903503920365582
 */
 

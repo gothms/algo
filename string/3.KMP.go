@@ -105,7 +105,7 @@ func Kmp(s, p string) []int {
 
 func prefixTable(p string) []int {
 	prefix, n := make([]int, len(p)), len(p)-1
-	for i, length := 2, 0; i < n; i++ {
+	for i, length := 2, 0; i < n; {
 		if p[i] == p[length] { // 1.1
 			length++
 			prefix[i] = length

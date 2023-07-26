@@ -85,3 +85,21 @@ func BinarySearchLastSmaller(arr []int, t int) int {
 	//}
 	//return r - 1
 }
+
+// BinarySearchLastSmallerGeekBang 查找 最后一个小于等于 给定值的元素
+func BinarySearchLastSmallerGeekBang(arr []int, t int) int {
+	l, r, n, mid := 0, len(arr)-1, len(arr)-1, 0
+	for l <= r {
+		mid = int(uint(l+r) >> 1)
+		if arr[mid] > t {
+			r = mid - 1
+		} else {
+			if mid == n || arr[mid+1] > t {
+				return mid
+			} else {
+				l = mid + 1
+			}
+		}
+	}
+	return -1
+}
