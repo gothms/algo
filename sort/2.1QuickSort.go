@@ -10,7 +10,7 @@ func QuickSort(arr []int, l, r int) {
 }
 func partition(arr []int, l, r int) int {
 	//pivot, counter := l+rand.Intn(r-l+1), l+1	// 随机数
-	//arr[l], arr[pivot] = arr[pivot], arr[l]
+	//arr[l], arr[pivot] = arr[pivot], arr[l]	// 或交换到 r
 	//pivot = l
 	pivot, counter := l, l+1
 	for i := l + 1; i <= r; i++ {

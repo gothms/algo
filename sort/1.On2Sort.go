@@ -1,5 +1,6 @@
 package sort
 
+// BubbleSort 冒泡排序
 func BubbleSort(arr []int) {
 	for i := len(arr) - 1; i > 0; i-- {
 		for j := 0; j < i; j++ {
@@ -9,6 +10,8 @@ func BubbleSort(arr []int) {
 		}
 	}
 }
+
+// InsertionSort 插入排序
 func InsertionSort(arr []int) {
 	for i := 1; i < len(arr); i++ {
 		j, curr := i, arr[i]
@@ -18,6 +21,8 @@ func InsertionSort(arr []int) {
 		arr[j] = curr
 	}
 }
+
+// SelectionSort 选择排序
 func SelectionSort(arr []int) {
 	n := len(arr) - 1
 	for i, mi := 0, 0; i < n; i++ {

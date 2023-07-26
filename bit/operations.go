@@ -23,6 +23,12 @@ func Multiply(a, b int) int {
 	}
 	return product
 }
+
+/*
+取模 vs 取余
+	5%3 = -2
+*/
+
 func Divide(a, b int) (int, int) {
 	quotient, remainder, x, y := 0, 0, abs(a), abs(b) // 商，余数，被除数和除数的绝对值
 	for i := GetBitCount(x) - 1; i >= 0; i = Substract(i, 1) {
