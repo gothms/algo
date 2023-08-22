@@ -70,10 +70,11 @@ func main() {
 
 	n, k := 4, 2
 	relations := [][]int{{2, 1}, {3, 1}, {1, 4}}
+	//relations = [][]int{{1, 2}, {1, 3}, {1, 4}}
 	//n, k = 10, 2
 	//relations = [][]int{{2, 1}, {3, 1}, {1, 4}, {5, 7}, {7, 8}, {6, 8}, {9, 10}, {8, 10}}
-	n, k = 5, 3 // 5
-	relations = [][]int{{1, 5}, {1, 3}, {1, 2}, {4, 2}, {4, 5}, {2, 5}, {1, 4}, {4, 3}, {3, 5}, {3, 2}}
+	//n, k = 5, 3 // 5
+	//relations = [][]int{{1, 5}, {1, 3}, {1, 2}, {4, 2}, {4, 5}, {2, 5}, {1, 4}, {4, 3}, {3, 5}, {3, 2}}
 	semesters := minNumberOfSemesters(n, relations, k)
 	fmt.Println(semesters)
 }
@@ -113,42 +114,84 @@ func main() {
 			令 take := needs[i] ^ i，如果 take 的可成数量（二进制中 1 的数量） <= k，则
 			dp[i] = minVal(dp[i], dp[take^i]+1)
 		3.5.否则，遍历 take 的子集（2.4.）求出最小 dp[i]
+	补充：
+		needs 中，i 表示课程的集合，needs[i] 表示集合 i 需要的先修课程
 */
 // leetcode submit region begin(Prohibit modification and deletion)
 func minNumberOfSemesters(n int, relations [][]int, k int) int {
-	// 状压dp
+	// 复习1
 	minVal := func(a, b int) int {
 		if a < b {
 			return a
 		}
 		return b
 	}
-	m := 1 << n // 状态压缩
-	dp, needs := make([]int, m), make([]int, m)
-	for i := 1; i < m; i++ {
-		dp[i] = m // 无法修完
-	}
+	m := 1 << n
+	dp, pre := make([]int, m), make([]int, m)
 	for _, edge := range relations {
-		needs[1<<(edge[1]-1)] |= 1 << (edge[0] - 1)
-	} // 根据课程的有向图，初始化先修课程
-	for i, last := 1, 0; i < m; i++ {
-		last = i & -i                           // 课程编号最小的那门课
-		needs[i] = needs[i&^last] | needs[last] // 并集
-		if needs[i]|i != i {                    // 某些先修课的编程编号更大
+		pre[1<<(edge[1]-1)] |= 1 << (edge[0] - 1)
+	}
+	for i := 1; i < m; i++ {
+		dp[i] = m
+	}
+	for i := 1; i < m; i++ {
+		// 求出 pre[i]
+		last := i & -i
+		pre[i] = pre[i^last] | pre[last]
+		// 判断 pre[i] 是否合法
+		if pre[i]|i != i {
 			continue
 		}
-		take := needs[i] ^ i // 修满 take，则可以修满 i
+		// 求 dp[i]：一次
+		take := pre[i] ^ i // i-pre[i]
 		if bits.OnesCount(uint(take)) <= k {
-			dp[i] = minVal(dp[i], dp[take^i]+1)
-			continue // 一学期修完 take
+			dp[i] = minVal(dp[i], dp[i^take]+1)
+			continue
 		}
-		for sub := take; sub > 0; sub = take & (sub - 1) { // 遍历 take 的子集
+		// 求 dp[i]：多次遍历
+		for sub := take & (take - 1); sub > 0; sub = take & (sub - 1) {
 			if bits.OnesCount(uint(sub)) <= k {
-				dp[i] = minVal(dp[i], dp[sub^i]+1)
+				dp[i] = minVal(dp[i], dp[i^sub]+1)
 			}
-		} // 不止一学期修完 take
+		}
 	}
+	//fmt.Println(pre)
 	return dp[m-1]
+
+	// 状压dp：终版
+	//minVal := func(a, b int) int {
+	//	if a < b {
+	//		return a
+	//	}
+	//	return b
+	//}
+	//m := 1 << n // 状态压缩
+	//dp, needs := make([]int, m), make([]int, m)
+	//for i := 1; i < m; i++ {
+	//	dp[i] = m // 无法修完
+	//}
+	//for _, edge := range relations {
+	//	needs[1<<(edge[1]-1)] |= 1 << (edge[0] - 1)
+	//} // 根据课程的有向图，初始化先修课程
+	////fmt.Println(needs)
+	//for i, last := 1, 0; i < m; i++ {
+	//	last = i & -i                           // 课程编号最小的那门课
+	//	needs[i] = needs[i&^last] | needs[last] // 并集
+	//	if needs[i]|i != i {                    // 某些先修课的编程编号更大，即 needs[i] 必须是 i 的子集
+	//		continue
+	//	}
+	//	take := needs[i] ^ i // 修满 take，则可以修满 i，即 take := i - needs[i]
+	//	if bits.OnesCount(uint(take)) <= k {
+	//		dp[i] = minVal(dp[i], dp[take^i]+1)
+	//		continue // 一学期修完 take
+	//	}
+	//	for sub := take & (take - 1); sub > 0; sub = take & (sub - 1) { // 遍历 take 的子集
+	//		if bits.OnesCount(uint(sub)) <= k {
+	//			dp[i] = minVal(dp[i], dp[sub^i]+1)
+	//		}
+	//	} // 不止一学期修完 take
+	//}
+	//return dp[m-1]
 
 	// 邻接矩阵+并查集+优先队列：未写完
 	//parent, matrix := make([]int, n+1), make([][]int, n+1)

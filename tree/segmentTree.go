@@ -3,6 +3,7 @@ package tree
 // Build 构建线段树
 // l r 为 arr 的当前区间，i 为 st 当前索引
 // 不需要扩容，所以直接传入 st
+// TODO 从索引 1 开始，效率更高
 func Build(l, r int, arr []int, i int, st []int) {
 	if l == r {
 		st[i] = arr[l]

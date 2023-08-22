@@ -59,6 +59,14 @@ func main() {
 
 }
 
+/*
+LeetCode-141
+思路：快慢指针
+	1.双指针是解决链表问题的常用方式
+	2.如果有环，那么slow和fast总会相遇
+思路：hash表
+	当前节点在hash表中存在时，表明有环
+*/
 //leetcode submit region begin(Prohibit modification and deletion)
 /**
  * Definition for singly-linked list.
@@ -67,23 +75,24 @@ func main() {
  *     Next *ListNode
  * }
  */
-/*
-LeetCode-141
-思路：双指针
-	1.双指针是解决链表问题的常用方式
-	2.如果有环，那么slow和fast总会相遇
-思路：hash表
-	当前节点在hash表中存在时，表明有环
-*/
 func hasCycle(head *ListNode) bool {
-	slow, fast := head, head
-	for fast != nil && fast.Next != nil {
+	// 快慢指针
+	for slow, fast := head, head; fast != nil && fast.Next != nil; {
 		slow, fast = slow.Next, fast.Next.Next
 		if slow == fast {
 			return true
 		}
 	}
 	return false
+
+	//slow, fast := head, head
+	//for fast != nil && fast.Next != nil {
+	//	slow, fast = slow.Next, fast.Next.Next
+	//	if slow == fast {
+	//		return true
+	//	}
+	//}
+	//return false
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
