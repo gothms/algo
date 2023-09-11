@@ -81,9 +81,22 @@ func goodNodes(root *TreeNode) int {
 		if r.Val < v {
 			return dfs(r.Left, v) + dfs(r.Right, v)
 		}
-		return 1 + dfs(r.Left, r.Val) + dfs(r.Right, r.Val)
+		return dfs(r.Left, r.Val) + dfs(r.Right, r.Val) + 1
 	}
 	return dfs(root, math.MinInt32)
+
+	// dfs
+	//var dfs func(*TreeNode, int) int
+	//dfs = func(r *TreeNode, v int) int {
+	//	if r == nil {
+	//		return 0
+	//	}
+	//	if r.Val < v {
+	//		return dfs(r.Left, v) + dfs(r.Right, v)
+	//	}
+	//	return 1 + dfs(r.Left, r.Val) + dfs(r.Right, r.Val)
+	//}
+	//return dfs(root, math.MinInt32)
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

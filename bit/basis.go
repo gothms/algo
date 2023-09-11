@@ -1,5 +1,9 @@
 package bit
 
+import (
+	"math/bits"
+)
+
 /*
 异或
 	x ^ 0 = x
@@ -8,6 +12,9 @@ package bit
 	x ^ x = 0
 	c = a ^ b => a ^ c = b, b ^ c = a	// 交换两个数
 	a ^ b ^ c = a ^ (b ^ c) = (a ^ b) ^ c	// associative
+
+按位置零
+	&^
 */
 
 func Basis(x, n int) int {
@@ -32,5 +39,13 @@ func Basis(x, n int) int {
 	y = x | (x + 1)  // 最低位的0，变1
 	y = ^x & (x + 1) // 取出最低位的0，用1标识
 	y = (x + 1) &^ x // 同上
+
+	return y
+}
+func api() int {
+	var x uint = 4
+	y := bits.LeadingZeros(x) // 61
+	y = bits.TrailingZeros(x) // 2
+	y = bits.Len(x)           // 3
 	return y
 }
