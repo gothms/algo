@@ -14,6 +14,14 @@ func test() {
 	fmt.Println(circle)
 }
 
+/*
+课程表系列
+	lc-207
+	lc-210
+	lc-630
+	lc-1462
+*/
+
 // TopoSortByKahn Kahn 算法实现拓扑排序
 // n 为顶点数，edges 为所有边
 func TopoSortByKahn(n int, edges [][]int) {

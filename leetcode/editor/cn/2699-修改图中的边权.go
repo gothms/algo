@@ -130,297 +130,145 @@ func main() {
 */
 //leetcode submit region begin(Prohibit modification and deletion)
 func modifiedGraphEdges(n int, edges [][]int, source, destination, target int) [][]int {
-	// Dijkstra + 小顶堆：二刷错误点
-	adj, dist, dist1 := make([][][2]int, n), make([]int, n), make([]int, n)
-	for i := 0; i < n; i++ {
-		adj[i] = make([][2]int, 0)
-	}
-	for i, e := range edges {
-		adj[e[0]] = append(adj[e[0]], [2]int{e[1], i})
-		adj[e[1]] = append(adj[e[1]], [2]int{e[0], i}) // 记录的 i
-	}
-	for i := 0; i < n; i++ {
-		dist[i], dist1[i] = math.MaxInt32, math.MaxInt32 // 初始化
-	}
-	dist[source], dist1[source] = 0, 0
-	dijkstra := func(check bool, ex int) {
-		ed, visit := Ed{{source, 0}}, make([]bool, n)
-		for ed.Len() > 0 {
-			curr := heap.Pop(&ed).([2]int)
-			if visit[curr[0]] {
-				continue
-			}
-			if curr[0] == destination { // 索引别搞错
-				break
-			}
-			visit[curr[0]] = true
-			for _, next := range adj[curr[0]] {
-				if visit[next[0]] {
-					continue
-				}
-				//fmt.Println(curr, next)
-				w := edges[next[1]][2]
-				if w < 0 {
-					w = 1
-					if check {
-						wEx := ex + dist[next[0]] - dist1[curr[0]]
-						if wEx > w {
-							w, edges[next[1]][2] = wEx, wEx
-						}
-					}
-				}
-				if check { // 索引别搞错
-					dist1[next[0]] = min(dist1[next[0]], curr[1]+w)
-					heap.Push(&ed, [2]int{next[0], dist1[next[0]]})
-				} else {
-					dist[next[0]] = min(dist[next[0]], curr[1]+w)
-					heap.Push(&ed, [2]int{next[0], dist[next[0]]})
-				}
-			}
+	minVal := func(a, b int) int {
+		if b < a {
+			return b
 		}
+		return a
 	}
-	dijkstra(false, 0)
-	if dist[destination] > target {
-		return nil
-	}
-	if ex := target - dist[destination]; ex > 0 {
-		dijkstra(true, ex)
-		if dist1[destination] < target { // < 没有成功
-			return nil
-		}
-	}
-	for _, edge := range edges {
-		if edge[2] == -1 {
-			edge[2] = 1
-		}
-	}
-	return edges
+	// Dijkstra
 
-	//adj, dist, distC := make([][][2]int, n), make([]int, n), make([]int, n) // 1
-	//for i, edge := range edges {
-	//	adj[edge[0]] = append(adj[edge[0]], [2]int{edge[1], i})
-	//	adj[edge[1]] = append(adj[edge[1]], [2]int{edge[0], i})
+	// Dijkstra + 小顶堆：二刷错误点
+	//adj, dist, dist1 := make([][][2]int, n), make([]int, n), make([]int, n)
+	//for i := 0; i < n; i++ {
+	//	adj[i] = make([][2]int, 0)
+	//}
+	//for i, e := range edges {
+	//	adj[e[0]] = append(adj[e[0]], [2]int{e[1], i})
+	//	adj[e[1]] = append(adj[e[1]], [2]int{e[0], i}) // 记录的 i
 	//}
 	//for i := 0; i < n; i++ {
-	//	dist[i], distC[i] = math.MaxInt32, math.MaxInt32
+	//	dist[i], dist1[i] = math.MaxInt32, math.MaxInt32 // 初始化
 	//}
-	//dist[source], distC[source] = 0, 0
-	//expand := 0
-	//dijkstra := func(check bool) {
-	//	ed, visit := Ed{}, make([]bool, n)
-	//	heap.Push(&ed, [2]int{source, 0}) // 2.1
+	//dist[source], dist1[source] = 0, 0
+	//dijkstra := func(check bool, ex int) {
+	//	ed, visit := Ed{{source, 0}}, make([]bool, n)
+	//	//visit[source] = true
 	//	for ed.Len() > 0 {
-	//		curr := heap.Pop(&ed).([2]int) // 2.2
+	//		curr := heap.Pop(&ed).([2]int)
 	//		if visit[curr[0]] {
 	//			continue
 	//		}
-	//		if curr[0] == destination { // 2.3
+	//		if curr[0] == destination { // 索引别搞错
 	//			break
 	//		}
-	//		visit[curr[0]] = true                          // 2.4
-	//		for i, m := 0, len(adj[curr[0]]); i < m; i++ { // 2.5
-	//			next := adj[curr[0]][i]
-	//			if visit[next[0]] { // 2.5.a
+	//		visit[curr[0]] = true
+	//		for _, next := range adj[curr[0]] {
+	//			if visit[next[0]] {
 	//				continue
 	//			}
+	//			//fmt.Println(curr, next)
 	//			w := edges[next[1]][2]
-	//			if w < 0 { // 2.5.c
+	//			if w < 0 {
 	//				w = 1
-	//				if check { // 3.1
-	//					ew := dist[next[0]] + expand - distC[curr[0]]
-	//					if ew > w { // 3.2
-	//						edges[next[1]][2], w = ew, ew
+	//				if check {
+	//					wEx := ex + dist[next[0]] - dist1[curr[0]]
+	//					if wEx > w {
+	//						w, edges[next[1]][2] = wEx, wEx
 	//					}
 	//				}
 	//			}
-	//			if check {
-	//				distC[next[0]] = min(distC[next[0]], distC[curr[0]]+w)
-	//				heap.Push(&ed, [2]int{next[0], distC[next[0]]})
-	//			} else { // 2.5.b
-	//				dist[next[0]] = min(dist[next[0]], dist[curr[0]]+w)
+	//			if check { // 索引别搞错
+	//				dist1[next[0]] = minVal(dist1[next[0]], curr[1]+w)
+	//				heap.Push(&ed, [2]int{next[0], dist1[next[0]]})
+	//			} else {
+	//				dist[next[0]] = minVal(dist[next[0]], curr[1]+w)
 	//				heap.Push(&ed, [2]int{next[0], dist[next[0]]})
 	//			}
 	//		}
 	//	}
 	//}
-	//dijkstra(false)                 // 2
-	//if dist[destination] > target { // 2.6
+	//dijkstra(false, 0)
+	//if dist[destination] > target {
 	//	return nil
 	//}
-	//if expand = target - dist[destination]; expand > 0 { // 3
-	//	dijkstra(true)
-	//	if distC[destination] < target { // 3.3
+	//if ex := target - dist[destination]; ex > 0 {
+	//	dijkstra(true, ex)
+	//	if dist1[destination] < target { // < 没有成功
 	//		return nil
 	//	}
 	//}
-	//for i := range edges { // 4
-	//	if edges[i][2] == -1 {
-	//		edges[i][2] = 1
+	//for _, edge := range edges {
+	//	if edge[2] == -1 {
+	//		edge[2] = 1
 	//	}
 	//}
 	//return edges
+
+	adj, dist, distC := make([][][2]int, n), make([]int, n), make([]int, n) // 1
+	for i, edge := range edges {
+		adj[edge[0]] = append(adj[edge[0]], [2]int{edge[1], i})
+		adj[edge[1]] = append(adj[edge[1]], [2]int{edge[0], i})
+	}
+	for i := 0; i < n; i++ {
+		dist[i], distC[i] = math.MaxInt32, math.MaxInt32
+	}
+	dist[source], distC[source] = 0, 0
+	expand := 0
+	dijkstra := func(check bool) {
+		ed, visit := Ed{}, make([]bool, n)
+		heap.Push(&ed, [2]int{source, 0}) // 2.1
+		for ed.Len() > 0 {
+			curr := heap.Pop(&ed).([2]int) // 2.2
+			if visit[curr[0]] {
+				continue
+			}
+			if curr[0] == destination { // 2.3
+				break
+			}
+			visit[curr[0]] = true                          // 2.4
+			for i, m := 0, len(adj[curr[0]]); i < m; i++ { // 2.5
+				next := adj[curr[0]][i]
+				if visit[next[0]] { // 2.5.a
+					continue
+				}
+				w := edges[next[1]][2]
+				if w < 0 { // 2.5.c
+					w = 1
+					if check { // 3.1
+						ew := dist[next[0]] + expand - distC[curr[0]]
+						if ew > w { // 3.2
+							edges[next[1]][2], w = ew, ew
+						}
+					}
+				}
+				if check {
+					distC[next[0]] = minVal(distC[next[0]], distC[curr[0]]+w)
+					heap.Push(&ed, [2]int{next[0], distC[next[0]]})
+				} else { // 2.5.b
+					dist[next[0]] = minVal(dist[next[0]], dist[curr[0]]+w)
+					heap.Push(&ed, [2]int{next[0], dist[next[0]]})
+				}
+			}
+		}
+	}
+	dijkstra(false)                 // 2
+	if dist[destination] > target { // 2.6
+		return nil
+	}
+	if expand = target - dist[destination]; expand > 0 { // 3
+		dijkstra(true)
+		if distC[destination] < target { // 3.3
+			return nil
+		}
+	}
+	for i := range edges { // 4
+		if edges[i][2] == -1 {
+			edges[i][2] = 1
+		}
+	}
+	return edges
 }
-
-//func modifiedGraphEdges_(n int, edges [][]int, source, destination, target int) [][]int {
-//	// 一个 dist
-//	minVal := func(a, b int) int {
-//		if a < b {
-//			return a
-//		}
-//		return b
-//	}
-//	adj, dist := make([][][2]int, n), make([]int, n)
-//	for i, edge := range edges {
-//		adj[edge[0]] = append(adj[edge[0]], [2]int{edge[1], i})
-//		adj[edge[1]] = append(adj[edge[1]], [2]int{edge[0], i})
-//	}
-//	for i := 0; i < n; i++ {
-//		dist[i] = math.MaxInt32
-//	}
-//	dist[source] = 0
-//	expand := 0
-//	dijkstra := func(visit []bool, check bool) {
-//		ed := Ed{}
-//		heap.Push(&ed, [2]int{source, 0})
-//		for ed.Len() > 0 {
-//			curr := heap.Pop(&ed).([2]int)
-//			if visit[curr[0]] {
-//				continue
-//			}
-//			if curr[0] == destination {
-//				break
-//			}
-//			visit[curr[0]] = true
-//			for i, m := 0, len(adj[curr[0]]); i < m; i++ {
-//				next := adj[curr[0]][i]
-//				if visit[next[0]] {
-//					continue
-//				}
-//				w := edges[next[1]][2]
-//				if w < 0 {
-//					//fmt.Println(edges[next[1]], w)
-//					w = 1
-//					//w, edges[next[1]][2] = 1, 1
-//					if check {
-//						ew := dist[next[0]] + expand - dist[curr[0]]
-//						if ew > w {
-//							edges[next[1]][2], w = ew, ew
-//						}
-//					}
-//					dist[next[0]] = dist[curr[0]] + w // 这种写法没法判断 dist[next[0]] 值是否更改
-//				}
-//				//if !check {
-//				dist[next[0]] = minVal(dist[next[0]], dist[curr[0]]+w)
-//				//}
-//				heap.Push(&ed, [2]int{next[0], dist[next[0]]})
-//			}
-//		}
-//	}
-//	dijkstra(make([]bool, n), false)
-//	if dist[destination] > target {
-//		return nil
-//	}
-//	if dist[destination] < target {
-//		expand = target - dist[destination]
-//		dijkstra(make([]bool, n), true)
-//		if dist[destination] < target {
-//			return nil
-//		}
-//	}
-//	for i := range edges {
-//		if edges[i][2] == -1 {
-//			edges[i][2] = 1
-//		}
-//	}
-//	return edges
-//}
-
-//func modifiedGraphEdges(n int, edges [][]int, source, destination, target int) [][]int {
-// 尝试一次 Dijkstra：不行
-////adj, ed, dist, visit, path :=
-////	make([][][2]int, n), Ed{{source, 0}}, make([]int, n), make([]bool, n), make([]int, n)
-//adj, ed, dist, visit, path :=
-//	make([][][2]int, n), Ed{{source, 0}}, make([]int, n), make([]bool, len(edges)), make([]int, n)
-//for i := 0; i < n; i++ {
-//	adj[i] = make([][2]int, n)
-//	dist[i] = math.MaxInt32
-//}
-//dist[source] = 0
-//for i, edge := range edges {
-//	adj[edge[0]][edge[1]][0], adj[edge[1]][edge[0]][0] = edge[2], edge[2] // 只存不改
-//	adj[edge[0]][edge[1]][1], adj[edge[1]][edge[0]][1] = i, i             // edges 索引
-//}
-//check := func(dis int) bool {
-//	fmt.Println("dis", dis)
-//	for t, f := destination, path[destination]; f != source; t, f = f, path[f] {
-//		if adj[f][t][0] < 0 {
-//			if edges[adj[f][t][1]][2] < target-dis {
-//				edges[adj[f][t][1]][2] += target - dis
-//			}
-//			return false
-//		}
-//	}
-//	return true
-//}
-////out:
-//for len(ed) > 0 {
-//	curr := heap.Pop(&ed).([2]int)
-//	//if curr[1] >= target {
-//	//	break
-//	//}
-//	//for curr[1] > dist[curr[0]] || visit[curr[0]] {
-//	//	if len(ed) == 0 {
-//	//		//fmt.Println(ed)
-//	//		break out
-//	//	}
-//	//	curr = heap.Pop(&ed).([2]int)
-//	//}
-//	//if curr[0] == destination {
-//	//	// TODO
-//	//	check(destination, dist[])
-//	//}
-//	//visit[curr[0]] = true
-//	for i := 0; i < n; i++ {
-//		w := adj[i][curr[0]][0]
-//		fmt.Println(curr[1], w, ed, adj[curr[0]][i][1], visit[adj[curr[0]][i][1]])
-//		if w == 0 {
-//			continue
-//		}
-//		if w == -1 {
-//			edges[adj[i][curr[0]][1]][2], w = 1, 1
-//			//w = 1
-//		}
-//		//if curr[1]+w >= target || visit[adj[curr[0]][i][1]] {
-//		if curr[1]+w >= target {
-//			//visit[i] = true
-//			continue
-//		}
-//		visit[adj[curr[0]][i][1]] = true
-//		//if dist[i] > curr[1]+w || i == destination { // 更小的 dist 肯定先访问到，这里更新的是 math.MaxInt32
-//		dist[i], path[i] = curr[1]+w, curr[0]
-//		//if !visit[i] {
-//		//	visit[i] = true
-//		//}
-//		//fmt.Println(visit, ed)
-//		//fmt.Println(i, destination)
-//		if i == destination {
-//			fmt.Println(dist, ed, visit)
-//			if check(dist[i]) {
-//				return nil
-//			}
-//			continue
-//		}
-//		heap.Push(&ed, [2]int{i, dist[i]})
-//		//}
-//	}
-//}
-//for i := range edges {
-//	if edges[i][2] < 0 {
-//		edges[i][2] = 1
-//	}
-//}
-//return edges
-//}
 
 type Ed [][2]int
 
@@ -440,12 +288,6 @@ func (ed Ed) Less(i, j int) bool {
 }
 func (ed Ed) Swap(i, j int) {
 	ed[i], ed[j] = ed[j], ed[i]
-}
-func min(a, b int) int {
-	if b < a {
-		return b
-	}
-	return a
 }
 
 //func modifiedGraphEdgesLC(n int, edges [][]int, source, destination, target int) [][]int {
@@ -492,7 +334,7 @@ func min(a, b int) int {
 //					}
 //				}
 //				// 更新最短路
-//				dis[y][k] = min(dis[y][k], dis[x][k]+wt)
+//				dis[y][k] = minVal(dis[y][k], dis[x][k]+wt)
 //			}
 //		}
 //	}
