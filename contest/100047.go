@@ -18,9 +18,9 @@ func main() {
 		{5, 2},
 		{2, 3},
 		{3, 7}}
-	n := 10 // [[1,5],[5,4],[4,6],[5,8],[8,9],[9,10],[5,2],[2,3],[3,7]]	// 17
-	//edges = [][]int{{1, 2}, {4, 1}, {3, 4}} // 4
-	//n = 4
+	n := 10                                 // [[1,5],[5,4],[4,6],[5,8],[8,9],[9,10],[5,2],[2,3],[3,7]]	// 17
+	edges = [][]int{{1, 2}, {4, 1}, {3, 4}} // 4
+	n = 4
 	paths := countPaths(n, edges)
 	fmt.Println(paths)
 }
@@ -35,16 +35,16 @@ func main() {
 
 func countPaths(n int, edges [][]int) int64 {
 	// 前缀和：优化 dfs
-
-	// 个人写法用的数学，lc 写法用的前缀和
-	var cnt int64
 	cp, adj := make([]int, n+1), make([][]int, n+1)
 	for _, e := range edges {
 		x, y := e[0], e[1]
 		adj[x], adj[y] = append(adj[x], y), append(adj[y], x)
 	}
-	var vs []int
-	var dfs func(int, int)
+	var (
+		cnt int64
+		vs  []int
+		dfs func(int, int)
+	)
 	dfs = func(f, t int) {
 		vs = append(vs, t)
 		for _, i := range adj[t] {
@@ -53,29 +53,73 @@ func countPaths(n int, edges [][]int) int64 {
 			}
 		}
 	}
+	fillCp := func(i int) { // 统计非质数的连通区域的节点数
+		if cp[i] > 0 { // 已统计
+			return
+		}
+		vs = make([]int, 0)
+		dfs(-1, i)
+		for _, v := range vs { // 更新区域内每个节点
+			cp[v] = len(vs)
+		}
+	}
 	for i := 1; i <= n; i++ {
-		if primes[i] { // 只统计质数
+		if primes[i] { // 非质数
+			fillCp(i)
 			continue
 		}
-		preSum := 0 // 前缀和
-		for _, next := range adj[i] {
-			if !primes[next] { // 每个质数为一个连通区域
-				continue
+		preSum := 0
+		for _, next := range adj[i] { // 质数
+			if primes[next] { // 非质数
+				fillCp(next)
+				cnt += int64(preSum * cp[next])
+				preSum += cp[next] // 前缀和
 			}
-			if cp[next] == 0 { // 未计算的区域
-				vs = make([]int, 0) // 连通区域内的节点
-				dfs(i, next)        // 计算每个连通区域的节点总数
-				for _, v := range vs {
-					cp[v] = len(vs) // 更新连通区域内的节点数
-				}
-			}
-			cp[i] += preSum * cp[next] // 前缀和 * cp[next]
-			preSum += cp[next]         // 前缀和
 		}
-		cp[i] += preSum     // 单条路径
-		cnt += int64(cp[i]) // 累加质数的路径
+		cnt += int64(preSum)
 	}
 	return cnt
+
+	// 个人写法用的数学，lc 写法用的前缀和
+	//var cnt int64
+	//cp, adj := make([]int, n+1), make([][]int, n+1)
+	//for _, e := range edges {
+	//	x, y := e[0], e[1]
+	//	adj[x], adj[y] = append(adj[x], y), append(adj[y], x)
+	//}
+	//var vs []int
+	//var dfs func(int, int)
+	//dfs = func(f, t int) {
+	//	vs = append(vs, t)
+	//	for _, i := range adj[t] {
+	//		if i != f && primes[i] { // 每个区域只能有一个质数
+	//			dfs(t, i)
+	//		}
+	//	}
+	//}
+	//for i := 1; i <= n; i++ {
+	//	if primes[i] { // 只统计质数
+	//		continue
+	//	}
+	//	preSum := 0 // 前缀和
+	//	for _, next := range adj[i] {
+	//		if !primes[next] { // 每个质数为一个连通区域
+	//			continue
+	//		}
+	//		if cp[next] == 0 { // 未计算的区域
+	//			vs = make([]int, 0) // 连通区域内的节点
+	//			dfs(i, next)        // 计算每个连通区域的节点总数
+	//			for _, v := range vs {
+	//				cp[v] = len(vs) // 更新连通区域内的节点数
+	//			}
+	//		}
+	//		cp[i] += preSum * cp[next] // 前缀和 * cp[next]
+	//		preSum += cp[next]         // 前缀和
+	//	}
+	//	cp[i] += preSum     // 单条路径
+	//	cnt += int64(cp[i]) // 累加质数的路径
+	//}
+	//return cnt
 }
 
 const N = 1e5

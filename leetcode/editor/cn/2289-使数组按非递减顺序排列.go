@@ -66,9 +66,9 @@ func main() {
 思路：逆序对
 */
 // leetcode submit region begin(Prohibit modification and deletion)
-type list struct {
+type myList struct {
 	val  int
-	next *list
+	next *myList
 }
 
 func totalSteps(nums []int) int {
@@ -173,9 +173,9 @@ func totalSteps(nums []int) int {
 
 	// 链表：超时
 	//cnt, n := -1, len(nums)
-	//head := &list{nums[0], nil}
+	//head := &myList{nums[0], nil}
 	//for i, curr := 1, head; i < n; i++ {
-	//	curr.next = &list{nums[i], nil}
+	//	curr.next = &myList{nums[i], nil}
 	//	curr = curr.next
 	//}
 	//for hasNext := true; hasNext; cnt++ {

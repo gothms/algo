@@ -94,52 +94,51 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 type LRUCache struct {
-	h, t *l         // 最近最少使用缓存
-	m    map[int]*l // 快速查询
+	h, t *ele         // 最近最少使用缓存
+	m    map[int]*ele // 快速查询
 	n    int
 }
-type l struct {
+type ele struct {
 	key, val  int
-	pre, next *l
+	pre, next *ele
 }
 
 func Constructor(capacity int) LRUCache {
-	v := &l{}
-	v.pre, v.next = v, v
-	return LRUCache{v, v, make(map[int]*l, capacity), capacity}
+	e := &ele{}
+	e.pre, e.next = e, e
+	return LRUCache{e, e, make(map[int]*ele, capacity), capacity}
 }
 func (this *LRUCache) Get(key int) int {
-	if v, ok := this.m[key]; ok {
-		this.delVal(v)
-		this.pushHead(v)
-		return v.val
+	if e, ok := this.m[key]; ok {
+		this.update(e)
+		return e.val
 	}
 	return -1
 }
 func (this *LRUCache) Put(key int, value int) {
-	v, ok := this.m[key]
+	e, ok := this.m[key]
 	if ok { // 已存在
-		v.val = value // 更新 val
-		if v.pre == this.h {
-			return
-		}
-		this.delVal(v)
+		e.val = value // 更新 val
 	} else {
 		if len(this.m) == this.n { // 已满
-			del := this.t.pre       // 淘汰的节点
-			delete(this.m, del.key) // 删除
-			this.delVal(del)
+			e = this.h.next           // 淘汰的节点
+			delete(this.m, e.key)     // 从 cache 删除
+			e.key, e.val = key, value // 复用结点
+		} else { // 新建结点
+			e = &ele{key: key, val: value}
 		}
-		v = &l{key: key, val: value}
-		this.m[key] = v // 添加
+		this.m[key] = e // 添加到 cache
 	}
-	this.pushHead(v)
+	this.update(e)
 }
-func (this *LRUCache) delVal(v *l) {
-	v.pre.next, v.next.pre = v.next, v.pre // 删除结点
-}
-func (this *LRUCache) pushHead(v *l) {
-	this.h.next, this.h.next.pre, v.pre, v.next = v, v, this.h, this.h.next // 插入结点
+func (this *LRUCache) update(e *ele) {
+	if e.next == this.t { // 已经是优先级最高
+		return
+	}
+	if e.pre != nil { // 说明不是新建结点
+		e.pre.next, e.next.pre = e.next, e.pre // 删除结点
+	}
+	this.t.pre.next, this.t.pre, e.next, e.pre = e, e, this.t, this.t.pre // 插入结点
 }
 
 /**
@@ -149,3 +148,9 @@ func (this *LRUCache) pushHead(v *l) {
  * obj.Put(key,value);
  */
 //leetcode submit region end(Prohibit modification and deletion)
+func (this *LRUCache) delVal(e *ele) {
+	e.pre.next, e.next.pre = e.next, e.pre // 删除结点
+}
+func (this *LRUCache) pushHead(e *ele) {
+	this.h.next, this.h.next.pre, e.pre, e.next = e, e, this.h, this.h.next // 插入结点
+}

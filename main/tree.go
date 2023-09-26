@@ -29,4 +29,25 @@ func main() {
 	fmt.Println(st)
 	sumLazy := tree.STRangeSumLazy(2, 8, 0, n-1, 0, st, lazy) // 42+6+12
 	fmt.Println(sumLazy)
+
+	// Morris 遍历测试
+	root := &tree.TreeNode{5, &tree.TreeNode{3, &tree.TreeNode{1, nil, &tree.TreeNode{2, nil, nil}}, &tree.TreeNode{4, nil, nil}},
+		&tree.TreeNode{7, &tree.TreeNode{6, nil, nil}, &tree.TreeNode{9, &tree.TreeNode{8, nil, nil}, nil}}}
+	traversal := tree.InorderTraversal(root)
+	fmt.Println(traversal)
+
+	// 检查二叉树结构是否遭到破坏
+	inorder, stack := make([]int, 0), make([]*tree.TreeNode, 0)
+	curr := root
+	for curr != nil || len(stack) > 0 {
+		if curr != nil {
+			for curr.Left != nil {
+				curr, stack = curr.Left, append(stack, curr)
+			}
+		} else {
+			curr, stack = stack[len(stack)-1], stack[:len(stack)-1]
+		}
+		inorder, curr = append(inorder, curr.Val), curr.Right
+	}
+	fmt.Println(inorder)
 }

@@ -70,15 +70,15 @@ type vertex struct {
 	dist int // 从起始顶点 s 到这个顶点的距离
 }
 type priorityQueue struct {
-	qp []vertex
+	pq []vertex
 }
 
-func (p priorityQueue) Len() int           { return len(p.qp) }
-func (p priorityQueue) Less(i, j int) bool { return p.qp[i].dist < p.qp[j].dist }
-func (p priorityQueue) Swap(i, j int)      { p.qp[i], p.qp[j] = p.qp[j], p.qp[i] }
-func (p *priorityQueue) Push(x any)        { p.qp = append(p.qp, x.(vertex)) }
+func (p priorityQueue) Len() int           { return len(p.pq) }
+func (p priorityQueue) Less(i, j int) bool { return p.pq[i].dist < p.pq[j].dist }
+func (p priorityQueue) Swap(i, j int)      { p.pq[i], p.pq[j] = p.pq[j], p.pq[i] }
+func (p *priorityQueue) Push(x any)        { p.pq = append(p.pq, x.(vertex)) }
 func (p *priorityQueue) Pop() any {
-	v := p.qp[len(p.qp)-1]
-	p.qp = p.qp[:len(p.qp)-1]
+	v := p.pq[len(p.pq)-1]
+	p.pq = p.pq[:len(p.pq)-1]
 	return v
 }

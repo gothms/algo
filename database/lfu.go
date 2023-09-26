@@ -190,16 +190,13 @@ func (this *LFUCache) update(e *ele, new bool) {
 		}
 	}
 	if e.fe != nil { // 删除结点
-		this.remove(e.fe, e)
+		e.remove()
+		if e.fe.h.next == e.fe.t {
+			e.fe.remove()
+		}
 	}
 	e.fe = nextFe        // 更新频率
 	e.move(nextFe.t.pre) // 插入到 tail
-}
-func (this *LFUCache) remove(fe *freqEle, e *ele) {
-	e.remove()
-	if fe.h.next == fe.t {
-		fe.remove()
-	}
 }
 
 // ====================list 包====================

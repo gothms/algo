@@ -61,14 +61,29 @@
 
 package main
 
-func main() {
+import "fmt"
 
+func main() {
+	nums := []int{3, 2, 4}
+	module, k := 2, 1
+	nums = []int{3, 1, 9, 6}
+	module, k = 3, 0
+	subarrays := countInterestingSubarrays(nums, module, k)
+	fmt.Println(subarrays)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func countInterestingSubarrays(nums []int, modulo int, k int) int64 {
-	cnt, memo := int64(0), make([]int, 0)
-
+	// memo 用数组则报错：runtime: out of memory: cannot allocate 8002732032-byte block (3964928 in use)
+	cnt, s, memo := int64(0), 0, make(map[int]int)
+	memo[0] = 1 // 由于滞后计算，所以先记录 memo[0] 出现了 1 次
+	for _, v := range nums {
+		if v%modulo == k {
+			s = (s + 1) % modulo
+		}
+		cnt += int64(memo[(s-k+modulo)%modulo]) // 滞后计算：s-k 出现了多少次，则可以和 nums[i] 组合多少次
+		memo[s]++                               // 统计出现的次数
+	}
 	return cnt
 }
 

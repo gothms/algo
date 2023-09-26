@@ -1,1 +1,1 @@
-package list
+package mylist
