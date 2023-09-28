@@ -71,22 +71,34 @@ func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
 	//}
 
 	// 迭代
-	pre := &ListNode{} // 哨兵
+	//pre := &ListNode{} // 哨兵
+	//curr := pre
+	//for list1 != nil && list2 != nil { // 排序
+	//	if list1.Val < list2.Val {
+	//		curr.Next, curr = list1, list1
+	//		list1 = list1.Next
+	//	} else {
+	//		curr.Next, curr = list2, list2
+	//		list2 = list2.Next
+	//	}
+	//}
+	//if list1 != nil { // 收尾
+	//	curr.Next = list1
+	//} else {
+	//	curr.Next = list2
+	//}
+	//return pre.Next
+
+	// 迭代：
+	pre := &ListNode{}
 	curr := pre
-	for list1 != nil && list2 != nil { // 排序
-		if list1.Val < list2.Val {
-			curr.Next, curr = list1, list1
-			list1 = list1.Next
-		} else {
-			curr.Next, curr = list2, list2
-			list2 = list2.Next
+	for list2 != nil {
+		for list1 != nil && list1.Val < list2.Val {
+			curr.Next, curr, list1 = list1, list1, list1.Next
 		}
+		curr.Next, curr, list2 = list2, list2, list2.Next
 	}
-	if list1 != nil { // 收尾
-		curr.Next = list1
-	} else {
-		curr.Next = list2
-	}
+	curr.Next = list1
 	return pre.Next
 }
 

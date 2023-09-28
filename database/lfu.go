@@ -11,6 +11,10 @@ LFU 论文
 golang 实现
 	https://cloud.tencent.com/developer/article/2306436
 
+其他方式
+	1.总 map + 多 map（频率:链表）
+	2.总 map + 总 链表 + 多 map（频率:起始结点）
+
 */
 
 func main() {
