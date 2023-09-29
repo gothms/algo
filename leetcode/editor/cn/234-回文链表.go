@@ -47,7 +47,7 @@ func main() {
  */
 func isPalindrome(head *ListNode) bool {
 	var dfs func(*ListNode) bool
-	dfs = func(cur *ListNode) bool { // 重复比对了一遍
+	dfs = func(cur *ListNode) bool { // 相对于 LCR 027 的解法，重复比对了一遍
 		if cur != nil { // 继续遍历结点
 			if !dfs(cur.Next) || cur.Val != head.Val { // 已经不匹配，或当前结点不匹配
 				return false

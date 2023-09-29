@@ -11,9 +11,11 @@ LFU 论文
 golang 实现
 	https://cloud.tencent.com/developer/article/2306436
 
-其他方式
-	1.总 map + 多 map（频率:链表）
-	2.总 map + 总 链表 + 多 map（频率:起始结点）
+五种实现方式（五种数据结构）
+	二层链表
+
+补充
+	所有解法都默认 head.next 优先级最低，tail.pre 优先级最高
 
 */
 
@@ -68,12 +70,103 @@ func main() {
 	//}
 }
 
-/*
-数据结构：
+// ====================总 map + 链表 map（频率:链表）====================
 
-*/
+type LFUCache struct {
+	items   map[int]*ele
+	lists   map[int]*eleList
+	minFreq int
+	cap     int
+}
+type eleList struct {
+	head, tail *ele
+}
+type ele struct {
+	key, val  int
+	pre, next *ele
+	f         int
+}
 
-// ====================终版====================
+func newEleList() *eleList {
+	v := &ele{}
+	v.next, v.pre = v, v
+	return &eleList{
+		head: v,
+		tail: v,
+	}
+}
+func (e *ele) remove() {
+	e.pre.next, e.next.pre = e.next, e.pre
+}
+func (e *ele) move(at *ele) {
+	at.next, at.next.pre, e.next, e.pre = e, e, at.next, at
+}
+func Constructor(capacity int) LFUCache {
+	return LFUCache{
+		items: make(map[int]*ele, capacity),
+		lists: make(map[int]*eleList, capacity),
+		cap:   capacity,
+	}
+}
+func (this *LFUCache) Get(key int) int {
+	if e, ok := this.items[key]; ok {
+		this.update(e, false)
+		return e.val
+	}
+	return -1
+}
+func (this *LFUCache) Put(key int, value int) {
+	e, ok := this.items[key]
+	if ok {
+		e.val = value
+		this.update(e, false)
+		return
+	}
+	if len(this.items) == this.cap { // 复用结点
+		list := this.lists[this.minFreq]
+		e = list.head.next
+		delete(this.items, e.key) // key 已变，必须删除
+		e.key, e.val = key, value
+		if this.minFreq == 1 { // 不用更新频率
+			if list.tail.pre != e { // 调整位置
+				e.remove()
+				e.move(list.tail.pre)
+			}
+			goto add
+		}
+	} else {
+		e = &ele{key: key, val: value}
+	}
+	this.update(e, true)
+add:
+	this.items[key] = e
+}
+func (this *LFUCache) update(e *ele, new bool) {
+	if e.f > 0 { // ele 是旧结点
+		e.remove()
+		cur := this.lists[e.f]
+		if cur.head.next == cur.tail {
+			delete(this.lists, e.f)
+			if this.minFreq == e.f { // 需要更新 minFreq
+				this.minFreq++
+			}
+		}
+	}
+	if new { // 设置频率
+		e.f = 1
+		this.minFreq = 1 // 重置 minFreq
+	} else {
+		e.f++
+	}
+	next := this.lists[e.f]
+	if next == nil { // 新的频率链表
+		next = newEleList()
+		this.lists[e.f] = next
+	}
+	e.move(next.tail.pre)
+}
+
+// ====================终版：自定义二维链表====================
 
 type LFUCache struct {
 	items      map[int]*ele
@@ -203,7 +296,106 @@ func (this *LFUCache) update(e *ele, new bool) {
 	e.move(nextFe.t.pre) // 插入到 tail
 }
 
-// ====================list 包====================
+// ====================总 map + 总 链表 + 结点 map====================
+
+type LFUCache struct {
+	h, t  *ele
+	items map[int]*ele
+	freqs map[int]*ele
+	cap   int
+}
+
+type ele struct {
+	key, val  int
+	pre, next *ele
+	f         int
+}
+
+func (e *ele) remove() {
+	e.pre.next, e.next.pre = e.next, e.pre
+}
+func (e *ele) move(at *ele) {
+	at.next, at.next.pre, e.next, e.pre = e, e, at.next, at
+}
+
+func Constructor(capacity int) LFUCache {
+	e := &ele{key: -1}
+	e.pre, e.next = e, e
+	return LFUCache{
+		h:     e,
+		t:     e,
+		items: make(map[int]*ele, capacity),
+		freqs: make(map[int]*ele, capacity),
+		cap:   capacity,
+	}
+}
+func (this *LFUCache) Get(key int) int {
+	if e, ok := this.items[key]; ok {
+		this.update(e, false)
+		return e.val
+	}
+	return -1
+}
+func (this *LFUCache) Put(key int, value int) {
+	e, ok := this.items[key]
+	if ok {
+		e.val = value
+		this.update(e, false)
+		return
+	}
+	if len(this.items) == this.cap {
+		e = this.h.next
+		delete(this.items, e.key) // key 已变，必须删除
+		e.key, e.val = key, value
+		if e.f == 1 { // 不用更新频率
+			if t := this.freqs[1]; t != e { // 调整位置
+				e.remove()
+				e.move(t)
+				this.freqs[1] = e // 注意：如果分别记录 head & tail，所以不能（或需要判断）复用对象
+			}
+			goto add
+		}
+	} else {
+		e = &ele{key: key, val: value}
+	}
+	this.update(e, true)
+add:
+	this.items[key] = e
+}
+func (this *LFUCache) update(e *ele, new bool) {
+	var (
+		at *ele // 记录 e 要插入的位置（at.next = e）
+		f  int
+	)
+	if e.f > 0 {
+		at = this.freqs[e.f]  // 目标 freq 不存在时，用这里赋值的 at
+		if at.f != at.pre.f { // 最后一个节点
+			delete(this.freqs, at.f)
+			at = at.pre
+		} else if at == e { // 尾节点（即优先级最高）
+			at = at.pre
+			this.freqs[at.f] = at // 更新尾节点
+		}
+		e.remove()
+	}
+	if new {
+		f = 1
+	} else {
+		f = e.f + 1
+	}
+	if t := this.freqs[f]; t == nil { // 补全 at 的赋值
+		if f == 1 { // 新增结点，且 f == 1
+			at = this.h
+		}
+	} else { // 目标 freq 存在
+		at = t
+	}
+	e.f = f // 更新频率
+	e.move(at)
+	this.freqs[f] = e // 新频率的尾节点更新
+}
+
+// ====================list 包：二维链表====================
 
 // LFUCache 频率越大，优先级越高；频率相等时，最近最久未使用，优先级越低
 // 有多少个频率结点 *list.Element，就有多少个 freqVal
@@ -306,6 +498,91 @@ func (this *LFUCache) Remove(flItem *list.Element, kv *list.Element) {
 	if kl.Len() == 0 { // 移除频率结点
 		this.freqList.Remove(flItem)
 	}
+}
+
+// ====================最初写法：“二维”计数器链表====================
+
+type LFUCache struct {
+	h, t *l         // 头 & 尾指针
+	m    map[int]*l // 记录 k-v 元素
+	lfu  map[int]*l // 记录计数器
+	n    int        // 容量
+}
+type l struct {
+	key, val  int // k-v 元素
+	pre, next *l  // 维护元素的链表
+	cnt       int // 计数器
+	pl, nl    *l  // 维护计数器的链表
+}
+
+func Constructor(capacity int) LFUCache {
+	p := &l{key: -1} // 0 <= key <= 10^5
+	p.pre, p.next, p.pl, p.nl = p, p, p, p
+	return LFUCache{
+		h:   p,
+		t:   p,
+		m:   make(map[int]*l, capacity),
+		lfu: make(map[int]*l, capacity),
+		n:   capacity}
+}
+func (this *LFUCache) Get(key int) int {
+	v, ok := this.m[key]
+	if !ok { // key 不存在
+		return -1
+	}
+	this.update(v, v.cnt+1) // key 存在，则更新 cnt
+	return v.val
+}
+func (this *LFUCache) Put(key int, value int) {
+	v, ok := this.m[key]
+	if ok { // key 已存在
+		v.val = value           // 更新 val
+		this.update(v, v.cnt+1) // 更新 cnt
+		return
+	}
+	if len(this.m) == this.n { // key 不存在，且 LFU 已满
+		v = this.t.pre
+		delete(this.m, v.key)     // this.m map 中删除结点
+		v.key, v.val = key, value // 淘汰结点，并复用
+		this.update(v, 1)
+	} else { // key 不存在，且 LFU 未满
+		v = &l{key: key, val: value, cnt: 1} // 新建结点
+		this.push2LFU(v, nil)
+	}
+	this.m[key] = v
+}
+func (this *LFUCache) update(v *l, up int) {
+	lv := this.lfu[v.cnt]
+	if v == lv { // 计数相同的结点中，v 结点的优先级最低
+		if v.pre.cnt == v.cnt { // 还有 v.cnt 的结点
+			this.lfu[v.cnt] = v.pre                                         // lfu map 中更新 v.cnt 代表结点
+			v.pre.pl, v.pre.nl, v.pl.nl, v.nl.pl = v.pl, v.nl, v.pre, v.pre // 计数链表中 v.pre 取代 v
+		} else { // 最后一个 v.cnt 的结点
+			delete(this.lfu, v.cnt)       // lfu map 中删除结点
+			v.pl.nl, v.nl.pl = v.nl, v.pl // 计数链表中删除 v.cnt 结点
+		}
+	}
+	delEle(v)
+	v.cnt = up              // 更新计数
+	this.push2LFU(v, lv.pl) // 更新计数器算法
+}
+func (this *LFUCache) push2LFU(v, p *l) { // p 为计数链表中 v.pl 结点
+	if plv, ok := this.lfu[v.cnt]; ok { // cnt 存在
+		insertEle(plv.pl, v)
+	} else { // cnt 不存在
+		if v.cnt == 1 { // 新插入节点
+			p = this.t.pl
+		}
+		insertEle(p, v)
+		this.lfu[v.cnt] = v                       // lfu map 中插入结点
+		p.nl, p.nl.pl, v.pl, v.nl = v, v, p, p.nl // 计数链表中插入结点
+	}
+}
+func delEle(v *l) { // 删除结点
+	v.pre.next, v.next.pre = v.next, v.pre
+}
+func insertEle(h, v *l) { // 插入结点
+	h.next, h.next.pre, v.pre, v.next = v, v, h, h.next
 }
 
 // ====================频率相等的元素的优先级是相同的，被淘汰的概率是随机的====================

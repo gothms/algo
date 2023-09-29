@@ -54,49 +54,30 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func fullBloomFlowers(flowers [][]int, people []int) []int {
 	// 差分
-	//n, m := len(flowers), len(people)
-	//memo := make(map[int]int, n<<1) // 统计每个时刻的“开谢”
-	//for _, f := range flowers {
-	//	memo[f[0]]++
-	//	memo[f[1]+1]--
-	//}
-	//times := make([]int, 0, len(memo)) // 花期的时刻
-	//for k := range memo {
-	//	times = append(times, k)
-	//}
-	//sort.Ints(times)
-	//fbf, queue := make([]int, m), make([]int, m)
-	//for i := 1; i < m; i++ {
-	//	queue[i] = i
-	//}
-	//sort.Slice(queue, func(i, j int) bool { // 前缀和需要依次查询
-	//	return people[queue[i]] < people[queue[j]]
-	//})
-	//j, k, sum := 0, len(times), 0
-	//for _, i := range queue {
-	//	for ; j < k && times[j] <= people[i]; j++ {
-	//		sum += memo[times[j]] // 差分
-	//	}
-	//	fbf[i] = sum
-	//}
-	//return fbf
-
-	// 二分
 	n, m := len(flowers), len(people)
-	fbf, start, end := make([]int, m), make([]int, n), make([]int, n)
-	for i, f := range flowers {
-		//start[i], end[i] = f[0], f[1]+1 // 花期开始和结束时间
-		start[i], end[i] = f[0], f[1] // 花期开始和结束时间
+	memo := make(map[int]int, n<<1) // 统计每个时刻的“开谢”
+	for _, f := range flowers {
+		memo[f[0]]++
+		memo[f[1]+1]--
 	}
-	sort.Ints(start)
-	sort.Ints(end)
-	for i, v := range people {
-		//fbf[i] = sort.Search(n, func(i int) bool { // 已开花的数目
-		//	return start[i] > v
-		//}) - sort.Search(n, func(i int) bool { // 已凋谢的数目
-		//	return end[i] > v
-		//})
-		fbf[i] = sort.SearchInts(start, v+1) - sort.SearchInts(end, v) // 已开花 - 已凋谢
+	times := make([]int, 0, len(memo)) // 花期的时刻
+	for k := range memo {
+		times = append(times, k)
+	}
+	sort.Ints(times)
+	fbf, queue := make([]int, m), make([]int, m)
+	for i := 1; i < m; i++ {
+		queue[i] = i
+	}
+	sort.Slice(queue, func(i, j int) bool { // 前缀和需要依次查询
+		return people[queue[i]] < people[queue[j]]
+	})
+	j, k, sum := 0, len(times), 0
+	for _, i := range queue {
+		for ; j < k && times[j] <= people[i]; j++ {
+			sum += memo[times[j]] // 差分
+		}
+		fbf[i] = sum
 	}
 	return fbf
 }

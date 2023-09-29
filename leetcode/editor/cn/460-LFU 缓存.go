@@ -64,7 +64,6 @@
 package main
 
 import (
-	"container/list"
 	"fmt"
 )
 
@@ -79,19 +78,30 @@ func main() {
 	//e2.val = 99
 	//fmt.Println(m[2])
 
-	lfu := Constructor(2)
+	lfu := Constructor(3)
 	lfu.Put(1, 11)
 	lfu.Put(2, 22)
 	fmt.Println(len(lfu.items))
-	for l := lfu.head.next; l != lfu.tail; l = l.next {
-		fmt.Println(l, ", ", l.freq)
-		for k := l.h.next; k != l.t; k = k.next {
-			fmt.Print(k.key, k.val, ", ")
-		}
-		fmt.Println()
-	}
-	v := lfu.Get(1)
-	fmt.Println(v)
+	//for l := lfu.head.next; l != lfu.tail; l = l.next {
+	//	fmt.Println(l, ", ", l.freq)
+	//	for k := l.h.next; k != l.t; k = k.next {
+	//		fmt.Print(k.key, k.val, ", ")
+	//	}
+	//	fmt.Println()
+	//}
+
+	//v := lfu.Get(1)
+	v := lfu.Get(0)
+	//fmt.Println(v)
+	//lfu.Put(2, 222)
+	//for e := lfu.h.next; e != lfu.t; e = e.next {
+	//	fmt.Println("e", e)
+	//}
+
+	//for e := lfu.h.next; e.next != lfu.t; e = e.next {
+	//	fmt.Println(e)
+	//}
+
 	//fmt.Println(len(lfu.items))
 	//fmt.Println(lfu.items)
 	//for l := lfu.head.next; l != lfu.tail; l = l.next {
@@ -121,19 +131,47 @@ func main() {
 	//fmt.Println("==========================")
 
 	lfu.Put(3, 33)
+	lfu.Put(4, 44)
+	for _, list := range lfu.lists {
+		for e := list.head.next; e != list.head; e = e.next {
+			fmt.Println(e)
+		}
+	}
+	//for e := lfu.h.next; e != lfu.t; e = e.next {
+	//	fmt.Println("e", e)
+	//}
+	//fmt.Println(lfu.freqs[1].head, lfu.freqs[1].tail)
 	//fmt.Println(lfu.items)
-	v = lfu.Get(2)
+	v = lfu.Get(4)
 	fmt.Println(v)
+	//fmt.Println(lfu.freqs)
+	for _, list := range lfu.lists {
+		for e := list.head.next; e != list.head; e = e.next {
+			fmt.Println(e)
+		}
+	}
+	fmt.Println(lfu.items)
 	v = lfu.Get(3)
 	fmt.Println(v)
-	lfu.Put(4, 44)
+	//for e := lfu.h.next; e != lfu.t; e = e.next {
+	//	fmt.Println("e", e)
+	//}
+	v = lfu.Get(2)
+	fmt.Println(v)
+	v = lfu.Get(1)
+	fmt.Println(v)
+	lfu.Put(5, 55)
 	//rangeLFU(lfu)
 
 	v = lfu.Get(1)
 	fmt.Println(v)
+	v = lfu.Get(2)
+	fmt.Println(v)
 	v = lfu.Get(3)
 	fmt.Println(v)
 	v = lfu.Get(4)
+	fmt.Println(v)
+	v = lfu.Get(5)
 	fmt.Println(v)
 }
 
@@ -157,51 +195,35 @@ golang 实现
 list 包的缺点
 	1.不能修改 Value，除非用指针
 	2.不同链表直接的结点不能互相操作，需要解析出 Value 再添加 Value
+
+
 */
 
 // leetcode submit region begin(Prohibit modification and deletion)
+// ====================总 map + 链表 map（频率:链表）====================
 
 type LFUCache struct {
-	items      map[int]*ele
-	head, tail *freqEle
-	cap        int
+	items   map[int]*ele
+	lists   map[int]*eleList
+	minFreq int
+	cap     int
 }
-
-//type Ele interface {
-//	remove(e *doubly)
-//	move(e, at *doubly)
-//}
-//
-//type doubly struct { // // 需要根据 e.fe 找到 doubly 结点
-//	pre, next *doubly
-//}
-
-type freqEle struct {
-	//*doubly
-	freq      int
-	pre, next *freqEle
-	h, t      *ele
+type eleList struct {
+	head, tail *ele
 }
 type ele struct {
-	//*doubly
 	key, val  int
 	pre, next *ele
-	fe        *freqEle
+	f         int
 }
 
-//func (d *doubly) remove() {
-//	d.pre.next, d.next.pre = d.next, d.pre
-//}
-//
-//func (d *doubly) move(at *doubly) {
-//	at.next, at.next.pre, d.next, d.pre = d, d, at.next, at
-//}
-
-func (fe *freqEle) remove() {
-	fe.pre.next, fe.next.pre = fe.next, fe.pre
-}
-func (fe *freqEle) move(at *freqEle) {
-	at.next, at.next.pre, fe.next, fe.pre = fe, fe, at.next, at
+func newEleList() *eleList {
+	v := &ele{}
+	v.next, v.pre = v, v
+	return &eleList{
+		head: v,
+		tail: v,
+	}
 }
 func (e *ele) remove() {
 	e.pre.next, e.next.pre = e.next, e.pre
@@ -209,22 +231,10 @@ func (e *ele) remove() {
 func (e *ele) move(at *ele) {
 	at.next, at.next.pre, e.next, e.pre = e, e, at.next, at
 }
-func newFreqEle(freq int) *freqEle {
-	e := &ele{}
-	e.pre, e.next = e, e
-	return &freqEle{
-		freq: freq,
-		h:    e,
-		t:    e,
-	}
-}
 func Constructor(capacity int) LFUCache {
-	e := &freqEle{}
-	e.pre, e.next = e, e
 	return LFUCache{
 		items: make(map[int]*ele, capacity),
-		head:  e,
-		tail:  e,
+		lists: make(map[int]*eleList, capacity),
 		cap:   capacity,
 	}
 }
@@ -242,17 +252,15 @@ func (this *LFUCache) Put(key int, value int) {
 		this.update(e, false)
 		return
 	}
-	//defer func() {
-	//	this.items[key] = e
-	//}()
-	if len(this.items) == this.cap {
-		e = this.head.next.h.next
+	if len(this.items) == this.cap { // 复用结点
+		list := this.lists[this.minFreq]
+		e = list.head.next
 		delete(this.items, e.key) // key 已变，必须删除
 		e.key, e.val = key, value
-		if e.fe.freq == 1 { // 不用更新频率
-			if t := this.head.next.t; t.pre != e { // 调整位置
+		if this.minFreq == 1 { // 不用更新频率
+			if list.tail.pre != e { // 调整位置
 				e.remove()
-				e.move(t.pre)
+				e.move(list.tail.pre)
 			}
 			goto add
 		}
@@ -264,34 +272,262 @@ add:
 	this.items[key] = e
 }
 func (this *LFUCache) update(e *ele, new bool) {
-	var freqVal int
-	var nextFe *freqEle
-	if new { // 设置频率，尝试找到频率结点
-		freqVal, nextFe = 1, this.head.next
-	} else {
-		freqVal, nextFe = e.fe.freq+1, e.fe.next
-	}
-	if nextFe == nil || nextFe.freq != freqVal { // nextFe.freq > freqVal
-		nextFe = newFreqEle(freqVal)
-		if new {
-			nextFe.move(this.head) // 插入到 head
-		} else {
-			nextFe.move(e.fe) // 插入结点需要前缀结点 e.fe，所以“无法”复用 fe
-		}
-	}
-	if e.fe != nil { // 删除结点
+	if e.f > 0 { // ele 是旧结点
 		e.remove()
-		if e.fe.h.next == e.fe.t {
-			e.fe.remove()
+		cur := this.lists[e.f]
+		if cur.head.next == cur.tail {
+			delete(this.lists, e.f)
+			if this.minFreq == e.f { // 需要更新 minFreq
+				this.minFreq++
+			}
 		}
 	}
-	e.fe = nextFe        // 更新频率
-	e.move(nextFe.t.pre) // 插入到 tail
+	if new { // 设置频率
+		e.f = 1
+		this.minFreq = 1 // 重置 minFreq
+	} else {
+		e.f++
+	}
+	next := this.lists[e.f]
+	if next == nil { // 新的频率链表
+		next = newEleList()
+		this.lists[e.f] = next
+	}
+	e.move(next.tail.pre)
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
 
-// ====================list 包====================
+// ====================总 map + 总 链表 + 结点 map====================
+
+//type LFUCache struct {
+//	h, t  *ele
+//	items map[int]*ele
+//	freqs map[int]*ele
+//	cap   int
+//}
+//
+//type ele struct {
+//	key, val  int
+//	pre, next *ele
+//	f         int
+//}
+//
+//func (e *ele) remove() {
+//	e.pre.next, e.next.pre = e.next, e.pre
+//}
+//func (e *ele) move(at *ele) {
+//	at.next, at.next.pre, e.next, e.pre = e, e, at.next, at
+//}
+//
+//func Constructor(capacity int) LFUCache {
+//	e := &ele{key: -1}
+//	e.pre, e.next = e, e
+//	return LFUCache{
+//		h:     e,
+//		t:     e,
+//		items: make(map[int]*ele, capacity),
+//		freqs: make(map[int]*ele, capacity),
+//		cap:   capacity,
+//	}
+//}
+//func (this *LFUCache) Get(key int) int {
+//	if e, ok := this.items[key]; ok {
+//		this.update(e, false)
+//		return e.val
+//	}
+//	return -1
+//}
+//func (this *LFUCache) Put(key int, value int) {
+//	e, ok := this.items[key]
+//	if ok {
+//		e.val = value
+//		this.update(e, false)
+//		return
+//	}
+//	if len(this.items) == this.cap {
+//		e = this.h.next
+//		delete(this.items, e.key) // key 已变，必须删除
+//		e.key, e.val = key, value
+//		if e.f == 1 { // 不用更新频率
+//			if t := this.freqs[1]; t != e { // 调整位置
+//				e.remove()
+//				e.move(t)
+//				this.freqs[1] = e // 注意：如果分别记录 head & tail，所以不能（或需要判断）复用对象
+//			}
+//			goto add
+//		}
+//	} else {
+//		e = &ele{key: key, val: value}
+//	}
+//	this.update(e, true)
+//add:
+//	this.items[key] = e
+//}
+//func (this *LFUCache) update(e *ele, new bool) {
+//	var (
+//		at *ele // 记录 e 要插入的位置（at.next = e）
+//		f  int
+//	)
+//	if e.f > 0 {
+//		at = this.freqs[e.f]  // 目标 freq 不存在时，用这里赋值的 at
+//		if at.f != at.pre.f { // 最后一个节点
+//			delete(this.freqs, at.f)
+//			at = at.pre
+//		} else if at == e { // 尾节点（即优先级最高）
+//			at = at.pre
+//			this.freqs[at.f] = at // 更新尾节点
+//		}
+//		e.remove()
+//	}
+//	if new {
+//		f = 1
+//	} else {
+//		f = e.f + 1
+//	}
+//	if t := this.freqs[f]; t == nil { // 补全 at 的赋值
+//		if f == 1 { // 新增结点，且 f == 1
+//			at = this.h
+//		}
+//	} else { // 目标 freq 存在
+//		at = t
+//	}
+//	e.f = f // 更新频率
+//	e.move(at)
+//	this.freqs[f] = e // 新频率的尾节点更新
+//}
+
+// ====================终版：自定义二维链表====================
+
+//type LFUCache struct {
+//	items      map[int]*ele
+//	head, tail *freqEle
+//	cap        int
+//}
+//
+////type Ele interface {
+////	remove(e *doubly)
+////	move(e, at *doubly)
+////}
+////
+////type doubly struct { // // 需要根据 e.fe 找到 doubly 结点
+////	pre, next *doubly
+////}
+//
+//type freqEle struct {
+//	//*doubly
+//	freq      int
+//	pre, next *freqEle
+//	h, t      *ele
+//}
+//type ele struct {
+//	//*doubly
+//	key, val  int
+//	pre, next *ele
+//	fe        *freqEle
+//}
+//
+////func (d *doubly) remove() {
+////	d.pre.next, d.next.pre = d.next, d.pre
+////}
+////
+////func (d *doubly) move(at *doubly) {
+////	at.next, at.next.pre, d.next, d.pre = d, d, at.next, at
+////}
+//
+//func (fe *freqEle) remove() {
+//	fe.pre.next, fe.next.pre = fe.next, fe.pre
+//}
+//func (fe *freqEle) move(at *freqEle) {
+//	at.next, at.next.pre, fe.next, fe.pre = fe, fe, at.next, at
+//}
+//func (e *ele) remove() {
+//	e.pre.next, e.next.pre = e.next, e.pre
+//}
+//func (e *ele) move(at *ele) {
+//	at.next, at.next.pre, e.next, e.pre = e, e, at.next, at
+//}
+//func newFreqEle(freq int) *freqEle {
+//	e := &ele{}
+//	e.pre, e.next = e, e
+//	return &freqEle{
+//		freq: freq,
+//		h:    e,
+//		t:    e,
+//	}
+//}
+//func Constructor(capacity int) LFUCache {
+//	e := &freqEle{}
+//	e.pre, e.next = e, e
+//	return LFUCache{
+//		items: make(map[int]*ele, capacity),
+//		head:  e,
+//		tail:  e,
+//		cap:   capacity,
+//	}
+//}
+//func (this *LFUCache) Get(key int) int {
+//	if e, ok := this.items[key]; ok {
+//		this.update(e, false)
+//		return e.val
+//	}
+//	return -1
+//}
+//func (this *LFUCache) Put(key int, value int) {
+//	e, ok := this.items[key]
+//	if ok {
+//		e.val = value
+//		this.update(e, false)
+//		return
+//	}
+//	//defer func() {
+//	//	this.items[key] = e
+//	//}()
+//	if len(this.items) == this.cap {
+//		e = this.head.next.h.next
+//		delete(this.items, e.key) // key 已变，必须删除
+//		e.key, e.val = key, value
+//		if e.fe.freq == 1 { // 不用更新频率
+//			if t := this.head.next.t; t.pre != e { // 调整位置
+//				e.remove()
+//				e.move(t.pre)
+//			}
+//			goto add
+//		}
+//	} else {
+//		e = &ele{key: key, val: value}
+//	}
+//	this.update(e, true)
+//add:
+//	this.items[key] = e
+//}
+//func (this *LFUCache) update(e *ele, new bool) {
+//	var freqVal int
+//	var nextFe *freqEle
+//	if new { // 设置频率，尝试找到频率结点
+//		freqVal, nextFe = 1, this.head.next
+//	} else {
+//		freqVal, nextFe = e.fe.freq+1, e.fe.next
+//	}
+//	if nextFe == nil || nextFe.freq != freqVal { // nextFe.freq > freqVal
+//		nextFe = newFreqEle(freqVal)
+//		if new {
+//			nextFe.move(this.head) // 插入到 head
+//		} else {
+//			nextFe.move(e.fe) // 插入结点需要前缀结点 e.fe，所以“无法”复用 fe
+//		}
+//	}
+//	if e.fe != nil { // 删除结点
+//		e.remove()
+//		if e.fe.h.next == e.fe.t {
+//			e.fe.remove()
+//		}
+//	}
+//	e.fe = nextFe        // 更新频率
+//	e.move(nextFe.t.pre) // 插入到 tail
+//}
+
+// ====================list 包：二维链表====================
 
 // LFUCache 频率越大，优先级越高；频率相等时，最近最久未使用，优先级越低
 // 有多少个频率结点 *list.Element，就有多少个 freqVal
@@ -396,9 +632,8 @@ func (this *LFUCache) update(e *ele, new bool) {
 //	}
 //}
 
-// ====================个人写法====================
+// ====================最初写法：“二维”计数器链表====================
 
-// LFUCache 个人写法
 //type LFUCache struct {
 //	h, t *l         // 头 & 尾指针
 //	m    map[int]*l // 记录 k-v 元素

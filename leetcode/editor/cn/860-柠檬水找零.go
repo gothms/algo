@@ -55,30 +55,57 @@ func main() {
 */
 // leetcode submit region begin(Prohibit modification and deletion)
 func lemonadeChange(bills []int) bool {
-	fv, tn := 0, 0
-	for _, b := range bills {
-		switch b {
+	// 贪心
+	f, t := 0, 0
+	for _, v := range bills {
+		switch v {
 		case 5:
-			fv++
+			f++
 		case 10:
-			if fv == 0 {
+			if f--; f < 0 {
 				return false
-			} // 没1张5元
-			fv--
-			tn++
+			}
+			t++
 		case 20:
-			if fv == 0 || tn == 0 && fv < 3 {
+			if f == 0 {
 				return false
-			} // 没1张5元 / 没3张5元
-			if tn > 0 { // 贪心：先找补10元
-				tn--
-				fv--
-			} else { // 找补5元
-				fv -= 3
+			}
+			if t > 0 {
+				t--
+				f--
+			} else if f < 3 {
+				return false
+			} else {
+				f -= 3
 			}
 		}
 	}
 	return true
+
+	//fv, tn := 0, 0
+	//for _, b := range bills {
+	//	switch b {
+	//	case 5:
+	//		fv++
+	//	case 10:
+	//		if fv == 0 {
+	//			return false
+	//		} // 没1张5元
+	//		fv--
+	//		tn++
+	//	case 20:
+	//		if fv == 0 || tn == 0 && fv < 3 {
+	//			return false
+	//		} // 没1张5元 / 没3张5元
+	//		if tn > 0 { // 贪心：先找补10元
+	//			tn--
+	//			fv--
+	//		} else { // 找补5元
+	//			fv -= 3
+	//		}
+	//	}
+	//}
+	//return true
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

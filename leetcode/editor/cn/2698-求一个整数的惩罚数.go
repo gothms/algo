@@ -50,15 +50,15 @@ import "fmt"
 
 func main() {
 	fmt.Printf("%b, %b %b %b\n", 1296, 1, 29, 6)
-	fmt.Println(memo)
+	fmt.Println(pn)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func punishmentNumber(n int) int {
-	return memo[n]
+	return pn[n]
 }
 
-var memo [1001]int
+var pn [1001]int
 
 func init() {
 	var dfs func(int, int, int) bool
@@ -78,9 +78,9 @@ func init() {
 	}
 	for i, last := 1, 0; i <= 1000; i++ {
 		if t := i * i; dfs(i, t, 0) {
-			memo[i], last = last+t, last+t
+			pn[i], last = last+t, last+t
 		} else {
-			memo[i] = last // i 不满足
+			pn[i] = last // i 不满足
 		}
 	}
 }

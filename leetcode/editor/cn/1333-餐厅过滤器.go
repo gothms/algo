@@ -83,17 +83,17 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func filterRestaurants(restaurants [][]int, veganFriendly int, maxPrice int, maxDistance int) []int {
 	fr := make([]int, 0, len(restaurants))
-	for i, v := range restaurants {
+	for i, v := range restaurants { // 过滤不符合的餐厅
 		if veganFriendly <= v[2] && maxPrice >= v[3] && maxDistance >= v[4] {
 			fr = append(fr, i)
 		}
 	}
-	sort.Slice(fr, func(i, j int) bool {
+	sort.Slice(fr, func(i, j int) bool { // 对餐厅进行排序
 		x, y := fr[i], fr[j]
 		return restaurants[x][1] > restaurants[y][1] ||
 			restaurants[x][1] == restaurants[y][1] && restaurants[x][0] > restaurants[y][0]
 	})
-	for i, v := range fr {
+	for i, v := range fr { // 按评分，返回餐厅的 id
 		fr[i] = restaurants[v][0]
 	}
 	return fr
