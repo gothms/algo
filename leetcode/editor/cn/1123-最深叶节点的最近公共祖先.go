@@ -82,23 +82,44 @@ func main() {
 func lcaDeepestLeaves(root *TreeNode) *TreeNode {
 	// dfs
 	var dfs func(*TreeNode, int) (*TreeNode, int)
-	dfs = func(r *TreeNode, level int) (*TreeNode, int) {
-		if r == nil {
-			return nil, level
+	dfs = func(cur *TreeNode, i int) (*TreeNode, int) {
+		if cur == nil {
+			return nil, i
 		}
-		lt, ll := dfs(r.Left, level+1) // 继续递
-		rt, rl := dfs(r.Right, level+1)
-		switch { // 归的三种情况
-		case ll > rl:
-			return lt, ll
-		case ll < rl:
-			return rt, rl
+		i++
+		ld, lv := dfs(cur.Left, i)
+		rd, rv := dfs(cur.Right, i)
+		switch {
+		case lv > rv:
+			return ld, lv
+		case lv < rv:
+			return rd, rv
 		default:
-			return r, ll
+			return cur, lv
 		}
 	}
-	p, _ := dfs(root, 0)
-	return p
+	t, _ := dfs(root, 0)
+	return t
+
+	// dfs
+	//var dfs func(*TreeNode, int) (*TreeNode, int)
+	//dfs = func(r *TreeNode, level int) (*TreeNode, int) {
+	//	if r == nil {
+	//		return nil, level
+	//	}
+	//	lt, ll := dfs(r.Left, level+1) // 继续递
+	//	rt, rl := dfs(r.Right, level+1)
+	//	switch { // 归的三种情况
+	//	case ll > rl:
+	//		return lt, ll
+	//	case ll < rl:
+	//		return rt, rl
+	//	default:
+	//		return r, ll
+	//	}
+	//}
+	//p, _ := dfs(root, 0)
+	//return p
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
