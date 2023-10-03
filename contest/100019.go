@@ -28,13 +28,11 @@ func maxSubarrays(nums []int) int {
 		return 1
 	}
 	cnt, m := 0, 1<<31-1
-	for i := 0; i < n; i++ {
-		for v := m; i < n; i++ { // 收尾的与值可能不是 0
-			v &= nums[i]
-			if v == 0 { // 与值为 0，分割出一个子数组
-				cnt++
-				break
-			}
+	for i, v := 0, m; i < n; i++ {
+		v &= nums[i]
+		if v == 0 { // 与值为 0，分割出一个子数组
+			v = m // 收尾的与值可能不是 0
+			cnt++
 		}
 	}
 	return cnt

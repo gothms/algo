@@ -18,11 +18,12 @@ func minOperations(nums []int) int {
 		if v == 1 {
 			return -1
 		}
-		cnt += v / 3
-		switch v % 3 {
-		case 1, 2:
-			cnt++
-		}
+		//cnt += v / 3
+		//switch v % 3 {
+		//case 1, 2:
+		//	cnt++
+		//}
+		cnt += (v + 2) / 3
 	}
 	return cnt
 }

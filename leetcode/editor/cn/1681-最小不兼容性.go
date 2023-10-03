@@ -251,19 +251,7 @@ out:
 	//}
 	//return -1
 }
-func min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
 
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
 func GetHighestOneBit(c int) int {
 	c = c | (c >> 1)
 	c = c | (c >> 2)

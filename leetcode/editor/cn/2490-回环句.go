@@ -79,16 +79,27 @@ func main() {
 */
 // leetcode submit region begin(Prohibit modification and deletion)
 func isCircularSentence(sentence string) bool {
-	n := len(sentence) - 1
-	if sentence[0] != sentence[n] {
+	last := len(sentence) - 1
+	if sentence[0] != sentence[last] {
 		return false
 	}
-	for i := 1; i < n; i++ {
+	for i := 0; i < last; i++ {
 		if sentence[i] == ' ' && sentence[i-1] != sentence[i+1] {
 			return false
 		}
 	}
 	return true
+
+	//n := len(sentence) - 1
+	//if sentence[0] != sentence[n] {
+	//	return false
+	//}
+	//for i := 1; i < n; i++ {
+	//	if sentence[i] == ' ' && sentence[i-1] != sentence[i+1] {
+	//		return false
+	//	}
+	//}
+	//return true
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

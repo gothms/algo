@@ -12,8 +12,7 @@ func main() {
 }
 func minOperations(nums []int, k int) int {
 	cache := make([]bool, k+1)
-	cnt := 0
-	for i := len(nums) - 1; i >= 0; i-- {
+	for i, cnt := len(nums)-1, 0; i >= 0; i-- {
 		if nums[i] <= k && !cache[nums[i]] {
 			cache[nums[i]] = true
 			cnt++
