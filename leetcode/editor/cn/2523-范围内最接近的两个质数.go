@@ -54,7 +54,7 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func closestPrimes(left int, right int) []int {
 	// 预处理
-	idx, d := 0, N
+	idx, d := 0, CPN
 	for i := sort.SearchInts(primes, left) + 1; primes[i] <= right; i++ { // 从第二个质数开始
 		if dc := primes[i] - primes[i-1]; dc < d {
 			d, idx = dc, i // 更新最小值和索引
@@ -90,23 +90,23 @@ func closestPrimes(left int, right int) []int {
 	//	return prime
 }
 
-const N = 1_000_001
+const CPN = 1_000_001
 
 var primes = make([]int, 1, 78500) // 实际有 78498 个
 
 func init() {
 	primes[0] = 2
-	memo := [N]bool{}
-	for i := 3; i < N; i += 2 { // 找出质数
+	memo := [CPN]bool{}
+	for i := 3; i < CPN; i += 2 { // 找出质数
 		if memo[i] {
 			continue
 		}
-		primes = append(primes, i)           // 质数
-		for j := i * i; j < N; j += i << 1 { // 非质数
+		primes = append(primes, i)             // 质数
+		for j := i * i; j < CPN; j += i << 1 { // 非质数
 			memo[j] = true
 		}
 	}
-	primes = append(primes, N, N) // 方便二分查找
+	primes = append(primes, CPN, CPN) // 方便二分查找
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

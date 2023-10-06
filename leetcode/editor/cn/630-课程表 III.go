@@ -65,7 +65,7 @@ func scheduleCourse(courses [][]int) int {
 	sort.Slice(courses, func(i, j int) bool {
 		return courses[i][1] < courses[j][1] // 按期限排序
 	})
-	costTime, h := 0, sc{0}
+	costTime, h := 0, sIS{0}
 	for _, c := range courses {
 		if t := c[0]; costTime+t <= c[1] { // 还能学就继续加课
 			costTime += t    // 总耗时
@@ -103,13 +103,13 @@ func scheduleCourse(courses [][]int) int {
 	//return h.Len() - 1
 }
 
-type sc sort.IntSlice
+type sIS sort.IntSlice
 
-func (s sc) Len() int           { return len(s) }
-func (s sc) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
-func (s sc) Less(i, j int) bool { return s[i] > s[j] }
-func (s *sc) Push(x any)        { *s = append(*s, x.(int)) }
-func (s *sc) Pop() any {
+func (s sIS) Len() int           { return len(s) }
+func (s sIS) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s sIS) Less(i, j int) bool { return s[i] > s[j] }
+func (s *sIS) Push(x any)        { *s = append(*s, x.(int)) }
+func (s *sIS) Pop() any {
 	v := (*s)[len(*s)-1]
 	*s = (*s)[:len(*s)-1]
 	return v

@@ -36,16 +36,13 @@
 
 package main
 
-import (
-	"math"
-)
-
 func main() {
 
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func maxProfit(k int, prices []int) int {
+	// dp
 	maxVal := func(a, b int) int {
 		if b > a {
 			return b
@@ -53,16 +50,34 @@ func maxProfit(k int, prices []int) int {
 		return a
 	}
 	store, cash := make([]int, k+1), make([]int, k+1)
-	for i := 1; i <= k; i++ { // 初始化 store
-		store[i] = math.MinInt32
+	for i := 1; i <= k; i++ {
+		store[i] = -prices[0]
 	}
-	for _, p := range prices {
-		for j := k; j >= 1; j-- { // 倒序
-			cash[j] = maxVal(cash[j], store[j]+p)
-			store[j] = maxVal(store[j], cash[j-1]-p)
+	for i := 1; i < len(prices); i++ {
+		for j := k; j >= 1; j-- {
+			cash[j] = maxVal(cash[j], store[j]+prices[i])
+			store[j] = maxVal(store[j], cash[j-1]-prices[i])
 		}
 	}
 	return cash[k]
+
+	//maxVal := func(a, b int) int {
+	//	if b > a {
+	//		return b
+	//	}
+	//	return a
+	//}
+	//store, cash := make([]int, k+1), make([]int, k+1)
+	//for i := 1; i <= k; i++ { // 初始化 store
+	//	store[i] = math.MinInt32
+	//}
+	//for _, p := range prices {
+	//	for j := k; j >= 1; j-- { // 倒序
+	//		cash[j] = maxVal(cash[j], store[j]+p)
+	//		store[j] = maxVal(store[j], cash[j-1]-p)
+	//	}
+	//}
+	//return cash[k]
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

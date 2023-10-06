@@ -3,16 +3,23 @@ package main
 import (
 	"algo/tree"
 	"fmt"
+	"math/bits"
 )
 
 func main() {
 	// SegmentTree
 	array := []int{1, 2, 3, 4, 5}
 	array = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11}
+	array = []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}
 
 	n := len(array)
-	st := make([]int, n<<2)
-	tree.Build(0, n-1, array, 0, st)
+	stLen := 1 << (bits.Len(uint(n-1)) + 1)
+	//st := make([]int, n<<2)
+	st := make([]int, stLen)
+	//tree.Build(0, n-1, array, 0, st)
+	tree.Build(0, n-1, array, 1, st) // 从 1 开始
+	fmt.Println(st)
+
 	// [15 6 9 3 3 4 5 1 2 0 0 0 0 0 0 0 0 0 0 0]
 	// [66 21 45 6 15 24 21 3 3 9 6 15 9 10 11 1 2 0 0 4 5 0 0 7 8 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
 	//fmt.Println(st)
@@ -23,11 +30,11 @@ func main() {
 
 	// SegmentTree & Lazy
 	lazy := make([]int, n<<2)
-	tree.STUpdateLazy(1, 7, 1, 0, n-1, 0, st, lazy)
+	tree.STUpdateLazy(1, 7, 1, 0, n-1, 1, st, lazy)
 	fmt.Println(st)
-	tree.STUpdateLazy(3, 8, 2, 0, n-1, 0, st, lazy)
+	tree.STUpdateLazy(3, 8, 2, 0, n-1, 1, st, lazy)
 	fmt.Println(st)
-	sumLazy := tree.STRangeSumLazy(2, 8, 0, n-1, 0, st, lazy) // 42+6+12
+	sumLazy := tree.STRangeSumLazy(2, 8, 0, n-1, 1, st, lazy) // 42+6+12
 	fmt.Println(sumLazy)
 
 	// Morris 遍历测试
