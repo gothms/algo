@@ -1,7 +1,9 @@
 package math
 
 /*
-lc-46
+排列
+	46
 
+	31
 
 */
