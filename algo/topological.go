@@ -94,11 +94,12 @@ func TopoSortByDFSCircle(n int, edges [][]int) bool {
 }
 func topoDfsCircle(inverseAdj [][]int, visited []int8, t int) bool {
 	if visited[t] != 0 { // 已访问的顶点
-		return visited[t] == 1
+		return visited[t] == 1 // -1 则有环
 	}
 	visited[t] = -1 // 检测中
 	for _, s := range inverseAdj[t] {
-		if visited[s] <= 0 && !topoDfsCircle(inverseAdj, visited, s) {
+		//if visited[s] <= 0 && !topoDfsCircle(inverseAdj, visited, s) {
+		if !topoDfsCircle(inverseAdj, visited, s) {
 			return false // 存在环
 		}
 	}

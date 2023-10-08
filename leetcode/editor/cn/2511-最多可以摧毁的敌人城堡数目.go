@@ -70,50 +70,68 @@ func main() {
 */
 // leetcode submit region begin(Prohibit modification and deletion)
 func captureForts(forts []int) int {
+	// 双指针
 	maxVal := func(a, b int) int {
-		if a > b {
-			return a
+		if b > a {
+			return b
 		}
-		return b
+		return a
 	}
-	cnt, n := 0, len(forts)
-	for i, j, k := 0, -1, -1; i < n; i++ {
-		switch forts[i] {
-		case -1:
-			if k > j { // 往左移为上一次移动，往右移为 i-k-1
-				cnt = maxVal(cnt, i-k-1)
-			} else {
-				k = -1 // 连续 -1，淘汰上一个 1（可注释，用于移动任意次计算累加和）
+	cf, pre := 0, -1
+	for i, f := range forts {
+		if f != 0 {
+			if pre != -1 && f != forts[pre] {
+				cf = maxVal(cf, i-pre-1)
 			}
-			j = i // 记录 -1 的位置
-		case 1:
-			if j > k {
-				cnt = maxVal(cnt, i-j-1)
-			} else {
-				j = -1
-			}
-			k = i
+			pre = i
 		}
 	}
-	return cnt
+	return cf
 
 	// 简化
-	maxVal := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
-	cnt, pre := 0, -1
-	for i, v := range forts {
-		if v != 0 {
-			if pre >= 0 && forts[i] != forts[pre] { // 1和-1 / -1和1
-				cnt = maxVal(cnt, i-pre-1) // 更新最大数
-			}
-			pre = i // 记录位置
-		}
-	}
-	return cnt
+	//maxVal := func(a, b int) int {
+	//	if a > b {
+	//		return a
+	//	}
+	//	return b
+	//}
+	//cnt, pre := 0, -1
+	//for i, v := range forts {
+	//	if v != 0 {
+	//		if pre >= 0 && forts[i] != forts[pre] { // 1和-1 / -1和1
+	//			cnt = maxVal(cnt, i-pre-1) // 更新最大数
+	//		}
+	//		pre = i // 记录位置
+	//	}
+	//}
+	//return cnt
+
+	//maxVal := func(a, b int) int {
+	//	if a > b {
+	//		return a
+	//	}
+	//	return b
+	//}
+	//cnt, n := 0, len(forts)
+	//for i, j, k := 0, -1, -1; i < n; i++ {
+	//	switch forts[i] {
+	//	case -1:
+	//		if k > j { // 往左移为上一次移动，往右移为 i-k-1
+	//			cnt = maxVal(cnt, i-k-1)
+	//		} else {
+	//			k = -1 // 连续 -1，淘汰上一个 1（可注释，用于移动任意次计算累加和）
+	//		}
+	//		j = i // 记录 -1 的位置
+	//	case 1:
+	//		if j > k {
+	//			cnt = maxVal(cnt, i-j-1)
+	//		} else {
+	//			j = -1
+	//		}
+	//		k = i
+	//	}
+	//}
+	//return cnt
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

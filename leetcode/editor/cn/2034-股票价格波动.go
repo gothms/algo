@@ -60,29 +60,60 @@
 
 package main
 
+import "container/heap"
+
 func main() {
 
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 type StockPrice struct {
+	m            map[int]int
+	minHp, maxHp *spHp
+	t            int
+}
+type spHp [][2]int
+
+func (s spHp) Len() int           { return len(s) }
+func (s spHp) Less(i, j int) bool { return s[i][1] < s[j][1] }
+func (s spHp) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
+func (s *spHp) Push(x any)        { *s = append(*s, x.([2]int)) }
+func (s *spHp) Pop() any {
+	v := (*s)[len(*s)-1]
+	*s = (*s)[:len(*s)-1]
+	return v
 }
 
 func Constructor() StockPrice {
-
+	return StockPrice{m: make(map[int]int), maxHp: &spHp{}, minHp: &spHp{}}
 }
 
 func (this *StockPrice) Update(timestamp int, price int) {
-
+	this.m[timestamp] = price
+	if timestamp > this.t { // 更新最新日期
+		this.t = timestamp
+	}
+	kv := [2]int{timestamp, price}
+	heap.Push(this.minHp, kv) // 无休止的存入新的 timestamp-price 对
+	kv[1] = -price            // 大顶堆
+	heap.Push(this.maxHp, kv)
 }
 func (this *StockPrice) Current() int {
-
+	return this.m[this.t]
 }
 func (this *StockPrice) Maximum() int {
-
+	kv := (*this.maxHp)[0]
+	for ; this.m[kv[0]] != -kv[1]; kv = (*this.maxHp)[0] { // 找到最高价
+		heap.Pop(this.maxHp)
+	}
+	return -kv[1]
 }
 func (this *StockPrice) Minimum() int {
-
+	kv := (*this.minHp)[0]
+	for ; this.m[kv[0]] != kv[1]; kv = (*this.minHp)[0] { // 找到最低价
+		heap.Pop(this.minHp)
+	}
+	return kv[1]
 }
 
 /**

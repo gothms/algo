@@ -42,8 +42,6 @@
 
 package main
 
-import "reflect"
-
 func main() {
 
 }
@@ -59,23 +57,52 @@ func main() {
  */
 func leafSimilar(root1 *TreeNode, root2 *TreeNode) bool {
 	// dfs
-	vs := make([]int, 0)
-	var dfs func(*TreeNode)
-	dfs = func(r *TreeNode) {
+	temp := make([]int, 0)
+	var dfs func(*TreeNode) *TreeNode
+	dfs = func(r *TreeNode) *TreeNode {
+		if r != nil && dfs(r.Left) == dfs(r.Right) {
+			temp = append(temp, r.Val)
+		}
+		return r
+	}
+	dfs(root1) // 存储 root1 的叶值序列
+	i := 0
+	var check func(*TreeNode) bool
+	check = func(r *TreeNode) bool { // 校验两者的叶值序列
 		if r == nil {
-			return
+			return true
 		}
 		if r.Left == nil && r.Right == nil {
-			vs = append(vs, r.Val)
+			if i == len(temp) || r.Val != temp[i] { // 越界 / 不等
+				return false
+			}
+			i++
 		}
-		dfs(r.Left)
-		dfs(r.Right)
+		if !check(r.Left) || !check(r.Right) {
+			return false
+		}
+		return true
 	}
-	dfs(root1)
-	temp := append([]int{}, vs...)
-	vs = make([]int, 0)
-	dfs(root2)
-	return reflect.DeepEqual(temp, vs)
+	return check(root2) && i == len(temp) // i == len(temp)
+
+	// dfs
+	//vs := make([]int, 0)
+	//var dfs func(*TreeNode)
+	//dfs = func(r *TreeNode) {
+	//	if r == nil {
+	//		return
+	//	}
+	//	if r.Left == nil && r.Right == nil {
+	//		vs = append(vs, r.Val)
+	//	}
+	//	dfs(r.Left)
+	//	dfs(r.Right)
+	//}
+	//dfs(root1)
+	//temp := append([]int{}, vs...)
+	//vs = make([]int, 0)
+	//dfs(root2)
+	//return reflect.DeepEqual(temp, vs)
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

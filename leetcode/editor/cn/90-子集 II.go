@@ -35,10 +35,15 @@
 
 package main
 
-import "sort"
+import (
+	"fmt"
+	"sort"
+)
 
 func main() {
-
+	nums := []int{1, 1, 1, 2, 2, 3}
+	dup := subsetsWithDup(nums)
+	fmt.Println(dup)
 }
 
 /*
@@ -53,25 +58,70 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func subsetsWithDup(nums []int) [][]int {
 	// 迭代
-	ret, n, m := make([][]int, 1), len(nums), 1<<len(nums)-1
-	sort.Ints(nums)	// 有序则更好去重
-out:
-	for i := 1; i < m; i++ {
-		next := make([]int, 0)
-		for j := 0; j < n; j++ {
-			if i>>j&1 > 0 {	// nums[j] 被选择
-				if j > 0 && nums[j] == nums[j-1] && i>>(j-1)&1 == 0 {
-					continue out // 去重，放弃本轮标记位的子集
-				}
-				next = append(next, nums[j])
-			}
-		}
-		ret = append(ret, next)	// 找到一个子集
-	}
-	ret = append(ret, append([]int(nil), nums...))	// 加尾
-	return ret
-}
+	//	ret, n, m := make([][]int, 1), len(nums), 1<<len(nums)-1
+	//	sort.Ints(nums) // 有序则更好去重
+	//out:
+	//	for i := 1; i < m; i++ {
+	//		next := make([]int, 0)
+	//		for j := 0; j < n; j++ {
+	//			if i>>j&1 > 0 { // nums[j] 被选择
+	//				if j > 0 && nums[j] == nums[j-1] && i>>(j-1)&1 == 0 { // 连续相同的数，但前一个数没被选择
+	//					continue out // 去重，放弃本轮标记位的子集
+	//				}
+	//				next = append(next, nums[j])
+	//			}
+	//		}
+	//		if len(next) == 3 {
+	//			ret = append(ret, next) // 找到一个子集
+	//		}
+	//		//ret = append(ret, next) // 找到一个子集
+	//	}
+	//	ret = append(ret, append([]int(nil), nums...)) // 加尾
+	//	return ret
+
 	// 递归
+	//	sort.Ints(nums)
+	//	n := len(nums)
+	//	N := 1 << n
+	//	ret := make([][]int, 1)
+	//	temp := make([]int, 0, n)
+	//out:
+	//	for i := 1; i < N; i++ {
+	//		for j := 0; j < n; j++ {
+	//			if i>>j&1 != 0 {
+	//				if j > 0 && nums[j] == nums[j-1] && i>>(j-1)&1 == 0 {
+	//					temp = temp[:0]
+	//					continue out
+	//				}
+	//				temp = append(temp, nums[j])
+	//			}
+	//		}
+	//		ret = append(ret, append([]int(nil), temp...))
+	//		temp = temp[:0]
+	//	}
+	//	return ret
+
+	// dfs
+	sort.Ints(nums) // 有序
+	n := len(nums)
+	ret := make([][]int, 0)
+	temp := make([]int, 0, n) // 复用 path
+	var dfs func(int)
+	dfs = func(i int) {
+		if i == n {
+			ret = append(ret, append([]int(nil), temp...))
+			return
+		}
+		temp = append(temp, nums[i])
+		dfs(i + 1)
+		temp = temp[:len(temp)-1]             // 回溯
+		for i+1 < n && nums[i] == nums[i+1] { // 重复元素：上一个 dfs 已选择，此处全跳过
+			i++
+		}
+		dfs(i + 1)
+	}
+	dfs(0)
+	return ret
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

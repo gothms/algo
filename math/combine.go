@@ -10,6 +10,9 @@ import "math/bits"
 	40
 	216
 	377
+
+其他类似题型
+	https://leetcode.cn/problems/permutations/solutions/9914/hui-su-suan-fa-python-dai-ma-java-dai-ma-by-liweiw/
 */
 
 func combineCnt(n int, k int) int {
@@ -64,7 +67,7 @@ func CombineBit(n int, k int) [][]int {
 	return ret
 }
 
-// CombineDFS 深度优先搜索：回溯
+// CombineDFS 深度优先搜索：枚举（下一个要选的数） + 回溯
 func CombineDFS(n int, k int) [][]int {
 	ret := make([][]int, 0, combineCnt(n, k))
 	arr := make([]int, 0, k)
