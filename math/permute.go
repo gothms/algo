@@ -6,9 +6,6 @@ package math
 	47
 	60
 	784
-重复元素
-	集合长度为 n，全排列个数为 n!
-	重复元素 a 有 x 个，则需除以 a 的全排列个数 x!
 
 其他
 	31
@@ -71,6 +68,9 @@ func PermuteDFS(nums []int) [][]int {
 }
 
 // PermuteUnique 可包含重复数字的序列 nums ，按任意顺序返回所有不重复的全排列
+// 总数计算：
+// 集合长度为 n，全排列个数为 n!
+// 重复元素 a 有 x 个，则需除以 a 的全排列个数 x!
 func PermuteUnique(nums []int) [][]int {
 	n := len(nums)
 	ret := make([][]int, 0)
@@ -91,7 +91,7 @@ func PermuteUnique(nums []int) [][]int {
 		//memo := make(map[int]bool)	// 也可以每次使用 map 记录元素：第一次出现时操作
 		dfs(i + 1) // 分支：n*(n-1)*(n-2)*...*1
 		for j := i + 1; j < n; j++ {
-			if check(i, j) { // [i,j] 存在重复元素：最后一次出现时才操作
+			if check(i, j) { // [i,j] 存在重复元素：第一次出现时才操作
 				nums[i], nums[j] = nums[j], nums[i]
 				dfs(i + 1)
 				nums[i], nums[j] = nums[j], nums[i] // 回溯

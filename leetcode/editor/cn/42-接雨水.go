@@ -93,51 +93,51 @@ func trap(height []int) int {
 	//return maxV
 
 	// 栈
-	//minVal := func(a, b int) int {
-	//	if a < b {
-	//		return a
-	//	}
-	//	return b
-	//}
-	//maxV, n := 0, len(height)
-	//stack := []int{0} // 单调栈（非递增）
-	//for i := 1; i < n; i++ {
-	//	l := len(stack) - 1
-	//	for last := height[stack[l]]; height[i] > last; last = height[stack[l]] {
-	//		l--
-	//		if l < 0 { // 两个柱子没雨水
-	//			break
-	//		}
-	//		// 三个柱子：宽度 * (minVal(左高, 右高) - 中高)
-	//		maxV += (i - stack[l] - 1) * (minVal(height[i], height[stack[l]]) - last)
-	//	}
-	//	stack = append(stack[:l+1], i) // 添加当前柱子
-	//}
-	//return maxV
-
-	// dp
-	maxVal := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
 	minVal := func(a, b int) int {
 		if a < b {
 			return a
 		}
 		return b
 	}
-	maxV, l, r, n := 0, 0, 0, len(height) // l/r 为 左/右 最高柱子
-	lv, rv := make([]int, n), make([]int, n)
-	for i, j := 0, n-1; i < n; i, j = i+1, j-1 {
-		l, r = maxVal(l, height[i]), maxVal(r, height[j]) // 更新 l r
-		lv[i], rv[j] = l-height[i], r-height[j]           // 更新 左/右 雨水量
-	}
-	for i := 0; i < n; i++ {
-		maxV += minVal(lv[i], rv[i])
+	maxV, n := 0, len(height)
+	stack := []int{0} // 单调栈（非递增 / 递减）
+	for i := 1; i < n; i++ {
+		l := len(stack) - 1
+		for last := height[stack[l]]; height[i] > last; last = height[stack[l]] {
+			l--
+			if l < 0 { // 两个柱子没雨水
+				break
+			}
+			// 三个柱子：宽度 * (minVal(左高, 右高) - 中高)
+			maxV += (i - stack[l] - 1) * (minVal(height[i], height[stack[l]]) - last)
+		}
+		stack = append(stack[:l+1], i) // 添加当前柱子
 	}
 	return maxV
+
+	// dp
+	//maxVal := func(a, b int) int {
+	//	if a > b {
+	//		return a
+	//	}
+	//	return b
+	//}
+	//minVal := func(a, b int) int {
+	//	if a < b {
+	//		return a
+	//	}
+	//	return b
+	//}
+	//maxV, l, r, n := 0, 0, 0, len(height) // l/r 为 左/右 最高柱子
+	//lv, rv := make([]int, n), make([]int, n)
+	//for i, j := 0, n-1; i < n; i, j = i+1, j-1 {
+	//	l, r = maxVal(l, height[i]), maxVal(r, height[j]) // 更新 l r
+	//	lv[i], rv[j] = l-height[i], r-height[j]           // 更新 左/右 雨水量
+	//}
+	//for i := 0; i < n; i++ {
+	//	maxV += minVal(lv[i], rv[i])
+	//}
+	//return maxV
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

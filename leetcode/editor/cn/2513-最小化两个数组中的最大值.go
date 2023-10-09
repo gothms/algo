@@ -103,7 +103,7 @@ func minimizeSet(divisor1 int, divisor2 int, uniqueCnt1 int, uniqueCnt2 int) int
 		return common >= left1+left2
 	})
 
-	// 近视 O(1)
+	// 个人写法：O(1)
 	//v1, v2 := divisor1, divisor2
 	//for v1 != 0 { // 最大公约数
 	//	v1, v2 = v2%v1, v1

@@ -1,6 +1,10 @@
 package math
 
-import "math/bits"
+import (
+	"fmt"
+	"math/bits"
+	"sort"
+)
 
 /*
 组合
@@ -137,5 +141,73 @@ func CombineDFSChooseBit(n int, k int) [][]int {
 		}
 		ret = append(ret, append([]int(nil), temp...))
 	}
+	return ret
+}
+
+// ====================组合：重复元素====================
+
+// CombineWithDup 整数数组 nums 中可能包含重复元素，返回该数组所有可能的长度为 k 的组合
+// 总数计算方式：也符合 C(m,n) = C(m,m-n)
+// 示例：nums = [1 1 1 2 3 4 5 6 6], k=3
+// C(6,3) + C(5,1) + C(3,3) + C(5,1) = 31
+// [1,6] 中选 3 个，组合 [1,1,x]，组合 [1,1,1]，组合 [6,6,x]
+func CombineWithDup(nums []int, k int) [][]int {
+	sort.Ints(nums) // 有序
+	n := len(nums)
+	ret := make([][]int, 0)
+	temp := make([]int, 0, k) // 复用 path
+	var dfs func(int)
+	cnt := 0
+	dfs = func(i int) {
+		if i == n {
+			if len(temp) == k {
+				ret = append(ret, append([]int(nil), temp...))
+			}
+			return
+		}
+		if len(temp) > k { // i==n 才添加，所以 ==k 放行
+			return
+		}
+		cnt++
+		temp = append(temp, nums[i])
+		dfs(i + 1)
+		temp = temp[:len(temp)-1]             // 回溯
+		for i+1 < n && nums[i] == nums[i+1] { // 重复元素：上一个 dfs 已选择，此处全跳过
+			i++
+		}
+		dfs(i + 1)
+	}
+	dfs(0)
+	fmt.Println("cnt:", cnt)
+	return ret
+}
+
+// CombineWithDupDFS 深度优先搜索：选 / 不选
+// 优于 CombineWithDup
+func CombineWithDupDFS(nums []int, k int) [][]int {
+	sort.Ints(nums) // 有序
+	n := len(nums)
+	ret := make([][]int, 0)
+	temp := make([]int, k) // 复用 path
+	var dfs func(int, int)
+	cnt := 0
+	dfs = func(i, j int) { // j 记录了 temp 的索引
+		if j == k {
+			ret = append(ret, append([]int(nil), temp...))
+			return
+		}
+		if i > n-(k-j) { // 剪枝
+			return
+		}
+		cnt++
+		temp[j] = nums[i] // 选
+		dfs(i+1, j+1)
+		for i+1 <= n-(k-j) && nums[i] == nums[i+1] { // 不选：跳过相同元素
+			i++
+		}
+		dfs(i+1, j)
+	}
+	dfs(0, 0)
+	fmt.Println("DFS cnt:", cnt)
 	return ret
 }
