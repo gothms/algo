@@ -1,6 +1,21 @@
 package math
 
 /*
+组合 & 排列 & 子集
+元素不重复				组合			排列			子集
+	长度为 k 的集合		√						同组合
+	任意长度的集合			同子集					√
+	长度为 k 的总数		C(n,k)		A(n,k)		C(n,k)
+	任意长度的总数			2^n			n!			2^n
+元素重复					组合			排列			子集
+	长度为 k 的集合		√						同组合
+	任意长度的集合			同子集					√
+	长度为 k 的总数		同子集		同下			类左
+	任意长度的总数			同子集		√			√
+		SubsetsAndPermuteCounter
+		SubsetsAndCombineCounterK
+		SubsetsAndCombineCounter
+
 排列
 	46
 	47
@@ -20,6 +35,8 @@ func permuteCnt(n int) int {
 	}
 	return N
 }
+
+// ====================排列====================
 
 // Permute 给定一个不含重复数字的数组 nums ，返回其所有可能的全排列
 func Permute(nums []int) [][]int {
@@ -66,6 +83,8 @@ func PermuteDFS(nums []int) [][]int {
 	dfs(0)
 	return ret
 }
+
+// ====================排列：重复元素====================
 
 // PermuteUnique 可包含重复数字的序列 nums ，按任意顺序返回所有不重复的全排列
 // 总数计算：

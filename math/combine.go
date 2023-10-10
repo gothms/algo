@@ -7,8 +7,12 @@ import (
 )
 
 /*
+组合数恒等式
+	C(n,k) = C(n-1,k-1) + C(n-1,k)
+
 组合
 	77：四种方案，主要体现思想的不同
+	1079
 组合总和
 	39
 	40
@@ -18,6 +22,22 @@ import (
 其他类似题型
 	https://leetcode.cn/problems/permutations/solutions/9914/hui-su-suan-fa-python-dai-ma-java-dai-ma-by-liweiw/
 */
+
+//const CombineN = 8
+//
+//var comb [CombineN][CombineN]int
+//
+//func init() { // 预处理组合数
+//	for i := 0; i < CombineN; i++ {
+//		comb[i][0], comb[i][i] = 1, 1
+//		for j := 1; j < i; j++ {
+//			comb[i][j] = comb[i-1][j-1] + comb[i-1][j] // 组合数恒等式
+//		}
+//	}
+//	for _, v := range comb {
+//		fmt.Println(v)
+//	}
+//}
 
 func combineCnt(n int, k int) int {
 	N := n
@@ -178,7 +198,7 @@ func CombineWithDup(nums []int, k int) [][]int {
 		dfs(i + 1)
 	}
 	dfs(0)
-	fmt.Println("cnt:", cnt)
+	fmt.Println("CombineWithDup:", cnt)
 	return ret
 }
 
@@ -208,6 +228,8 @@ func CombineWithDupDFS(nums []int, k int) [][]int {
 		dfs(i+1, j)
 	}
 	dfs(0, 0)
-	fmt.Println("DFS cnt:", cnt)
+	fmt.Println("CombineWithDupDFS cnt:", cnt)
 	return ret
 }
+
+// BFS：参考 subsets.go SubsetsAndCombineCounter
