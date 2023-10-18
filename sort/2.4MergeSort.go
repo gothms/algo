@@ -29,9 +29,9 @@ func merge(arr []int, l, m, r int) {
 func mergeSentinel(arr []int, l, m, r int) {
 	lSize, rSize := m-l+1, r-m
 	left, right := make([]int, lSize+1), make([]int, rSize+1)
-	copy(left[:lSize], arr[l:])
+	copy(left[:lSize], arr[l:]) // copy(left[:lSize], arr[l:]) + 哨兵
 	copy(right[:rSize], arr[m+1:])
-	left[lSize], right[rSize] = math.MaxInt32, math.MaxInt32
+	left[lSize], right[rSize] = math.MaxInt32, math.MaxInt32 // 哨兵
 	for i, j, k := 0, 0, l; k <= r; k++ {
 		if left[i] <= right[j] {
 			arr[k] = left[i]

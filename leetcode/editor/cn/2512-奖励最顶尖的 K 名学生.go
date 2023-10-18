@@ -66,29 +66,52 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func topStudents(positive_feedback []string, negative_feedback []string, report []string, student_id []int, k int) []int {
-	pf, nf := make(map[string]bool, len(positive_feedback)), make(map[string]bool, len(negative_feedback))
+	// 排序 / topK
+	score, pf, nf := make(map[int]int, len(student_id)), make(map[string]bool), make(map[string]bool)
 	for _, s := range positive_feedback {
 		pf[s] = true
 	}
 	for _, s := range negative_feedback {
 		nf[s] = true
 	}
-	score := make(map[int]int)
 	for i, s := range report {
-		ss := strings.Split(s, " ")
-		for _, t := range ss {
-			if pf[t] {
+		for _, w := range strings.Split(s, " ") {
+			if pf[w] {
 				score[student_id[i]] += 3
-			} else if nf[t] {
+			} else if nf[w] {
 				score[student_id[i]]--
 			}
 		}
 	}
 	sort.Slice(student_id, func(i, j int) bool {
 		return score[student_id[i]] > score[student_id[j]] ||
-			score[student_id[i]] == score[student_id[j]]  && student_id[i] < student_id[j]
+			score[student_id[i]] == score[student_id[j]] && student_id[i] < student_id[j]
 	})
 	return student_id[:k]
+
+	//pf, nf := make(map[string]bool, len(positive_feedback)), make(map[string]bool, len(negative_feedback))
+	//for _, s := range positive_feedback {
+	//	pf[s] = true
+	//}
+	//for _, s := range negative_feedback {
+	//	nf[s] = true
+	//}
+	//score := make(map[int]int)
+	//for i, s := range report {
+	//	ss := strings.Split(s, " ")
+	//	for _, t := range ss {
+	//		if pf[t] {
+	//			score[student_id[i]] += 3
+	//		} else if nf[t] {
+	//			score[student_id[i]]--
+	//		}
+	//	}
+	//}
+	//sort.Slice(student_id, func(i, j int) bool {
+	//	return score[student_id[i]] > score[student_id[j]] ||
+	//		score[student_id[i]] == score[student_id[j]]  && student_id[i] < student_id[j]
+	//})
+	//return student_id[:k]
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

@@ -146,7 +146,11 @@ func SubsetsAndCombineCounter(arr []int) int {
 		}
 	}
 	return dp
+
+	// Hash：代替排序
 }
+
+// SubsetsAndCombineCounterK 整数数组 arr 中可能包含重复元素，返回该数组所有可能的长度为 k 的组合的总数
 func SubsetsAndCombineCounterK(arr []int, k int) int {
 	minVal := func(a, b int) int {
 		if b < a {

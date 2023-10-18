@@ -44,7 +44,7 @@ package main
 import "fmt"
 
 func main() {
-	nums := []int{2, 3, 2}
+	nums := []int{6, 2, 3, 7}
 	i := rob(nums)
 	fmt.Println(i)
 }
@@ -55,9 +55,9 @@ func main() {
 */
 // leetcode submit region begin(Prohibit modification and deletion)
 func rob(nums []int) int {
-	// leetcode-213
-	last0, last1, dp0, dp1, n := 0, 0, 0, 0, len(nums)
-	if n == 1 { // 只有一个房屋，直接偷
+	// lc
+	n := len(nums)
+	if n == 1 {
 		return nums[0]
 	}
 	maxVal := func(a, b int) int {
@@ -66,11 +66,31 @@ func rob(nums []int) int {
 		}
 		return a
 	}
-	for i := 1; i < n; i++ {
-		last0, dp0 = dp0, maxVal(dp0, last0+nums[i-1]) // 偷第一家
-		last1, dp1 = dp1, maxVal(dp1, last1+nums[i])   // 不偷第一家
+	robCircle := func(arr []int) int {
+		last, dp := 0, 0
+		for _, v := range arr {
+			last, dp = dp, maxVal(dp, last+v)
+		}
+		return dp
 	}
-	return maxVal(dp0, dp1)
+	return maxVal(robCircle(nums[:n-1]), robCircle(nums[1:]))
+
+	// leetcode-213
+	//last0, last1, dp0, dp1, n := 0, 0, 0, 0, len(nums)
+	//if n == 1 { // 只有一个房屋，直接偷
+	//	return nums[0]
+	//}
+	//maxVal := func(a, b int) int {
+	//	if b > a {
+	//		return b
+	//	}
+	//	return a
+	//}
+	//for i := 1; i < n; i++ {
+	//	last0, dp0 = dp0, maxVal(dp0, last0+nums[i-1]) // 偷第一家
+	//	last1, dp1 = dp1, maxVal(dp1, last1+nums[i])   // 不偷第一家
+	//}
+	//return maxVal(dp0, dp1)
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

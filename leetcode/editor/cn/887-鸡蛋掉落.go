@@ -51,39 +51,66 @@ import (
 )
 
 func main() {
-	k, n := 3, 14
+	k, n := 1, 3 // 3
+	//k, n = 2, 6  // 3
+	//k, n = 2, 7  // 4
+	k, n = 3, 14 // 4
 	drop := superEggDrop(k, n)
 	fmt.Println(drop)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func superEggDrop(k int, n int) int {
-	// 数学：dp
-	// f(t,k) 表示操作 t 次，有 k 个鸡蛋，能找到的最高楼层 n，t 的操作上限是 n
-	// f(t,1) = t，f(1,k) = 1
-	dp := make([][]int, n+1)
-	dp[0] = make([]int, k+1)
-	for i := 1; i <= n; i++ {
-		dp[i] = make([]int, k+1)
-		dp[i][1] = i // 1 个鸡蛋
+	// 滚动 dp
+	if k == 1 { // fast path
+		return n
 	}
+	dp, temp := make([]int, k+1), make([]int, k+1)
 	for i := 1; i <= k; i++ {
-		dp[1][i] = 1 // k 个鸡蛋操作 1 次
+		dp[i] = 1 // 初始化：操作上限为 1 次
 	}
 	for i := 2; i <= n; i++ {
 		for j := 1; j <= k; j++ {
-			dp[i][j] = dp[i-1][j-1] + dp[i-1][j] + 1 // 碎 / 没碎 + 当前楼层
+			temp[j] = dp[j-1] + dp[j] + 1 // 碎 / 不碎（+当前楼层）
 		}
-		if dp[i][k] >= n { // 楼层已达到
+		if temp[k] >= n { // 最高楼层已达到 n
 			return i
 		}
+		dp, temp = temp, dp
 	}
-	return dp[n][k] // 比如 k=1,n=1
+	return dp[n] // 比如 k=1,n=1
 
-	// 决策单调性：竞赛中的考点
-	// 这里我们不会叙述 何为决策单调性 以及 如何根据决策单调性写出优化的动态规划，而是仅指出决策单调性的存在性
+	// 数学：dp
+	// f(t,k) 表示操作 t 次，有 k 个鸡蛋，能找到的最高楼层 n，t 的操作上限是 n
+	// f(t,1) = t，f(1,k) = 1
+	// 碎 / 不碎（+当前楼层）：f(t,k) = f(t-1,k-1) + f(t-1,k)+1
+	// 思路：
+	// + 1：当前楼层
+	// + dp[i-1][j]：对于 dp[i][j]，j 个鸡蛋操作 i-1 次肯定不会碎
+	// + dp[i-1][j-1]：如果碎了，可以达到的楼层
+	//dp := make([][]int, n+1)
+	//for i := 1; i <= n; i++ {
+	//	dp[i] = make([]int, k+1)
+	//	dp[i][1] = i // 1 个鸡蛋
+	//}
+	//for i := 2; i <= k; i++ {
+	//	dp[1][i] = 1 // k 个鸡蛋也只能操作 1 次
+	//}
+	//for i := 2; i <= n; i++ {
+	//	for j := 1; j <= k; j++ {
+	//		dp[i][j] = dp[i-1][j-1] + dp[i-1][j] + 1 // 碎 / 不碎（+当前楼层）
+	//	}
+	//	if dp[i][k] >= n { // 最高楼层已达到 n
+	//		return i
+	//	}
+	//}
+	//return dp[n][k] // 比如 k=1,n=1
 
 	// dp
+	// 状态转移方程：二者取大
+	// 碎：dp[i][k] = dp[j-1][k-1] + 1
+	// 不碎：dp[i][k] = dp[i-j][k] + 1
+	// 超时优化：二分查找代替 for j := 1; j <= i; j++
 	//maxVal := func(a, b int) int {
 	//	if b > a {
 	//		return b
@@ -97,30 +124,39 @@ func superEggDrop(k int, n int) int {
 	//	return a
 	//}
 	//dp := make([][]int, n+1)
-	//for i := 0; i <= n; i++ {
-	//	dp[i] = make([]int, k+1)
-	//}
+	//dp[0] = make([]int, k+1)
 	//for i := 1; i <= n; i++ {
+	//	dp[i] = make([]int, k+1)
 	//	dp[i][1] = i
-	//	for j := 2; j <= k; j++ {
-	//		l, r := 1, i  // TODO
-	//		for l+1 < r { // 二分查找：找出最接近的 l、r
+	//	for c := 2; c <= k; c++ {
+	//		// 迭代：超时
+	//		//dp[i][c] = i
+	//		//for j := 1; j <= i; j++ {
+	//		//	dp[i][c] = minVal(dp[i][c], 1+maxVal(dp[j-1][c-1], dp[i-j][c])) // 碎 / 不碎
+	//		//}
+	//		// 二分查找：最接近的 l、r
+	//		l, r := 1, i
+	//		for l+1 < r {
 	//			m := (l + r) >> 1
-	//			v1, v2 := dp[m-1][j-1], dp[i-m][j]
-	//			if v1 < v2 {
-	//				l = m
-	//			} else if v1 > v2 {
+	//			v1, v2 := dp[m-1][c-1], dp[i-m][c] // 尽量让 碎/不碎 接近
+	//			switch {
+	//			case v1 > v2:
 	//				r = m
-	//			} else {
+	//			case v1 < v2:
+	//				l = m
+	//			default:
 	//				l, r = m, m
 	//			}
 	//		}
-	//		dp[i][j] = 1 + minVal(
-	//			maxVal(dp[l-1][j-1], dp[i-l][j]), // 碎 / 没碎
-	//			maxVal(dp[r-1][j-1], dp[i-r][j]))
+	//		dp[i][c] = 1 + minVal( // 取小
+	//			maxVal(dp[l-1][c-1], dp[i-l][c]),
+	//			maxVal(dp[r-1][c-1], dp[i-r][c]))
 	//	}
 	//}
 	//return dp[n][k]
+
+	// 决策单调性：竞赛中的考点
+	// 这里我们不会叙述 何为决策单调性 以及 如何根据决策单调性写出优化的动态规划，而是仅指出决策单调性的存在性
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

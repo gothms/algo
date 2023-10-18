@@ -65,16 +65,16 @@ func merge(intervals [][]int) [][]int {
 	return ret
 
 	// 归并
-	//return mergeSort(intervals, 0, len(intervals)-1)
+	//return mergeSort_56(intervals, 0, len(intervals)-1)
 }
 
 // 归并排序
-func mergeSort(dst [][]int, l, r int) [][]int {
+func mergeSort_56(dst [][]int, l, r int) [][]int {
 	if l >= r {
 		return [][]int{dst[r]}
 	}
 	m := (l + r) >> 1
-	return mergeInterval(mergeSort(dst, l, m), mergeSort(dst, m+1, r))
+	return mergeInterval(mergeSort_56(dst, l, m), mergeSort_56(dst, m+1, r))
 }
 
 // 按区间左边界进行排序
