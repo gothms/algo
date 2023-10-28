@@ -58,31 +58,59 @@ func punishmentNumber(n int) int {
 	return pn[n]
 }
 
-var pn [1001]int
+var pn []int
 
 func init() {
+	const N = 1001
+	pn = make([]int, N)
 	var dfs func(int, int, int) bool
-	dfs = func(i, t, sum int) bool {
-		if sum+t == i { // sum + t
+	dfs = func(i, t, s int) bool {
+		if s+t == i {
 			return true
 		}
-		for d, s := 10, t; s > 0; d *= 10 {
-			if v := sum + t%d; v > i {
+		for d, v := 10, t; v > 0; d *= 10 {
+			if next := s + t%d; next > i {
 				break
-			} else if dfs(i, t/d, v) { // t/10,t/100,t/1000 ...
+			} else if dfs(i, t/d, next) {
 				return true
 			}
-			s /= 10 // 标记是否继续循环
+			v /= 10
 		}
 		return false
 	}
-	for i, last := 1, 0; i <= 1000; i++ {
+	for i, cur := 1, 0; i < N; i++ {
 		if t := i * i; dfs(i, t, 0) {
-			pn[i], last = last+t, last+t
-		} else {
-			pn[i] = last // i 不满足
+			cur += t
 		}
+		pn[i] = cur
 	}
 }
+
+//var pn [1001]int
+//func init() {
+//	var dfs func(int, int, int) bool
+//	dfs = func(i, t, sum int) bool {
+//		if sum+t == i { // sum + t
+//			return true
+//		}
+//		for d, s := 10, t; s > 0; d *= 10 {
+//			if v := sum + t%d; v > i {
+//				break
+//			} else if dfs(i, t/d, v) { // t/10,t/100,t/1000 ...
+//				return true
+//			}
+//			s /= 10 // 标记是否继续循环
+//		}
+//		return false
+//	}
+//	for i, last := 1, 0; i <= 1000; i++ {
+//		if t := i * i; dfs(i, t, 0) {
+//			pn[i], last = last+t, last+t
+//		} else {
+//			pn[i] = last // i 不满足
+//		}
+//	}
+//	fmt.Println(pn)
+//}
 
 //leetcode submit region end(Prohibit modification and deletion)

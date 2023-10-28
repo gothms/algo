@@ -49,12 +49,20 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func countDigits(num int) int {
 	cnt := 0
-	for n := num; n > 0; n /= 10 {
-		if mod := n % 10; num%(mod) == 0 {
+	for v := num; v > 0; v /= 10 {
+		if num%(v%10) == 0 {
 			cnt++
 		}
 	}
 	return cnt
+
+	//cnt := 0
+	//for n := num; n > 0; n /= 10 {
+	//	if mod := n % 10; num%(mod) == 0 {
+	//		cnt++
+	//	}
+	//}
+	//return cnt
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
