@@ -55,19 +55,32 @@ func main() {
  * }
  */
 func removeNodes(head *ListNode) *ListNode {
-	// 单调栈：递减
+	// 单调栈
 	pre := &ListNode{math.MaxInt32, head}
-	stack := []*ListNode{pre} // 哨兵
+	st := []*ListNode{pre}
 	for ; head != nil; head = head.Next {
-		last := len(stack) - 1
-		for last > 0 && head.Val > stack[last].Val {
+		last := len(st) - 1
+		for last > 0 && head.Val > st[last].Val {
 			last--
 		}
-		stack[last].Next = head
-		stack = stack[:last+1]
-		stack = append(stack, head)
+		st[last].Next = head
+		st = append(st[:last+1], head)
 	}
 	return pre.Next
+
+	// 单调栈：递减
+	//pre := &ListNode{math.MaxInt32, head}
+	//stack := []*ListNode{pre} // 哨兵
+	//for ; head != nil; head = head.Next {
+	//	last := len(stack) - 1
+	//	for last > 0 && head.Val > stack[last].Val {
+	//		last--
+	//	}
+	//	stack[last].Next = head
+	//	stack = stack[:last+1]
+	//	stack = append(stack, head)
+	//}
+	//return pre.Next
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

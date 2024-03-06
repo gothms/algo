@@ -67,7 +67,8 @@ import "fmt"
 func main() {
 	favorite := []int{3, 0, 1, 4, 1} // 4
 	favorite = []int{1, 0, 3, 2, 5, 6, 7, 4, 9, 8, 11, 10, 11, 12, 10}
-	invitations := maximumInvitations(favorite)
+	favorite = []int{1, 0, 0, 2, 1, 4, 7, 8, 9, 6, 7, 10, 8}
+	invitations := maximumInvitations(favorite)	// 6
 	fmt.Println()
 	fmt.Println(invitations)
 }
@@ -82,49 +83,92 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func maximumInvitations(favorite []int) int {
-	// 内向基环树
+	//
 	maxVal := func(a, b int) int {
 		if b > a {
 			return b
 		}
 		return a
 	}
-	chainSum, maxRing, n := 0, 0, len(favorite)
+	maxRing, chainSum, n := 0, 0, len(favorite)
 	kahn, queue, depth := make([]int, n), make([]int, 0), make([]int, n)
-	for _, t := range favorite {
-		kahn[t]++ // 统计入度
+	for _, f := range favorite {
+		kahn[f]++
 	}
-	for i, v := range kahn {
-		if v == 0 {
-			queue = append(queue, i) // 入度为 0
+	for i, c := range kahn {
+		if c == 0 {
+			queue = append(queue, i)
 		}
 	}
-	for len(queue) > 0 { // 拓扑排序：剪去树枝，只剩下环
+	for ; len(queue) > 0; queue = queue[1:] {
 		f := queue[0]
-		queue = queue[1:]
 		depth[f]++
-		t := favorite[f]                      // 唯一的出
-		depth[t] = maxVal(depth[t], depth[f]) // 最深的树枝
+		t := favorite[f]
+		depth[t] = maxVal(depth[t], depth[f])
 		if kahn[t]--; kahn[t] == 0 {
 			queue = append(queue, t)
 		}
 	}
-	for i, v := range kahn {
-		if v == 0 {
+	for i, c := range kahn {
+		if c == 0 {
 			continue
 		}
-		ringSize := 1 // 环的大小
+		ring := 1
 		for t := favorite[i]; t != i; t = favorite[t] {
-			kahn[t] = 0 // 标记已遍历的环
-			ringSize++
+			kahn[t] = 0
+			ring++
 		}
-		if ringSize == 2 { // 基环大小为 2，可拼接
+		if ring == 2 {
 			chainSum += 2 + depth[i] + depth[favorite[i]]
-		} else { // 基环大小大于 2，不可拼接
-			maxRing = maxVal(maxRing, ringSize)
+		} else {
+			maxRing = maxVal(maxRing, ring)
 		}
 	}
-	return maxVal(chainSum, maxRing) // 拼接长度 / 最大环
+	return maxVal(maxRing, chainSum)
+
+	// 内向基环树
+	//maxVal := func(a, b int) int {
+	//	if b > a {
+	//		return b
+	//	}
+	//	return a
+	//}
+	//chainSum, maxRing, n := 0, 0, len(favorite)
+	//kahn, queue, depth := make([]int, n), make([]int, 0), make([]int, n)
+	//for _, t := range favorite {
+	//	kahn[t]++ // 统计入度
+	//}
+	//for i, v := range kahn {
+	//	if v == 0 {
+	//		queue = append(queue, i) // 入度为 0
+	//	}
+	//}
+	//for len(queue) > 0 { // 拓扑排序：剪去树枝，只剩下环
+	//	f := queue[0]
+	//	queue = queue[1:]
+	//	depth[f]++
+	//	t := favorite[f]                      // 唯一的出
+	//	depth[t] = maxVal(depth[t], depth[f]) // 最深的树枝
+	//	if kahn[t]--; kahn[t] == 0 {
+	//		queue = append(queue, t)
+	//	}
+	//}
+	//for i, v := range kahn {
+	//	if v == 0 {
+	//		continue
+	//	}
+	//	ringSize := 1 // 环的大小
+	//	for t := favorite[i]; t != i; t = favorite[t] {
+	//		kahn[t] = 0 // 标记已遍历的环
+	//		ringSize++
+	//	}
+	//	if ringSize == 2 { // 基环大小为 2，可拼接
+	//		chainSum += 2 + depth[i] + depth[favorite[i]]	// i、favorite[i]：基环的两个顶点
+	//	} else { // 基环大小大于 2，不可拼接
+	//		maxRing = maxVal(maxRing, ringSize)
+	//	}
+	//}
+	//return maxVal(chainSum, maxRing) // 拼接长度 / 最大环
 
 	// 拓扑排序：判断有误
 	//	maxVal := func(a, b int) int {

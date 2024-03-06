@@ -68,6 +68,7 @@ func computeSimilarities(docs [][]int) []string {
 			mp[d] = append(mp[d], i) // 元素：出现的集合
 		}
 	}
+	//fmt.Println(mp)
 	for i := 0; i < n-1; i++ {
 		d2d[i] = make([]int, n)
 	}
@@ -78,6 +79,7 @@ func computeSimilarities(docs [][]int) []string {
 			}
 		}
 	}
+	//fmt.Println(d2d)
 	ret := make([]string, 0)
 	for i := 0; i < n-1; i++ {
 		for j := i + 1; j < n; j++ {
