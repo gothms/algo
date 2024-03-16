@@ -79,43 +79,67 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func maxMoves(grid [][]int) int {
 	// dp
-	maxVal := func(a, b int) int {
-		if b > a {
-			return b
-		}
-		return a
-	}
-	minVal := func(a, b int) int {
-		if b < a {
-			return b
-		}
-		return a
-	}
 	m, n := len(grid), len(grid[0])
-	col := make([]bool, m)
-	for i := 0; i < m; i++ { // 第一列
-		col[i] = true
+	cache := make([]bool, m)
+	for i := range cache {
+		cache[i] = true
 	}
 	for c := 1; c < n; c++ {
-		cnt, temp := 0, make([]bool, m)
-		for r := 0; r < m; r++ {
-			if !col[r] { // 上一个位置不可以移动
-				continue
-			}
-			// 下限和上限
-			for i, t := maxVal(r-1, 0), grid[r][c-1]; i < minVal(r+2, m); i++ {
-				if grid[i][c] > t {
-					temp[i] = true // 标记可以移动的位置
-					cnt++
+		next, temp := false, make([]bool, m)
+		for r, b := range cache {
+			if b {
+				for k := max(0, r-1); k < min(m, r+2); k++ {
+					if grid[k][c] > grid[r][c-1] { // 右上、同行、右下 > grid[r][c-1]
+						next, temp[k] = true, true
+					}
 				}
 			}
 		}
-		if cnt == 0 {
+		if !next {
 			return c - 1
 		}
-		col = temp
+		cache = temp
 	}
 	return n - 1
+
+	// dp
+	//maxVal := func(a, b int) int {
+	//	if b > a {
+	//		return b
+	//	}
+	//	return a
+	//}
+	//minVal := func(a, b int) int {
+	//	if b < a {
+	//		return b
+	//	}
+	//	return a
+	//}
+	//m, n := len(grid), len(grid[0])
+	//col := make([]bool, m)
+	//for i := 0; i < m; i++ { // 第一列
+	//	col[i] = true
+	//}
+	//for c := 1; c < n; c++ {
+	//	cnt, temp := 0, make([]bool, m)
+	//	for r := 0; r < m; r++ {
+	//		if !col[r] { // 上一个位置不可以移动
+	//			continue
+	//		}
+	//		// 下限和上限
+	//		for i, t := maxVal(r-1, 0), grid[r][c-1]; i < minVal(r+2, m); i++ {
+	//			if grid[i][c] > t {
+	//				temp[i] = true // 标记可以移动的位置
+	//				cnt++
+	//			}
+	//		}
+	//	}
+	//	if cnt == 0 {
+	//		return c - 1
+	//	}
+	//	col = temp
+	//}
+	//return n - 1
 
 	// lc
 	//m, n := len(grid), len(grid[0])
