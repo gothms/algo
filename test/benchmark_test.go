@@ -7,7 +7,7 @@ func BenchmarkN(b *testing.B) {
 	arr := make([]int, n)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		for j := 0; j < n-1; j++ {
+		for j := 0; j < n; j++ {
 			arr[j] = j
 		}
 	}
