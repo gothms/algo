@@ -108,7 +108,7 @@ func repairCars(ranks []int, cars int) int64 {
 	}))
 
 	// 优先队列
-	//h, memo := &rc{}, make(map[int]int)
+	//h, memo := &rcHp{}, make(map[int]int)
 	//for _, v := range ranks {
 	//	memo[v]++ // 统计相同能力值的工人
 	//}
@@ -126,13 +126,13 @@ func repairCars(ranks []int, cars int) int64 {
 	//}
 }
 
-type rc [][4]int
+type rcHp [][4]int
 
-func (r rc) Len() int           { return len(r) }
-func (r rc) Less(i, j int) bool { return r[i][2] < r[j][2] }
-func (r rc) Swap(i, j int)      { r[i], r[j] = r[j], r[i] }
-func (r *rc) Push(x any)        { *r = append(*r, x.([4]int)) }
-func (r *rc) Pop() any {
+func (r rcHp) Len() int           { return len(r) }
+func (r rcHp) Less(i, j int) bool { return r[i][2] < r[j][2] }
+func (r rcHp) Swap(i, j int)      { r[i], r[j] = r[j], r[i] }
+func (r *rcHp) Push(x any)        { *r = append(*r, x.([4]int)) }
+func (r *rcHp) Pop() any {
 	v := (*r)[len(*r)-1]
 	*r = (*r)[:len(*r)-1]
 	return v
