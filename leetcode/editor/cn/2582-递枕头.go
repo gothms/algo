@@ -58,6 +58,12 @@ func passThePillow(n int, time int) int {
 	} else {
 		return n - i
 	}
+
+	//if i := time % (n - 1); time/(n-1)&1 == 0 {
+	//	return i + 1
+	//} else {
+	//	return n - i
+	//}
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

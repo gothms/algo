@@ -67,43 +67,80 @@ func main() {
  * }
  */
 func kthLargestLevelSum(root *TreeNode, k int) int64 {
-	hp, q := &kllsHp{}, []*TreeNode{root}
+	q, h := []*TreeNode{root}, &hp2583{}
+	add := func(node *TreeNode) {
+		if node.Left != nil {
+			q = append(q, node.Left)
+		}
+		if node.Right != nil {
+			q = append(q, node.Right)
+		}
+	}
 	for l := len(q); l > 0; l = len(q) {
-		var s int
+		var v int
 		for i := 0; i < l; i++ {
-			tn := q[i]
-			s += tn.Val
-			if tn.Left != nil {
-				q = append(q, tn.Left)
-			}
-			if tn.Right != nil {
-				q = append(q, tn.Right)
-			}
+			v += q[i].Val
+			add(q[i])
+		}
+		heap.Push(h, v)
+		if h.Len() > k {
+			heap.Pop(h)
 		}
 		q = q[l:]
-		heap.Push(hp, s)
-		if hp.Len() > k {
-			heap.Pop(hp)
-		}
 	}
-	if hp.Len() < k {
+	if h.Len() < k {
 		return -1
 	}
-	return int64(hp.IntSlice[0])
+	return int64(h.IntSlice[0])
+
+	//hp, q := &kllsHp{}, []*TreeNode{root}
+	//for l := len(q); l > 0; l = len(q) {
+	//	var s int
+	//	for i := 0; i < l; i++ {
+	//		tn := q[i]
+	//		s += tn.Val
+	//		if tn.Left != nil {
+	//			q = append(q, tn.Left)
+	//		}
+	//		if tn.Right != nil {
+	//			q = append(q, tn.Right)
+	//		}
+	//	}
+	//	q = q[l:]
+	//	heap.Push(hp, s)
+	//	if hp.Len() > k {
+	//		heap.Pop(hp)
+	//	}
+	//}
+	//if hp.Len() < k {
+	//	return -1
+	//}
+	//return int64(hp.IntSlice[0])
 }
 
-type kllsHp struct {
+type hp2583 struct {
 	sort.IntSlice
 }
 
-func (k *kllsHp) Push(x any) {
-	k.IntSlice = append(k.IntSlice, x.(int))
-}
-
-func (k *kllsHp) Pop() any {
-	v := k.IntSlice[len(k.IntSlice)-1]
-	k.IntSlice = k.IntSlice[:len(k.IntSlice)-1]
+func (h *hp2583) Push(x any) { h.IntSlice = append(h.IntSlice, x.(int)) }
+func (h *hp2583) Pop() any {
+	v := h.IntSlice[len(h.IntSlice)-1]
+	h.IntSlice = h.IntSlice[:len(h.IntSlice)-1]
 	return v
 }
+
+//type kllsHp struct {
+//	sort.IntSlice
+//}
+//
+//func (k *kllsHp) Push(x any) {
+//	k.IntSlice = append(k.IntSlice, x.(int))
+//}
+//
+//func (k *kllsHp) Pop() any {
+//	v := k.IntSlice[len(k.IntSlice)-1]
+//	k.IntSlice = k.IntSlice[:len(k.IntSlice)-1]
+//	return v
+//}
 
 //leetcode submit region end(Prohibit modification and deletion)
