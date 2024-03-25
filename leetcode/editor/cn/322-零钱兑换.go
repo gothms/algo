@@ -45,36 +45,35 @@ import "fmt"
 func main() {
 	c := []int{1, 2, 5}
 	amount := 11
-	//c = []int{2}
-	//amount = 3
+	c = []int{2}
+	amount = 3
 	change := coinChange(c, amount)
 	fmt.Println(change)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func coinChange(coins []int, amount int) int {
-	// 参考 2585
-	n := amount + 1
-	dp := make([]int, n)
-	for i := 1; i < n; i++ {
-		dp[i] = n
-	}
-	for _, c := range coins {
-		for i := amount; i > 0; i-- {
-			v := n
-			for j, m := 1, i/c; j <= m; j++ {
-				v = min(v, dp[i-j*c]+j)
-			}
-			if v < n {
-				dp[i] = v
-			}
-		}
-		//fmt.Println(dp)
-	}
-	if dp[amount] < n {
-		return dp[amount]
-	}
-	return -1
+	// 参考 2585，还未AC
+	//n := amount + 1
+	//dp := make([]int, n)
+	//for i := 1; i < n; i++ {
+	//	dp[i] = n
+	//}
+	//for _, c := range coins {
+	//	for i := amount; i > 0; i-- {
+	//		v := n
+	//		for j, m := 1, i/c; j <= m; j++ {
+	//			v = min(v, dp[i-j*c]+j)
+	//		}
+	//		if v < n {
+	//			dp[i] = v
+	//		}
+	//	}
+	//}
+	//if dp[amount] < n {
+	//	return dp[amount]
+	//}
+	//return -1
 
 	// dp
 	//n := amount + 1
