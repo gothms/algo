@@ -49,28 +49,44 @@
 
 package main
 
-func main() {
+import (
+	"fmt"
+	"slices"
+)
 
+func main() {
+	s := "string"
+	s = "poiinter"
+	s = "poiabcinter"
+	s2 := finalString(s)
+	fmt.Println(s2)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func finalString(s string) string {
-	cnt, n := 0, len(s)
-	str := make([]uint8, n)
-	strings.i
-	for i, j := n-1, n-1; i >= 0; i-- {
-		if s[i] == 'i' {
+	// 可优化：odd，even 定义为 [2][]uint8{}，通过 ^1 来判断奇偶
+	last, cnt, n := 0, 0, len(s)
+	odd, even := make([]uint8, 0, n), make([]uint8, 0, n) // 奇、偶
+	for cur := 0; cur < n; cur++ {
+		if s[cur] == 'i' {
+			if cnt&1 == 0 {
+				even = append(even, s[last:cur]...)
+			} else {
+				odd = append(odd, s[last:cur]...)
+			}
 			cnt++
-			continue
-		}
-		if cnt&1 == 0 {
-			str[j] = s[i]
-			j--
-		} else {
-
+			last = cur + 1
 		}
 	}
-	return string(str)
+	if cnt&1 == 0 {
+		even = append(even, s[last:n]...)
+		slices.Reverse(odd)
+		return string(odd) + string(even)
+	} else {
+		odd = append(odd, s[last:n]...)
+		slices.Reverse(even)
+		return string(even) + string(odd)
+	}
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
