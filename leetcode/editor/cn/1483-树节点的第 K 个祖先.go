@@ -87,6 +87,44 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 type TreeAncestor struct {
 	memo [][]int
+	x    int
+}
+
+func Constructor(n int, parent []int) TreeAncestor {
+	memo := make([][]int, n)
+	k := bits.Len(uint(n))
+	for i := range memo {
+		memo[i] = make([]int, k)
+		memo[i][0] = parent[i]
+	}
+	for j := 1; j < k; j++ {
+		for i := range memo {
+			memo[i][j] = -1
+			if p := memo[i][j-1]; p != -1 {
+				memo[i][j] = memo[p][j-1]
+			}
+		}
+	}
+	//fmt.Println(memo)
+	return TreeAncestor{memo, k}
+}
+
+func (this *TreeAncestor) GetKthAncestor(node int, k int) int {
+	for i := 0; i < this.x; i++ {
+		if k>>i&1 == 1 {
+			node = this.memo[node][i]
+			if node == -1 {
+				break
+			}
+		}
+	}
+	return node
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+type TreeAncestor struct {
+	memo [][]int
 	n    int
 }
 
@@ -157,4 +195,3 @@ func (this *TreeAncestor) GetKthAncestor(node int, k int) int {
  * obj := Constructor(n, parent);
  * param_1 := obj.GetKthAncestor(node,k);
  */
-//leetcode submit region end(Prohibit modification and deletion)
