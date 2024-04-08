@@ -58,37 +58,61 @@ import (
 )
 
 func main() {
-	nums := []int{1, 1, 3, 5, 5}
-	nums = []int{1, 10, 100, 1000}
+	nums := []int{1, 1, 3, 5, 5} // 2
+	//nums = []int{1, 10, 100, 1000}
+	nums = []int{8, 10, 16, 18, 10, 10, 16, 13, 13, 16} // 6
 	operations := minOperations(nums)
 	fmt.Println(operations)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func minOperations(nums []int) int {
-	minVal := func(a, b int) int {
-		if b < a {
-			return b
+	// 排序
+	sort.Ints(nums)
+	n, j := len(nums), 1
+	for i := 1; i < n; i++ { // 去重
+		if nums[i] != nums[i-1] {
+			nums[j] = nums[i]
+			j++
 		}
-		return a
 	}
-	n := len(nums)
-	sort.Ints(nums) // 排序
-	j := 1
-	for i := 1; i < n; i++ { // 剔除重复的元素
-		if nums[i] == nums[i-1] {
-			continue
+	idx := sort.SearchInts(nums[:j], nums[0]+n-1) // 二分：nums[:j]，确定 nums[0] 最小时，最大的连续长度
+	if idx < j && nums[idx] == nums[0]+n-1 {
+		idx++
+	}
+	ma, m := idx, max(0, n-idx)
+	for i, k := 1, idx; i < m && k < j; i++ { // 双指针：i、k 之间即为连续的
+		t := nums[i] + n
+		for k < j && nums[k] < t {
+			k++
 		}
-		nums[j] = nums[i]
-		j++
+		ma = max(ma, k-i) // 最大连续长度
 	}
-	nums = nums[:j] // 重复的元素，都必须替换
-	cnt := j
-	for i := 0; i < cnt; i++ {
-		c := j - sort.SearchInts(nums, nums[i]+n) + i // i 为左侧需要替换的数量，j - sort.Search 为右侧需要替换的数量
-		cnt = minVal(cnt, c)                          // 缩小查询的次数
-	}
-	return cnt + n - j // cnt + 重复的元素
+	return n - ma
+
+	//minVal := func(a, b int) int {
+	//	if b < a {
+	//		return b
+	//	}
+	//	return a
+	//}
+	//n := len(nums)
+	//sort.Ints(nums) // 排序
+	//j := 1
+	//for i := 1; i < n; i++ { // 剔除重复的元素
+	//	if nums[i] == nums[i-1] {
+	//		continue
+	//	}
+	//	nums[j] = nums[i]
+	//	j++
+	//}
+	//nums = nums[:j] // 重复的元素，都必须替换
+	//cnt := j
+	//for i := 0; i < cnt; i++ {
+	//	c := j - sort.SearchInts(nums, nums[i]+n) + i // i 为左侧需要替换的数量，j - sort.Search 为右侧需要替换的数量
+	//	cnt = minVal(cnt, c)                          // 缩小查询的次数
+	//}
+	//return cnt + n - j // cnt + 重复的元素
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
