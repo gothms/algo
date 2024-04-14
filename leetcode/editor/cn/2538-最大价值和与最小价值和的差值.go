@@ -55,7 +55,9 @@
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	n := 6
@@ -75,68 +77,169 @@ func main() {
 	//	{7, 3},
 	//	{3, 8}}
 	//price = []int{6, 13, 8, 10, 4, 5, 8, 3, 12}
+	//edges = [][]int{{1, 7},
+	//	{5, 2},
+	//	{2, 3},
+	//	{6, 0},
+	//	{0, 4},
+	//	{4, 7},
+	//	{7, 3},
+	//	{3, 8}}
+	//price = []int{6, 13, 8, 10, 4, 5, 8, 3, 12}
+	//n = 9
 	output := maxOutput(n, edges, price)
 	fmt.Println(output)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func maxOutput(n int, edges [][]int, price []int) int64 {
-	// 查表
+	// 树形 dp
+	//adj := make([][]int, n)
+	//for _, e := range edges {
+	//	adj[e[0]] = append(adj[e[0]], e[1])
+	//	adj[e[1]] = append(adj[e[1]], e[0])
+	//}
+	//var ret int
+	//var dfs func(int, int) (int, int)
+	//dfs = func(f, t int) (int, int) {
+	//	var ma, maLeaf = 0, price[t] // 不带叶子，带叶子
+	//	for _, i := range adj[t] {
+	//		if i != f {
+	//			m, ml := dfs(t, i)
+	//			ret = max(ret, max(ma+ml, maLeaf+m))
+	//			ma = max(ma, m+price[t])
+	//			maLeaf = max(maLeaf, ml+price[t])
+	//		}
+	//	}
+	//	return ma, maLeaf
+	//}
+	//dfs(-1, 0)
+	//return int64(ret)
+
+	// bfs：错误，因为“直径和”最大的路径，不一定是去题解所求的最大开销
+	// 示例：[[0,1],[1,2],[1,3],[3,4],[3,5]]，[99,8,7,6,100,58]，结果 114
+	//adj := make([][]int, n)
+	//for _, e := range edges {
+	//	adj[e[0]] = append(adj[e[0]], e[1])
+	//	adj[e[1]] = append(adj[e[1]], e[0])
+	//}
+	//d, ds := make([]int, n), make([]int, n)
+	//path := make([]int, n)
+	//var bfs func(int, []int) int
+	//bfs = func(s int, d []int) int {
+	//	t := -1
+	//	vis := make([]bool, n)
+	//	d[s], vis[s] = price[s], true // 起始点
+	//	for q := []int{s}; len(q) > 0; q = q[1:] {
+	//		x := q[0]
+	//		if t == -1 || d[t] < d[x] {
+	//			//if t == -1 || d[t] < d[x] || d[t] == d[x] && price[t] > price[x] {
+	//			t = x
+	//		}
+	//		for _, y := range adj[x] {
+	//			if !vis[y] {
+	//				vis[y] = true
+	//				q = append(q, y)
+	//				d[y] = d[x] + price[y]
+	//				path[y] = x
+	//			}
+	//		}
+	//	}
+	//	return t
+	//}
+	//s := bfs(0, d)  // 找到 “直径”的一个端点
+	//t := bfs(s, ds) // 遍历“直径”
+	//
+	//path = make([]int, n)
+	//dt := make([]int, n)
+	//s = bfs(t, dt)
+	//ds = dt
+	//fmt.Println(s, t)
+	//fmt.Println(path)
+	//s, t = t, s
+	////fmt.Println(s, t, ds)
+	////fmt.Println(path)
+	////var ret int
+	//var ret = ds[t] - price[s]
+	//for p := 0; t != s; t = path[t] {
+	//	ret = max(ret, max(p, ds[t]-price[t]))
+	//	p += price[t]
+	//}
+	////for i := 0; i < n; i++ {
+	////	ret = max(ret, max(d[i], ds[i])-price[i]) // 枚举 root
+	////}
+	//return int64(ret)
+
+	// bfs
+	adj := make([][]int, n)
+	for _, e := range edges {
+		adj[e[0]] = append(adj[e[0]], e[1])
+		adj[e[1]] = append(adj[e[1]], e[0])
+	}
+	d, ds, dt := make([]int, n), make([]int, n), make([]int, n)
+	path := make([]int, n)
+	var bfs func(int, []int) int
+	bfs = func(s int, d []int) int {
+		t := -1
+		vis := make([]bool, n)
+		d[s], vis[s] = price[s], true // 起始点
+		for q := []int{s}; len(q) > 0; q = q[1:] {
+			x := q[0]
+			if t == -1 || d[t] < d[x] {
+				t = x
+			}
+			for _, y := range adj[x] {
+				if !vis[y] {
+					vis[y] = true
+					q = append(q, y)
+					d[y] = d[x] + price[y]
+					path[y] = x
+				}
+			}
+		}
+		return t
+	}
+	s := bfs(0, d)  // 找到 “直径”的一个端点
+	t := bfs(s, ds) // 遍历“直径”
+	if t != 0 {     // 反向遍历“直径”
+		path = make([]int, n)
+		bfs(t, dt)
+		d = dt
+	}
+	var ret int
+	for i := 0; i < n; i++ {
+		ret = max(ret, max(d[i], ds[i])-price[i]) // 枚举 root
+	}
+	return int64(ret)
+
+	// 树形 dp
+	//maxVal := func(a, b int) int {
+	//	if b > a {
+	//		return b
+	//	}
+	//	return a
+	//}
 	//adj := make([][]int, n)
 	//for _, e := range edges {
 	//	x, y := e[0], e[1]
 	//	adj[x], adj[y] = append(adj[x], y), append(adj[y], x)
 	//}
-	//var dfs func(int, int)int
-	//dfs = func(f, t int)int {
+	//mo := 0
+	//var dfs func(int, int) (int, int)
+	//dfs = func(f, t int) (int, int) {
+	//	maxP1, maxP2 := price[t], 0 // 带 / 不带叶子节点的最大路径和
 	//	for _, i := range adj[t] {
-	//		if i!=f{
-	//			dfs(t,i)
+	//		if i != f {
+	//			p1, p2 := dfs(t, i)
+	//			mo = maxVal(mo, maxVal(maxP1+p2, maxP2+p1)) // 带叶子 + 不带叶子 & 不带叶子 + 带叶子
+	//			maxP1 = maxVal(maxP1, p1+price[t])          // 叶子节点的出度为 0，入度 i == f，所以这里肯定不是叶子节点 +price[t]
+	//			maxP2 = maxVal(maxP2, p2+price[t])          // 除非 0 是叶子节点，但是并没有使用 dfs(-1, 0) 的返回值
 	//		}
 	//	}
-	//	return
+	//	return maxP1, maxP2 // 叶子节点将会直接返回初始值：price[t], 0
 	//}
-	//path := make([][]int, n)
-	//for i := 0; i < n; i++ {
-	//	path[i] = make([]int, n)
-	//	path[i][i] = price[i]
-	//}
-	////for i, v := range adj {
-	////	for _, j := range v {
-	////
-	////	}
-	////}
-	//dfs(-1, 0)
-	//return 0
-
-	// 树形 dp
-	maxVal := func(a, b int) int {
-		if b > a {
-			return b
-		}
-		return a
-	}
-	adj := make([][]int, n)
-	for _, e := range edges {
-		x, y := e[0], e[1]
-		adj[x], adj[y] = append(adj[x], y), append(adj[y], x)
-	}
-	mo := 0
-	var dfs func(int, int) (int, int)
-	dfs = func(f, t int) (int, int) {
-		maxP1, maxP2 := price[t], 0 // 带 / 不带叶子节点的最大路径和
-		for _, i := range adj[t] {
-			if i != f {
-				p1, p2 := dfs(t, i)
-				mo = maxVal(mo, maxVal(maxP1+p2, maxP2+p1)) // 带叶子 + 不带叶子 & 不带叶子 + 带叶子
-				maxP1 = maxVal(maxP1, p1+price[t])          // 叶子节点的出度为 0，入度 i == f，所以这里肯定不是叶子节点 +price[t]
-				maxP2 = maxVal(maxP2, p2+price[t])          // 除非 0 是叶子节点，但是并没有使用 dfs(-1, 0) 的返回值
-			}
-		}
-		return maxP1, maxP2 // 叶子节点将会直接返回初始值：price[t], 0
-	}
-	dfs(-1, 0) // 返回：带两个叶子节点的值，不带叶子节点 + price[0] 的值
-	return int64(mo)
+	//dfs(-1, 0) // 返回：带两个叶子节点的值，不带叶子节点 + price[0] 的值
+	//return int64(mo)
 
 	// dfs：超时
 	//maxVal := func(a, b int64) int64 {

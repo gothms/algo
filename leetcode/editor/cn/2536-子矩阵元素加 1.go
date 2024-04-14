@@ -49,34 +49,59 @@
 
 package main
 
-func main() {
+import "fmt"
 
+func main() {
+	q := [][]int{{1, 1, 2, 2}, {0, 0, 1, 1}}
+	n := 3
+	queries := rangeAddQueries(n, q)
+	fmt.Println(queries)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func rangeAddQueries(n int, queries [][]int) [][]int {
-	// 差分
+	// 差分数组
 	diff := make([][]int, n+2)
 	for i := range diff {
-		diff[i] = make([]int, n+2)
+		diff[i] = make([]int, n+2) // 哨兵 * 2
 	}
-	for _, q := range queries {
-		diff[q[0]+1][q[1]+1]++ // 左上加 1
-		diff[q[0]+1][q[3]+2]-- // 右上
-		diff[q[2]+2][q[1]+1]-- // 左下
-		diff[q[2]+2][q[3]+2]++ // 右下角恢复 1
+	for _, q := range queries { // 差分
+		diff[q[0]+1][q[1]+1]++
+		diff[q[0]+1][q[3]+2]--
+		diff[q[2]+2][q[1]+1]--
+		diff[q[2]+2][q[3]+2]++
 	}
-	for i := 1; i <= n; i++ {
+	for i := 1; i <= n; i++ { // 公式
 		for j := 1; j <= n; j++ {
 			diff[i][j] += diff[i-1][j] + diff[i][j-1] - diff[i-1][j-1]
-		}	// 前缀和公式
+		}
+		diff[i-1] = diff[i-1][1 : n+1]
 	}
-	n++
-	diff = diff[1:n]
-	for i, d := range diff {
-		diff[i] = d[1:n]
-	}
-	return diff
+	diff[n] = diff[n][1 : n+1]
+	return diff[1 : n+1]
+
+	// 差分
+	//diff := make([][]int, n+2)
+	//for i := range diff {
+	//	diff[i] = make([]int, n+2)
+	//}
+	//for _, q := range queries {
+	//	diff[q[0]+1][q[1]+1]++ // 左上加 1
+	//	diff[q[0]+1][q[3]+2]-- // 右上
+	//	diff[q[2]+2][q[1]+1]-- // 左下
+	//	diff[q[2]+2][q[3]+2]++ // 右下角恢复 1
+	//}
+	//for i := 1; i <= n; i++ {
+	//	for j := 1; j <= n; j++ {
+	//		diff[i][j] += diff[i-1][j] + diff[i][j-1] - diff[i-1][j-1]
+	//	}	// 前缀和公式
+	//}
+	//n++
+	//diff = diff[1:n]
+	//for i, d := range diff {
+	//	diff[i] = d[1:n]
+	//}
+	//return diff
 
 	// 迭代
 	//grid := make([][]int, n)

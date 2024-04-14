@@ -42,33 +42,62 @@
 
 package main
 
-func main() {
+import "fmt"
 
+func main() {
+	bit, i := mapBit(1_000_000)
+	fmt.Println(bit, i)
+	fmt.Println(16 >> 4)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 type MyHashSet struct {
-	hs []uint16
+	m []uint16
 }
 
 func Constructor() MyHashSet {
 	return MyHashSet{make([]uint16, 62501)}
 }
-func (this *MyHashSet) Add(key int) {
-	i, bit := ibit(key)
-	this.hs[i] |= 1 << bit
-}
-func (this *MyHashSet) Remove(key int) {
-	i, bit := ibit(key)
-	this.hs[i] &^= 1 << bit
-}
-func (this *MyHashSet) Contains(key int) bool {
-	i, bit := ibit(key)
-	return this.hs[i]&(1<<bit) > 0
-}
-func ibit(key int) (int, int) {
+func mapBit(key int) (int, int) {
 	return key >> 4, key & 15
 }
+func (this *MyHashSet) Add(key int) {
+	i, bit := mapBit(key)
+	this.m[i] |= 1 << bit
+}
+
+func (this *MyHashSet) Remove(key int) {
+	i, bit := mapBit(key)
+	this.m[i] &^= 1 << bit
+}
+
+func (this *MyHashSet) Contains(key int) bool {
+	i, bit := mapBit(key)
+	return this.m[i]&(1<<bit) > 0
+}
+
+//type MyHashSet struct {
+//	hs []uint16
+//}
+//
+//func Constructor() MyHashSet {
+//	return MyHashSet{make([]uint16, 62501)}
+//}
+//func (this *MyHashSet) Add(key int) {
+//	i, bit := ibit(key)
+//	this.hs[i] |= 1 << bit
+//}
+//func (this *MyHashSet) Remove(key int) {
+//	i, bit := ibit(key)
+//	this.hs[i] &^= 1 << bit
+//}
+//func (this *MyHashSet) Contains(key int) bool {
+//	i, bit := ibit(key)
+//	return this.hs[i]&(1<<bit) > 0
+//}
+//func ibit(key int) (int, int) {
+//	return key >> 4, key & 15
+//}
 
 //var hs []uint16	// 会污染数据
 //

@@ -19,9 +19,9 @@ func Dijkstra(n, s, t int, edges [][]int) {
 		adj         = make([][]edge, n)                 // 邻接表
 		vertexes    = make([]*vertex, n)                // 顶点和 s 与顶点的距离
 		visited     = make([]bool, n)                   // 记录已访问过的顶点（已进入过队列）
-		predecessor = make([]int, 0)                    // 用于还原最短路径
+		predecessor = make([]int, n)                    // 用于还原最短路径
 		queue       = &priorityQueue{make([]vertex, 0)} // 小顶堆：根据 vertex.dist
-		print       func(int, int, []int)               // 用于打印最 短路径
+		prt         func(int, int, []int)               // 用于打印最 短路径
 	)
 	for _, e := range edges { // 遍历有向有权图
 		adj[e[0]] = append(adj[e[0]], edge{e[0], e[1], e[2]}) // 添加一条边
@@ -52,15 +52,15 @@ func Dijkstra(n, s, t int, edges [][]int) {
 			heap.Push(queue, nextVertex)
 		}
 	}
-	print = func(s, t int, predecessor []int) {
+	prt = func(s, t int, predecessor []int) {
 		if s == t {
 			return
 		}
-		print(s, predecessor[t], predecessor)
+		prt(s, predecessor[t], predecessor) // 上一个顶点
 		fmt.Print("->", t)
 	}
 	fmt.Print(s)
-	print(s, t, predecessor) // 输出最短路径
+	prt(s, t, predecessor) // 输出最短路径
 }
 
 type edge struct {

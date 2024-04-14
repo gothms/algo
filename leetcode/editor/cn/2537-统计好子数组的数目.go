@@ -42,30 +42,44 @@ import "fmt"
 func main() {
 	//fmt.Println(-1 & 1)
 	nums := []int{1, 1, 1, 1, 1}
-	nums = []int{3, 1, 4, 3, 2, 2, 4}
 	k := 10
-	k = 2
+	//nums = []int{3, 1, 4, 3, 2, 2, 4}
+	//k = 2
 	good := countGood(nums, k)
 	fmt.Println(good)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func countGood(nums []int, k int) int64 {
-	// 优化
-	cg, cnt, l, n := int64(0), 0, 0, len(nums)
+	// 双指针
+	ret, cnt, n := int64(0), 0, len(nums)
 	memo := make(map[int]int)
-	for r, v := range nums {
-		// x 个相同的数，组成 (x-1)*x / 2 对
-		cnt += memo[v] // 在 m[v]++ 之前，对数的增量为 m[v]
-		memo[v]++
-		for cnt >= k {
-			memo[nums[l]]--
-			cnt -= memo[nums[l]] // 对数的增量为 m[v]
-			l++
-			cg += int64(n - r) // r 及其后面的元素，都能成为一个好子数组
+	for i, j := 0, 0; i < n; i++ {
+		cnt += memo[nums[i]]
+		memo[nums[i]]++
+		for ; cnt >= k; j++ {
+			memo[nums[j]]--
+			cnt -= memo[nums[j]]
+			ret += int64(n - i)
 		}
 	}
-	return cg
+	return ret
+
+	// 优化
+	//cg, cnt, l, n := int64(0), 0, 0, len(nums)
+	//memo := make(map[int]int)
+	//for r, v := range nums {
+	//	// x 个相同的数，组成 (x-1)*x / 2 对
+	//	cnt += memo[v] // 在 m[v]++ 之前，对数的增量为 m[v]
+	//	memo[v]++
+	//	for cnt >= k {
+	//		memo[nums[l]]--
+	//		cnt -= memo[nums[l]] // 对数的增量为 m[v]
+	//		l++
+	//		cg += int64(n - r) // r 及其后面的元素，都能成为一个好子数组
+	//	}
+	//}
+	//return cg
 
 	// 滑动窗体
 	//cg, cnt, l, n := int64(0), 0, 0, len(nums)

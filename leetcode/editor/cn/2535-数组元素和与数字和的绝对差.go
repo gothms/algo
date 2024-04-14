@@ -46,22 +46,36 @@
 
 package main
 
-func main() {
+import "fmt"
 
+func main() {
+	arr := []int{15, 32, 234}
+	ofSum := differenceOfSum(arr)
+	fmt.Println(ofSum)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func differenceOfSum(nums []int) int {
-	dif := 0
+	ret := 0
 	for _, v := range nums {
-		if v < 10 {
-			continue
-		}
-		for dif += v; v > 0; v /= 10 {
-			dif -= v % 10
+		for val, d := v/10, 10; val > 0; val /= 10 {
+			mod := val % 10
+			ret += mod*d - mod
+			d *= 10
 		}
 	}
-	return dif
+	return ret
+
+	//dif := 0
+	//for _, v := range nums {
+	//	if v < 10 {
+	//		continue
+	//	}
+	//	for dif += v; v > 0; v /= 10 {
+	//		dif -= v % 10
+	//	}
+	//}
+	//return dif
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
