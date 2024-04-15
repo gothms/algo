@@ -61,19 +61,32 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func categorizeBox(length int, width int, height int, mass int) string {
-	var ret string
-	x, y := length >= 10000 || width >= 10000 || height >= 10000 || length*width*height >= 1_000_000_000, mass >= 100
+	const n, v = 1e4, 1e9
+	x, y := length >= n || width >= n || height >= n || length*width*height >= v, mass >= 100
 	switch {
 	case x && y:
-		ret = "Both"
+		return "Both"
 	case x:
-		ret = "Bulky"
+		return "Bulky"
 	case y:
-		ret = "Heavy"
+		return "Heavy"
 	default:
-		ret = "Neither"
+		return "Neither"
 	}
-	return ret
+
+	//var ret string
+	//x, y := length >= 10000 || width >= 10000 || height >= 10000 || length*width*height >= 1_000_000_000, mass >= 100
+	//switch {
+	//case x && y:
+	//	ret = "Both"
+	//case x:
+	//	ret = "Bulky"
+	//case y:
+	//	ret = "Heavy"
+	//default:
+	//	ret = "Neither"
+	//}
+	//return ret
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

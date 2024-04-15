@@ -1,5 +1,12 @@
 package binary
 
+/*
+https://leetcode.cn/problems/maximize-the-minimum-powered-city/solutions/2050272/er-fen-da-an-qian-zhui-he-chai-fen-shu-z-jnyv/
+
+看到「最大化最小值」或者「最小化最大值」就要想到二分答案，这是一个固定的套路。
+为什么？一般来说，二分的值越大，越能/不能满足要求；二分的值越小，越不能/能满足要求，有单调性，可以二分。
+*/
+
 func Search(n int, f func(i int) bool) int {
 	i, j := 0, n
 	for i < j {
