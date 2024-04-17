@@ -59,7 +59,6 @@ package main
 
 import (
 	"fmt"
-	"sort"
 )
 
 func main() {
@@ -94,47 +93,79 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func minMalwareSpread(graph [][]int, initial []int) int {
-	if len(initial) == 1 { // fast path
-		return initial[0]
-	}
-	sort.Ints(initial)               // 节点可能不是有序的
-	id, cnt, n := -1, -1, len(graph) // 初始化 id & cnt
-	var (
-		clean     = make([]int, n)   // 标记感染源 / clean 节点
-		visited   = make([]int, n)   // 标记本次 dfs 节点是否已访问
-		counter   = make([][]int, n) // clean 节点的感染源
-		initGraph = make([]int, n)   // 感染源节点直接感染的节点（只被这个感染源感染了）的数目
-	)
-	for i := range visited { // 初始化 visited
-		visited[i] = -1
-	}
-	for _, init := range initial { // 标记感染源
-		clean[init] = 1
+	// dfs
+	ret, cnt, n := initial[0], 0, len(graph)
+	counter, source, virus := make([][]int, n), make([]int, n), make([]bool, n)
+	for _, v := range initial {
+		virus[v] = true // 标记感染源
 	}
 	var dfs func(int, int)
-	dfs = func(f, cur int) {
-		for i := 0; i < n; i++ { // 遍历：感染源直接感染的节点
-			if graph[cur][i] == 1 && clean[i] == 0 && visited[i] != f {
-				visited[i] = f
-				counter[i] = append(counter[i], f) // 被感染节点：感染源
+	dfs = func(f, t int) {
+		for i := 0; i < n; i++ {
+			if graph[t][i] == 1 && !virus[i] && source[i] != f { // 未感染的节点 && 本轮（f为感染源）未访问过
+				source[i] = f                      // 标记本轮访问
+				counter[i] = append(counter[i], f) // 可感染 i 的节点集合
 				dfs(f, i)
 			}
 		}
 	}
-	for _, f := range initial { // 遍历感染源
+	for _, f := range initial {
 		dfs(f, f)
 	}
-	for _, inits := range counter {
-		if len(inits) == 1 { // clean 节点只有一个传染源
-			initGraph[inits[0]]++ // 被感染的节点，传播给其他节点的数量
+	set := make([]int, n)
+	for _, c := range counter {
+		if len(c) == 1 { // 只被一个感染源感染的节点
+			set[c[0]]++ // 统计感染源可感染的节点总数
 		}
 	}
-	for _, i := range initial {
-		if initGraph[i] > cnt { // 寻找最大传染数的节点
-			cnt, id = initGraph[i], i
+	for _, v := range initial {
+		if set[v] > cnt || set[v] == cnt && v < ret {
+			ret, cnt = v, set[v] // 找出最大感染源
 		}
 	}
-	return id
+	return ret
+
+	//if len(initial) == 1 { // fast path
+	//	return initial[0]
+	//}
+	//sort.Ints(initial)               // 节点可能不是有序的
+	//id, cnt, n := -1, -1, len(graph) // 初始化 id & cnt
+	//var (
+	//	clean     = make([]int, n)   // 标记感染源 / clean 节点
+	//	visited   = make([]int, n)   // 标记本次 dfs 节点是否已访问
+	//	counter   = make([][]int, n) // clean 节点的感染源
+	//	initGraph = make([]int, n)   // 感染源节点直接感染的节点（只被这个感染源感染了）的数目
+	//)
+	//for i := range visited { // 初始化 visited
+	//	visited[i] = -1
+	//}
+	//for _, init := range initial { // 标记感染源
+	//	clean[init] = 1
+	//}
+	//var dfs func(int, int)
+	//dfs = func(f, cur int) {
+	//	for i := 0; i < n; i++ { // 遍历：感染源直接感染的节点
+	//		if graph[cur][i] == 1 && clean[i] == 0 && visited[i] != f {
+	//			visited[i] = f
+	//			counter[i] = append(counter[i], f) // 被感染节点：感染源
+	//			dfs(f, i)
+	//		}
+	//	}
+	//}
+	//for _, f := range initial { // 遍历感染源
+	//	dfs(f, f)
+	//}
+	//for _, inits := range counter {
+	//	if len(inits) == 1 { // clean 节点只有一个传染源
+	//		initGraph[inits[0]]++ // 被感染的节点，传播给其他节点的数量
+	//	}
+	//}
+	//for _, i := range initial {
+	//	if initGraph[i] > cnt { // 寻找最大传染数的节点
+	//		cnt, id = initGraph[i], i
+	//	}
+	//}
+	//return id
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
