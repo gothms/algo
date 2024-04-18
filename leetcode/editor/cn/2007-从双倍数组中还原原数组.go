@@ -59,30 +59,51 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func findOriginalArray(changed []int) []int {
 	n := len(changed)
-	if n&1 == 1 { // fast path
+	if n&1 == 1 {
 		return nil
 	}
-	memo := make(map[int]int, len(changed))
+	ret, memo := make([]int, 0, n>>1), make(map[int]int, n)
 	for _, v := range changed {
-		memo[v]++ // 记录
+		memo[v]++
 	}
-	sort.Ints(changed) // 排序 to 贪心
-	ret := make([]int, 0, n>>1)
-	for i := 0; i < n; i++ {
-		if memo[changed[i]] == 0 {
-			continue
+	sort.Ints(changed) // 排序
+	for _, v := range changed {
+		if memo[v] > 0 {
+			memo[v]--
+			memo[v<<1]--
+			if memo[v<<1] < 0 { // 失败
+				return nil
+			}
+			ret = append(ret, v)
 		}
-		memo[changed[i]<<1]--                                // 2倍数 -1
-		memo[changed[i]]--                                   // 小数 -1
-		if memo[changed[i]<<1] < 0 || memo[changed[i]] < 0 { // 贪心失败
-			return nil
-		}
-		ret = append(ret, changed[i])
-		//if len(ret) == cap(ret) { // 找到结果
-		//	break
-		//}
 	}
 	return ret
+
+	//n := len(changed)
+	//if n&1 == 1 { // fast path
+	//	return nil
+	//}
+	//memo := make(map[int]int, len(changed))
+	//for _, v := range changed {
+	//	memo[v]++ // 记录
+	//}
+	//sort.Ints(changed) // 排序 to 贪心
+	//ret := make([]int, 0, n>>1)
+	//for i := 0; i < n; i++ {
+	//	if memo[changed[i]] == 0 {
+	//		continue
+	//	}
+	//	memo[changed[i]<<1]--                                // 2倍数 -1
+	//	memo[changed[i]]--                                   // 小数 -1
+	//	if memo[changed[i]<<1] < 0 || memo[changed[i]] < 0 { // 贪心失败
+	//		return nil
+	//	}
+	//	ret = append(ret, changed[i])
+	//	//if len(ret) == cap(ret) { // 找到结果
+	//	//	break
+	//	//}
+	//}
+	//return ret
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
