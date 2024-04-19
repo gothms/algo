@@ -94,27 +94,57 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func maxOutput(n int, edges [][]int, price []int) int64 {
 	// 树形 dp
-	//adj := make([][]int, n)
-	//for _, e := range edges {
-	//	adj[e[0]] = append(adj[e[0]], e[1])
-	//	adj[e[1]] = append(adj[e[1]], e[0])
-	//}
-	//var ret int
-	//var dfs func(int, int) (int, int)
-	//dfs = func(f, t int) (int, int) {
-	//	var ma, maLeaf = 0, price[t] // 不带叶子，带叶子
-	//	for _, i := range adj[t] {
-	//		if i != f {
-	//			m, ml := dfs(t, i)
-	//			ret = max(ret, max(ma+ml, maLeaf+m))
-	//			ma = max(ma, m+price[t])
-	//			maLeaf = max(maLeaf, ml+price[t])
-	//		}
-	//	}
-	//	return ma, maLeaf
-	//}
-	//dfs(-1, 0)
-	//return int64(ret)
+	adj := make([][]int, n)
+	for _, e := range edges {
+		adj[e[0]] = append(adj[e[0]], e[1])
+		adj[e[1]] = append(adj[e[1]], e[0])
+	}
+	var ret int
+	var dfs func(int, int) (int, int)
+	dfs = func(f, t int) (int, int) {
+		path, leaf := 0, price[t]  // 不带叶子，带叶子
+		for _, i := range adj[t] { // 第一个子树，子树+t；第二个子树开始，子树+子树
+			if i != f {
+				p, l := dfs(t, i)
+				ret = max(ret, max(path+l, leaf+p))
+				//fmt.Println(t, i, p, l, path, leaf, ret)
+				path = max(path, p+price[t]) // 第二个子树开始，子树+子树。所以需要连接 t
+				leaf = max(leaf, l+price[t])
+			}
+		}
+		//fmt.Println(t, path, leaf, ret)
+		return path, leaf
+	}
+	dfs(-1, 0)
+	return int64(ret)
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func maxOutput_0(n int, edges [][]int, price []int) int64 {
+	// https: //leetcode.cn/problems/difference-between-maximum-and-minimum-price-sum/solutions/2062782/by-endlesscheng-5l70/
+	// 树形 dp
+	adj := make([][]int, n)
+	for _, e := range edges {
+		adj[e[0]] = append(adj[e[0]], e[1])
+		adj[e[1]] = append(adj[e[1]], e[0])
+	}
+	var ret int
+	var dfs func(int, int) (int, int)
+	dfs = func(f, t int) (int, int) {
+		var ma, maLeaf = 0, price[t] // 不带叶子，带叶子
+		for _, i := range adj[t] {
+			if i != f {
+				m, ml := dfs(t, i)
+				ret = max(ret, max(ma+ml, maLeaf+m))
+				ma = max(ma, m+price[t])
+				maLeaf = max(maLeaf, ml+price[t])
+			}
+		}
+		return ma, maLeaf
+	}
+	dfs(-1, 0)
+	return int64(ret)
 
 	// bfs：错误，因为“直径和”最大的路径，不一定是去题解所求的最大开销
 	// 示例：[[0,1],[1,2],[1,3],[3,4],[3,5]]，[99,8,7,6,100,58]，结果 114
@@ -171,46 +201,46 @@ func maxOutput(n int, edges [][]int, price []int) int64 {
 	//return int64(ret)
 
 	// bfs
-	adj := make([][]int, n)
-	for _, e := range edges {
-		adj[e[0]] = append(adj[e[0]], e[1])
-		adj[e[1]] = append(adj[e[1]], e[0])
-	}
-	d, ds, dt := make([]int, n), make([]int, n), make([]int, n)
-	path := make([]int, n)
-	var bfs func(int, []int) int
-	bfs = func(s int, d []int) int {
-		t := -1
-		vis := make([]bool, n)
-		d[s], vis[s] = price[s], true // 起始点
-		for q := []int{s}; len(q) > 0; q = q[1:] {
-			x := q[0]
-			if t == -1 || d[t] < d[x] {
-				t = x
-			}
-			for _, y := range adj[x] {
-				if !vis[y] {
-					vis[y] = true
-					q = append(q, y)
-					d[y] = d[x] + price[y]
-					path[y] = x
-				}
-			}
-		}
-		return t
-	}
-	s := bfs(0, d)  // 找到 “直径”的一个端点
-	t := bfs(s, ds) // 遍历“直径”
-	if t != 0 {     // 反向遍历“直径”
-		path = make([]int, n)
-		bfs(t, dt)
-		d = dt
-	}
-	var ret int
-	for i := 0; i < n; i++ {
-		ret = max(ret, max(d[i], ds[i])-price[i]) // 枚举 root
-	}
-	return int64(ret)
+	//adj := make([][]int, n)
+	//for _, e := range edges {
+	//	adj[e[0]] = append(adj[e[0]], e[1])
+	//	adj[e[1]] = append(adj[e[1]], e[0])
+	//}
+	//d, ds, dt := make([]int, n), make([]int, n), make([]int, n)
+	//path := make([]int, n)
+	//var bfs func(int, []int) int
+	//bfs = func(s int, d []int) int {
+	//	t := -1
+	//	vis := make([]bool, n)
+	//	d[s], vis[s] = price[s], true // 起始点
+	//	for q := []int{s}; len(q) > 0; q = q[1:] {
+	//		x := q[0]
+	//		if t == -1 || d[t] < d[x] {
+	//			t = x
+	//		}
+	//		for _, y := range adj[x] {
+	//			if !vis[y] {
+	//				vis[y] = true
+	//				q = append(q, y)
+	//				d[y] = d[x] + price[y]
+	//				path[y] = x
+	//			}
+	//		}
+	//	}
+	//	return t
+	//}
+	//s := bfs(0, d)  // 找到 “直径”的一个端点
+	//t := bfs(s, ds) // 遍历“直径”
+	//if t != 0 {     // 反向遍历“直径”
+	//	path = make([]int, n)
+	//	bfs(t, dt)
+	//	d = dt
+	//}
+	//var ret int
+	//for i := 0; i < n; i++ {
+	//	ret = max(ret, max(d[i], ds[i])-price[i]) // 枚举 root
+	//}
+	//return int64(ret)
 
 	// 树形 dp
 	//maxVal := func(a, b int) int {
@@ -290,5 +320,3 @@ func maxOutput(n int, edges [][]int, price []int) int64 {
 	//}
 	//return mo
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

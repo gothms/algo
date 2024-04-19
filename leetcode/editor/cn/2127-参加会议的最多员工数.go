@@ -66,9 +66,9 @@ import "fmt"
 
 func main() {
 	favorite := []int{3, 0, 1, 4, 1} // 4
-	favorite = []int{1, 0, 3, 2, 5, 6, 7, 4, 9, 8, 11, 10, 11, 12, 10}
-	favorite = []int{1, 0, 0, 2, 1, 4, 7, 8, 9, 6, 7, 10, 8}
-	invitations := maximumInvitations(favorite)	// 6
+	//favorite = []int{1, 0, 3, 2, 5, 6, 7, 4, 9, 8, 11, 10, 11, 12, 10}
+	//favorite = []int{1, 0, 0, 2, 1, 4, 7, 8, 9, 6, 7, 10, 8}
+	invitations := maximumInvitations(favorite) // 6
 	fmt.Println()
 	fmt.Println(invitations)
 }
@@ -83,48 +83,46 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func maximumInvitations(favorite []int) int {
-	//
-	maxVal := func(a, b int) int {
-		if b > a {
-			return b
-		}
-		return a
-	}
-	maxRing, chainSum, n := 0, 0, len(favorite)
-	kahn, queue, depth := make([]int, n), make([]int, 0), make([]int, n)
+	// 内向基环树
+	circle, chain, n := 0, 0, len(favorite)
+	var (
+		kahn = make([]int, n)
+		leaf = make([]int, n)
+		q    = make([]int, 0)
+	)
 	for _, f := range favorite {
 		kahn[f]++
 	}
-	for i, c := range kahn {
-		if c == 0 {
-			queue = append(queue, i)
+	for i, k := range kahn {
+		if k == 0 {
+			q = append(q, i)
 		}
 	}
-	for ; len(queue) > 0; queue = queue[1:] {
-		f := queue[0]
-		depth[f]++
+	for ; len(q) > 0; q = q[1:] {
+		f := q[0]
 		t := favorite[f]
-		depth[t] = maxVal(depth[t], depth[f])
-		if kahn[t]--; kahn[t] == 0 {
-			queue = append(queue, t)
+		leaf[t] = max(leaf[t], leaf[f]+1)
+		kahn[t]--
+		if kahn[t] == 0 {
+			q = append(q, t)
 		}
 	}
-	for i, c := range kahn {
-		if c == 0 {
+	for i, k := range kahn {
+		if k == 0 {
 			continue
 		}
-		ring := 1
-		for t := favorite[i]; t != i; t = favorite[t] {
-			kahn[t] = 0
-			ring++
+		size := 1
+		for c := favorite[i]; c != i; c = favorite[c] {
+			size++
+			kahn[c] = 0
 		}
-		if ring == 2 {
-			chainSum += 2 + depth[i] + depth[favorite[i]]
+		if size == 2 {
+			chain += 2 + leaf[i] + leaf[favorite[i]]
 		} else {
-			maxRing = maxVal(maxRing, ring)
+			circle = max(circle, size)
 		}
 	}
-	return maxVal(maxRing, chainSum)
+	return max(circle, chain)
 
 	// 内向基环树
 	//maxVal := func(a, b int) int {
@@ -211,32 +209,31 @@ func maximumInvitations(favorite []int) int {
 	//	}
 	//	fmt.Println(cache)
 	//	return cnt
-	//}
-
-	//func checkCircle(favorite []int) int {
-	//	// 拓扑排序：检测环
-	//	n := len(favorite)
-	//	visited := make([]int, n)
-	//	var dfs func(int) bool
-	//	dfs = func(i int) bool {
-	//		if visited[i] != 0 {
-	//			return visited[i] == 1
-	//		}
-	//		visited[i] = -1
-	//		fmt.Print("->", i)
-	//		if !dfs(favorite[i]) { // 环
-	//			return false
-	//		}
-	//		visited[i] = 1
-	//		return true
-	//	}
-	//	for i := 0; i < n; i++ {
-	//		if visited[i] == 0 && !dfs(i) {
-	//			return i // 有环
-	//		}
-	//		fmt.Println()
-	//	}
-	//	return -1
 }
 
-//leetcode submit region end(Prohibit modification and deletion)
+// leetcode submit region end(Prohibit modification and deletion)
+func checkCircle(favorite []int) int {
+	// 拓扑排序：检测环
+	n := len(favorite)
+	visited := make([]int, n)
+	var dfs func(int) bool
+	dfs = func(i int) bool {
+		if visited[i] != 0 {
+			return visited[i] == 1
+		}
+		visited[i] = -1
+		fmt.Print("->", i)
+		if !dfs(favorite[i]) { // 环
+			return false
+		}
+		visited[i] = 1
+		return true
+	}
+	for i := 0; i < n; i++ {
+		if visited[i] == 0 && !dfs(i) {
+			return i // 有环
+		}
+		fmt.Println()
+	}
+	return -1
+}

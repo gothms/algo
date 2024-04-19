@@ -30,18 +30,26 @@ func Basis(x, n int) int {
 	if ^x&x == 0 {
 		// forever true
 	}
-	if x == ^x+1 {
+	if -x == ^x+1 {
 		// forever true
 	}
 	y = x & (x - 1) // 清零最低位的 1
 	y = x & -x      // 得到最低位的 1
 
-	y = x | (x + 1)  // 最低位的0，变1
-	y = ^x & (x + 1) // 取出最低位的0，用1标识
+	y = x | (x + 1)  // 最低位的 0，变 1
+	y = ^x & (x + 1) // 取出最低位的 0，用 1 标识
 	y = (x + 1) &^ x // 同上
 
 	return y
 }
+
+// 正数：1
+// 0：-1
+// 负数：-1
+func format(x int) int {
+	return (x-1)>>31 + 1
+}
+
 func api() int {
 	var x uint = 4
 	y := bits.LeadingZeros(x) // 61
