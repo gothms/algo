@@ -60,36 +60,67 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func computeSimilarities(docs [][]int) []string {
-	// 原理：求 n 个集合之间的交集元素个数：https://leetcode.cn/problems/sparse-similarity-lcci/solutions/298148/c-yuan-shu-jie-fa-shi-xian-ha-xi-biao-by-wen-zhong/
 	n := len(docs)
-	d2d, mp := make([][]int, n-1), make(map[int][]int)
+	memo := make(map[int][]int) // 开始计算：交集
 	for i, doc := range docs {
-		for _, d := range doc {
-			mp[d] = append(mp[d], i) // 元素：出现的集合
+		for _, v := range doc {
+			memo[v] = append(memo[v], i)
 		}
 	}
-	//fmt.Println(mp)
+	mixed := make([][]int, n-1)
 	for i := 0; i < n-1; i++ {
-		d2d[i] = make([]int, n)
+		mixed[i] = make([]int, n)
 	}
-	for _, v := range mp {
-		for i := 0; i < len(v)-1; i++ {
-			for j := i + 1; j < len(v); j++ {
-				d2d[v[i]][v[j]]++ // 统计交集数
+	for _, m := range memo {
+		if l := len(m) - 1; l > 0 {
+			for i := 0; i < l; i++ {
+				for j := i + 1; j <= l; j++ {
+					mixed[m[i]][m[j]]++
+				}
 			}
 		}
-	}
-	//fmt.Println(d2d)
+	} // 结束计算：交集
 	ret := make([]string, 0)
-	for i := 0; i < n-1; i++ {
+	for i := range mixed {
 		for j := i + 1; j < n; j++ {
-			if d := d2d[i][j]; d > 0 { // 集合 i 和 j 之间，交集的个数
-				v := float64(d) / float64(len(docs[i])+len(docs[j])-d)
+			if c := mixed[i][j]; c > 0 {
+				v := float64(c) / float64(len(docs[i])+len(docs[j])-c)
 				ret = append(ret, strconv.Itoa(i)+","+strconv.Itoa(j)+": "+fmt.Sprintf("%.4f", v+1e-9))
 			} // 格式化修正：+1e-9
 		}
 	}
 	return ret
+
+	// 原理：求 n 个集合之间的交集元素个数：https://leetcode.cn/problems/sparse-similarity-lcci/solutions/298148/c-yuan-shu-jie-fa-shi-xian-ha-xi-biao-by-wen-zhong/
+	//n := len(docs)
+	//d2d, mp := make([][]int, n-1), make(map[int][]int)
+	//for i, doc := range docs {
+	//	for _, d := range doc {
+	//		mp[d] = append(mp[d], i) // 元素：出现的集合
+	//	}
+	//}
+	////fmt.Println(mp)
+	//for i := 0; i < n-1; i++ {
+	//	d2d[i] = make([]int, n)
+	//}
+	//for _, v := range mp {
+	//	for i := 0; i < len(v)-1; i++ {
+	//		for j := i + 1; j < len(v); j++ {
+	//			d2d[v[i]][v[j]]++ // 统计交集数
+	//		}
+	//	}
+	//}
+	////fmt.Println(d2d)
+	//ret := make([]string, 0)
+	//for i := 0; i < n-1; i++ {
+	//	for j := i + 1; j < n; j++ {
+	//		if d := d2d[i][j]; d > 0 { // 集合 i 和 j 之间，交集的个数
+	//			v := float64(d) / float64(len(docs[i])+len(docs[j])-d)
+	//			ret = append(ret, strconv.Itoa(i)+","+strconv.Itoa(j)+": "+fmt.Sprintf("%.4f", v+1e-9))
+	//		} // 格式化修正：+1e-9
+	//	}
+	//}
+	//return ret
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
