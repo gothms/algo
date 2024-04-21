@@ -46,17 +46,56 @@ func main() {
  * }
  */
 func isPalindrome(head *ListNode) bool {
-	var dfs func(*ListNode) bool
-	dfs = func(cur *ListNode) bool { // 相对于 LCR 027 的解法，重复比对了一遍
-		if cur != nil { // 继续遍历结点
-			if !dfs(cur.Next) || cur.Val != head.Val { // 已经不匹配，或当前结点不匹配
-				return false
-			}
-			head = head.Next // dfs 从尾往头，head 从头往尾
+	// dfs 1：LCR 027
+	var mid *ListNode
+	var dfs func(*ListNode, *ListNode) bool
+	dfs = func(slow, fast *ListNode) bool {
+		if fast == nil || fast.Next == nil {
+			return true
 		}
-		return true
+		slow, fast = slow.Next, fast.Next.Next
+		if !dfs(slow, fast) {
+			return false
+		}
+		if mid == nil {
+			if fast == nil {
+				mid = slow.Next
+			} else {
+				mid = slow.Next.Next
+			}
+		}
+		ret := slow.Val == mid.Val
+		mid = mid.Next
+		return ret
 	}
-	return dfs(head)
+	return dfs(&ListNode{Next: head}, head) // 保证 slow 慢一拍，才能回溯到 slow.Val
+
+	// dfs 0
+	//cur := head
+	//var dfs func(*ListNode) bool
+	//dfs = func(h *ListNode) bool {
+	//	if h == nil {
+	//		return true
+	//	}
+	//	if !dfs(h.Next) || cur.Val != h.Val {
+	//		return false
+	//	}
+	//	cur = cur.Next
+	//	return true
+	//}
+	//return dfs(head)
+
+	//var dfs func(*ListNode) bool
+	//dfs = func(cur *ListNode) bool { // 相对于 LCR 027 的解法，重复比对了一遍
+	//	if cur != nil { // 继续遍历结点
+	//		if !dfs(cur.Next) || cur.Val != head.Val { // 已经不匹配，或当前结点不匹配
+	//			return false
+	//		}
+	//		head = head.Next // dfs 从尾往头，head 从头往尾
+	//	}
+	//	return true
+	//}
+	//return dfs(head)
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

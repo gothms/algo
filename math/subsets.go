@@ -2,6 +2,7 @@ package math
 
 import (
 	"fmt"
+	"slices"
 	"sort"
 )
 
@@ -50,7 +51,7 @@ func SubsetsSlow(nums []int) [][]int {
 			}
 			idx++
 		}
-		ret[i] = append([]int(nil), arr...) // O(n)：每次都要拷贝数组
+		ret[i] = slices.Clone(arr) // O(n)：每次都要拷贝数组
 		arr = arr[:0]
 	}
 	return ret
@@ -66,7 +67,7 @@ func SubsetsDFS(nums []int) [][]int {
 	var dfs func(int)
 	dfs = func(i int) {
 		if i == n {
-			ret = append(ret, append([]int(nil), arr...))
+			ret = append(ret, slices.Clone(arr))
 			return
 		}
 		dfs(i + 1)
@@ -99,7 +100,7 @@ out:
 				temp = append(temp, nums[j])
 			}
 		}
-		ret = append(ret, append([]int(nil), temp...))
+		ret = append(ret, slices.Clone(temp))
 		temp = temp[:0]
 	}
 	return ret
@@ -115,7 +116,7 @@ func SubsetsWithDupDFS(nums []int) [][]int {
 	cnt := 0
 	dfs = func(i int) {
 		if i == n {
-			ret = append(ret, append([]int(nil), temp...))
+			ret = append(ret, slices.Clone(temp))
 			return
 		}
 		cnt++
@@ -136,38 +137,43 @@ func SubsetsWithDupDFS(nums []int) [][]int {
 // SubsetsAndCombineCounter 整数数组 arr 中可能包含重复元素，返回该数组所有可能的组合的总数
 func SubsetsAndCombineCounter(arr []int) int {
 	sort.Ints(arr) // 必须排序
-	dp, cur, n := 1, 1, len(arr)
+	//dp, cur, n := 0, 0, len(arr) // i := 0 开始遍历，但需要判断 i > 0
+	dp, cur, n := 1, 1, len(arr) // i := 1 开始遍历
 	for i := 1; i < n; i++ {
 		if arr[i] == arr[i-1] { // 相同：在 arr[i-1] 结尾的结果集后面追加 arr[i]
 			dp += cur
-		} else { // 不相同：在所有结果集后面追加 arr[i]，并添加 {arr[i]}
-			cur = dp + 1
-			dp += dp + 1
+		} else { // 不相同：在所有结果集后面追加 arr[i]，并添加单元素的组合 {arr[i]}
+			cur = dp + 1 // 包含 arr[i] 组合的总数
+			dp += dp + 1 // 所有组合的累加
 		}
 	}
 	return dp
 
-	// Hash：代替排序
+	// Hash 代替排序：适用于重复元素很多时
+	//counts := make(map[int]int)
+	//for _, v := range arr {
+	//	counts[v]++
+	//}
+	//dp, cur := 0, 0
+	//for _, cnt := range counts {
+	//	cur = dp + 1
+	//	dp += cur * cnt
+	//}
+	//return dp
 }
 
 // SubsetsAndCombineCounterK 整数数组 arr 中可能包含重复元素，返回该数组所有可能的长度为 k 的组合的总数
 func SubsetsAndCombineCounterK(arr []int, k int) int {
-	minVal := func(a, b int) int {
-		if b < a {
-			return b
-		}
-		return a
-	}
 	counts := make(map[int]int)
 	for _, v := range arr {
 		counts[v]++ // 统计每个字母的出现次数
 	}
 	dp := make([]int, k+1)
 	dp[0] = 1                    // 构造空序列的方案数
-	for _, cnt := range counts { // 枚举第 i 种字母
-		for i := k; i > 0; i-- { // 枚举序列长度 i
-			for j := 1; j <= minVal(i, cnt); j++ { // 枚举第 i 种字母选了 j 个，注意 j=0 已经在 dp[i] 中选择过
-				dp[i] += dp[i-j] // 长度为 i，选出 j 个位置放置字母 "i"
+	for _, cnt := range counts { // 枚举第 x 种字母
+		for i := k; i > 0; i-- { // 枚举序列长度 i，但长度限制为 k（注意：j=0 表示选择 0 个 x 字母，已经在选择第 x-1 种字母时计算）
+			for j := 1; j <= min(i, cnt); j++ { // 枚举第 x 种字母选了 j 个，最多选择 i / cnt 个
+				dp[i] += dp[i-j] // 长度为 i，选出 j 个位置放置字母 x
 			}
 		}
 	}
@@ -176,32 +182,40 @@ func SubsetsAndCombineCounterK(arr []int, k int) int {
 }
 
 // ====================子集 & 排列：重复元素====================
+// SubsetsAndPermute & SubsetsAndPermuteCounter 两者题意相同，所求不同
+// 另参考 permute.go 的函数 PermuteUnique
 
 // SubsetsAndPermute 整数数组 arr 中可能包含重复元素，返回该数组所有可能的子集（幂集）的排列
 func SubsetsAndPermute(arr []int) [][]int {
+	//now := time.Now()
 	sort.Ints(arr)
 	n := len(arr)
 	ret := make([][]int, 0)
 	temp := make([]int, 0, n)
 	visited := make([]bool, n) // 标识某位是否已选择
 	var dfs func()
-	cnt := 0
+	//cnt := 0
 	dfs = func() {
+		if len(temp) == n { // 所有不重复的全排列
+			ret = append(ret, slices.Clone(temp))
+			return
+		}
 		for i := 0; i < n; i++ {
 			if visited[i] || i > 0 && !visited[i-1] && arr[i] == arr[i-1] {
 				continue // 相同数字：第一次出现被标识选择了，后面才继续选择
 			}
-			cnt++
+			//cnt++
 			visited[i] = true
 			temp = append(temp, arr[i])
-			ret = append(ret, append([]int(nil), temp...))
+			//ret = append(ret, slices.Clone(temp))
 			dfs()
 			visited[i] = false // 回溯
 			temp = temp[:len(temp)-1]
 		}
 	}
 	dfs()
-	fmt.Println("SubsetsAndPermute cnt:", cnt)
+	//fmt.Println(time.Since(now))
+	//fmt.Println("SubsetsAndPermute cnt:", cnt)
 	return ret
 }
 
@@ -223,12 +237,6 @@ func init() { // 预处理组合数
 
 // SubsetsAndPermuteCounter 整数数组 arr 中可能包含重复元素，返回该数组所有可能的子集（幂集）的排列的总数
 func SubsetsAndPermuteCounter(arr []int) int {
-	minVal := func(a, b int) int {
-		if b < a {
-			return b
-		}
-		return a
-	}
 	counts := make(map[int]int)
 	for _, v := range arr {
 		counts[v]++ // 统计每个字母的出现次数
@@ -236,11 +244,11 @@ func SubsetsAndPermuteCounter(arr []int) int {
 	dp := make([]int, len(arr)+1)
 	dp[0] = 1 // 构造空序列的方案数
 	ret, sum := 0, 0
-	for _, cnt := range counts { // 枚举第 i 种字母
-		sum += cnt
-		for i := sum; i > 0; i-- { // 枚举序列长度 i
-			for j := 1; j <= minVal(i, cnt); j++ { // 枚举第 i 种字母选了 j 个，注意 j=0 已经在 dp[i] 中选择过
-				dp[i] += dp[i-j] * comb[i][j] // 长度为 i，选出 j 个位置放置字母 "i"
+	for _, cnt := range counts { // 枚举第 x 种字母
+		sum += cnt                 // 当前总长度
+		for i := sum; i > 0; i-- { // 枚举序列长度 i（注意：j=0 表示选择 0 个 x 字母，已经在选择第 x-1 种字母时计算）
+			for j := 1; j <= min(i, cnt); j++ { // 枚举第 x 种字母选了 j 个，最多选择 i / cnt 个
+				dp[i] += dp[i-j] * comb[i][j] // 长度为 i，选出 j 个位置放置字母 x
 			}
 		}
 	}

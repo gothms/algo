@@ -65,6 +65,8 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func fallingSquares(positions [][]int) []int {
+	// 线段树：动态开点
+
 	// 有序集合：treemap
 
 	// 暴力枚举
@@ -148,72 +150,6 @@ func fallingSquares(positions [][]int) []int {
 	//	ret[i] = hMax
 	//}
 	//return ret
-
-	// lc：线段树 AC
-	// 不 out of memory 的关键是：动态开点
-	//root, MAX_RANGE := &SegmentNode{nil, nil, 0, 0}, 1_000_000_000
-	//ans := make([]int, 0, len(positions))
-	//for _, pos := range positions {
-	//	left, right := pos[0], pos[0]+pos[1]-1
-	//	cur := root.query(0, MAX_RANGE, left, right)
-	//	root.update(0, MAX_RANGE, left, right, cur+pos[1])
-	//	ans = append(ans, root.Val)
-	//}
-	//return ans
-}
-
-type SegmentNode struct {
-	Ls, Rs   *SegmentNode
-	Val, Add int
-}
-
-func (node *SegmentNode) update(lc int, rc int, l int, r int, v int) {
-	if l <= lc && rc <= r {
-		node.Val, node.Add = v, v
-		return
-	}
-	//node.pushdown()
-	mid := (lc + rc) >> 1
-	if l <= mid {
-		node.Ls.update(lc, mid, l, r, v)
-	}
-	if r > mid {
-		node.Rs.update(mid+1, rc, l, r, v)
-	}
-	node.pushup()
-}
-
-func (node *SegmentNode) query(lc int, rc int, l int, r int) (ans int) {
-	if l <= lc && rc <= r {
-		return node.Val
-	}
-	node.pushdown()
-	mid := (lc + rc) >> 1
-	if l <= mid {
-		ans = node.Ls.query(lc, mid, l, r)
-	}
-	if r > mid {
-		ans = max(ans, node.Rs.query(mid+1, rc, l, r))
-	}
-	return
-}
-
-func (node *SegmentNode) pushup() {
-	node.Val = max(node.Ls.Val, node.Rs.Val)
-}
-
-func (node *SegmentNode) pushdown() {
-	if node.Ls == nil {
-		node.Ls = &SegmentNode{nil, nil, 0, 0}
-	}
-	if node.Rs == nil {
-		node.Rs = &SegmentNode{nil, nil, 0, 0}
-	}
-	if node.Add == 0 {
-		return
-	}
-	node.Ls.Val, node.Ls.Add, node.Rs.Val, node.Rs.Add = node.Add, node.Add, node.Add, node.Add
-	node.Add = 0
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

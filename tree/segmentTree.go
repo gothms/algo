@@ -40,13 +40,23 @@ Segment Tree
 	线段树的初始化长度，以及长度修正
 	懒惰标记
 	“全量”更新
-	out of memory 和 动态创建节点
+	动态开点（out of memory）
 
 lc
 	2493
 	1157
 	2916：长度修正
 	699：“全量”更新、out of memory 和 动态开点
+
+https://leetcode.cn/problems/range-module/solutions/1612955/by-lfool-eo50/
+	729. 我的日程安排表 I
+	731. 我的日程安排表 II
+	732. 我的日程安排表 III
+	715. Range 模块
+	307. 区域和检索 - 数组可修改
+	933. 最近的请求次数
+	699. 掉落的方块
+	6206. 最长递增子序列 II
 
 测试
 	E:\gothmslee\algo\main\tree.go
@@ -163,4 +173,68 @@ func lazyDown(l, m, r int, i, idx int, st, lazy []int) { // 封装方法，下�
 	lazy[idx] += lazy[i]
 	lazy[idx+1] += lazy[i]
 	lazy[i] = 0
+}
+
+// ====================线段树，模板代码（动态开点）====================
+// 基于求区间和，及对区间进行更新
+type stNode struct {
+	left, right *stNode
+	v           int
+	d           int // 懒惰标记：增量
+}
+
+// STUpdateNode 更新区间，增量为 d
+// const stN = 1e9，区间常取 [1, stN]
+func STUpdateNode(f, t, l, r, d int, cur *stNode) {
+	if f <= l && r <= t {
+		cur.v += d * (r - l + 1)
+		cur.d += d
+		return
+	}
+	m := (l + r) >> 1
+	nodeDown(cur, m-l+1, r-m) // 下推：lazy 更新 d，同时防止 left / right = nil
+	if f <= m {
+		STUpdateNode(f, t, l, m, d, cur.left)
+	}
+	if t > m {
+		STUpdateNode(f, t, m+1, r, d, cur.right)
+	}
+	nodeUp(cur) // 向上更新
+}
+
+// STRangeNode 查询区间和
+func STRangeNode(f, t, l, r int, cur *stNode) int {
+	if f <= l && r <= t {
+		// TODO
+		return cur.v
+	}
+	m, ret := (l+r)>>1, 0
+	nodeDown(cur, m-l+1, r-m)
+	if f <= m {
+		ret = STRangeNode(f, t, l, m, cur.left)
+	}
+	if t > m {
+		ret += STRangeNode(f, t, m+1, r, cur.right)
+	}
+	return ret
+}
+func nodeDown(cur *stNode, ll, rl int) {
+	if cur.left == nil {
+		cur.left = &stNode{}
+	}
+	if cur.right == nil {
+		cur.right = &stNode{}
+	}
+	if cur.d == 0 {
+		return
+	}
+	// TODO 区间
+	cur.left.v += cur.d * ll
+	cur.right.v += cur.d * rl
+	cur.left.d += cur.d // 更新子区间，下推懒惰标记（累加）
+	cur.right.d += cur.d
+	cur.d = 0
+}
+func nodeUp(cur *stNode) {
+	cur.v = cur.left.v + cur.right.v
 }

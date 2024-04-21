@@ -1,5 +1,9 @@
 package math
 
+import (
+	"slices"
+)
+
 /*
 组合 & 排列 & 子集
 元素不重复				组合			排列			子集
@@ -15,10 +19,11 @@ package math
 		SubsetsAndPermuteCounter：所有子集的全排列总数
 		SubsetsAndCombineCounterK：长度为 k 的组合总数
 		SubsetsAndCombineCounter：所有子集的总数
+		以上 3 个函数都在 subsets.go
 
 排列
 	46
-	47
+	47：同 1079
 	60
 	784
 
@@ -46,7 +51,7 @@ func Permute(nums []int) [][]int {
 	var dfs func(int)
 	dfs = func(i int) {
 		if i == n { // i == n：最后一轮分支数为 1
-			ret = append(ret, append([]int(nil), nums...))
+			ret = append(ret, slices.Clone(nums))
 			return
 		}
 		dfs(i + 1) // 分支：n*(n-1)*(n-2)*...*1
@@ -68,7 +73,7 @@ func PermuteDFS(nums []int) [][]int {
 	var dfs func(int)
 	dfs = func(i int) {
 		if i == n {
-			ret = append(ret, append([]int(nil), path...))
+			ret = append(ret, slices.Clone(path))
 			return
 		}
 		for j, b := range visited { // 寻找下一个要选的数
@@ -97,11 +102,12 @@ func PermuteK(nums []int, k int) [][]int {
 	var dfs func(int)
 	dfs = func(i int) {
 		if i == k {
-			ret = append(ret, append([]int(nil), nums[:k]...))
+			ret = append(ret, slices.Clone(nums[:k]))
 			return
 		}
 		dfs(i + 1)
-		for j := i + 1; j < n; j++ {
+		//for j := i + 1; j < n; j++ {
+		for j := min(i+1, k); j < n; j++ { // 剪枝：min(i+1, k)
 			nums[i], nums[j] = nums[j], nums[i]
 			dfs(i + 1)
 			nums[i], nums[j] = nums[j], nums[i] // 回溯
@@ -126,11 +132,11 @@ func PermuteAll(nums []int) [][]int {
 		if i == n {
 			return
 		}
-		ret = append(ret, append([]int(nil), nums[:i+1]...))
+		ret = append(ret, slices.Clone(nums[:i+1]))
 		dfs(i + 1)
 		for j := i + 1; j < n; j++ {
 			nums[i], nums[j] = nums[j], nums[i]
-			ret = append(ret, append([]int(nil), nums[:i+1]...))
+			ret = append(ret, slices.Clone(nums[:i+1]))
 			dfs(i + 1)
 			nums[i], nums[j] = nums[j], nums[i] // 回溯
 		}
@@ -140,17 +146,19 @@ func PermuteAll(nums []int) [][]int {
 }
 
 // ====================排列：重复元素====================
+// 另参考 subsets.go 的函数 SubsetsAndPermute，但 PermuteUnique 更佳
 
 // PermuteUnique 可包含重复数字的序列 nums ，按任意顺序返回所有不重复的全排列
 // 总数计算：
 // 集合长度为 n，全排列个数为 n!
 // 重复元素 a 有 x 个，则需除以 a 的全排列个数 x!
 func PermuteUnique(nums []int) [][]int {
+	//now := time.Now()
 	n := len(nums)
 	ret := make([][]int, 0)
 	check := func(i, j int) bool {
 		for ; i < j; i++ {
-			if nums[i] == nums[j] { // 存在重复元素
+			if nums[i] == nums[j] { // 以 j 为目标
 				return false
 			}
 		}
@@ -159,13 +167,18 @@ func PermuteUnique(nums []int) [][]int {
 	var dfs func(int)
 	dfs = func(i int) {
 		if i == n-1 {
-			ret = append(ret, append([]int(nil), nums...))
+			ret = append(ret, slices.Clone(nums))
 			return
 		}
-		//memo := make(map[int]bool)	// 也可以每次使用 map 记录元素：第一次出现时操作
+		//memo := make(map[int]struct{}) // 也可以每次使用 map 记录元素：第一次出现时才操作
+		//memo[nums[i]] = struct{}{}
 		dfs(i + 1) // 分支：n*(n-1)*(n-2)*...*1
 		for j := i + 1; j < n; j++ {
-			if check(i, j) { // [i,j] 存在重复元素：第一次出现时才操作
+			// 示例：[0 1 2 1 3]
+			// 0 和第一个 1 已经交换过，如果 0 和第二个 1 再交换，就出现了重复的排列
+			// 但在操作 [1 0 2 1 3] 时，0 和第二个 1 是可以交换的
+			// 效率：PermuteUnique > PermuteUniqueMemo > subsets.go SubsetsAndPermute
+			if check(i, j) { // [i,j] 存在和 j 重复的元素：即 nums[j] 在区间内第一次出现时才交换
 				nums[i], nums[j] = nums[j], nums[i]
 				dfs(i + 1)
 				nums[i], nums[j] = nums[j], nums[i] // 回溯
@@ -173,6 +186,7 @@ func PermuteUnique(nums []int) [][]int {
 		}
 	}
 	dfs(0)
+	//fmt.Println(time.Since(now))
 	return ret
 }
 
@@ -182,7 +196,7 @@ func PermuteUniqueK(nums []int, k int) [][]int {
 	ret := make([][]int, 0)
 	check := func(i, j int) bool {
 		for ; i < j; i++ {
-			if nums[i] == nums[j] { // 存在重复元素
+			if nums[i] == nums[j] { // 以 j 为目标
 				return false
 			}
 		}
@@ -191,12 +205,13 @@ func PermuteUniqueK(nums []int, k int) [][]int {
 	var dfs func(int)
 	dfs = func(i int) {
 		if i == k {
-			ret = append(ret, append([]int(nil), nums[:k]...))
+			ret = append(ret, slices.Clone(nums[:k]))
 			return
 		}
 		dfs(i + 1) // 分支：n*(n-1)*(n-2)*...*1
-		for j := i + 1; j < n; j++ {
-			if check(i, j) { // [i,j] 存在重复元素：第一次出现时才操作
+		//for j := i + 1; j < n; j++ {
+		for j := min(i+1, k); j < n; j++ { // 剪枝：min(i+1, k)
+			if check(i, j) { // [i,j] 存在和 j 重复的元素：即 nums[j] 在区间内第一次出现时才交换
 				nums[i], nums[j] = nums[j], nums[i]
 				dfs(i + 1)
 				nums[i], nums[j] = nums[j], nums[i] // 回溯

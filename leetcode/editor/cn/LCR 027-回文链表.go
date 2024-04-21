@@ -73,7 +73,7 @@ func isPalindrome(head *ListNode) bool {
 			return true
 		}
 		fast = fast.Next.Next
-		if !dfs(slow.Next, fast) { // 继续找中点
+		if !dfs(slow.Next, fast) { // 保证 slow 慢一拍，才能回溯到 slow.Val
 			return false
 		}
 		if mid == nil { // mid 只赋值一次
