@@ -1,4 +1,4 @@
-//给你单链表的头节点 head ，请你反转链表，并返回反转后的链表。
+//给定单链表的头节点 head ，请反转链表，并返回反转后的链表的头节点。
 //
 //
 //
@@ -40,7 +40,12 @@
 //
 // 进阶：链表可以选用迭代或递归方式完成反转。你能否用两种方法解决这道题？
 //
-// Related Topics 递归 链表 👍 3188 👎 0
+//
+//
+//
+// 注意：本题与主站 206 题相同： https://leetcode-cn.com/problems/reverse-linked-list/
+//
+// Related Topics 递归 链表 👍 192 👎 0
 
 package main
 
@@ -56,22 +61,23 @@ func main() {
  *     Next *ListNode
  * }
  */
-/*
-LeetCode-206
-思路：迭代
-	1.设置标兵节点 pre，pre的next节点永远是反转后链表的头
-	2.遍历链表的每个节点，同时修改一下几个指针
-		temp = curr.Next
-		curr.Next = pre.Next
-		pre.Next = curr
-		curr = temp
-*/
 func reverseList(head *ListNode) *ListNode {
-	pre := &ListNode{0, nil} // 指针需要初始化
+	// 简化
+	pre := &ListNode{} // 指针需要初始化
 	for head != nil {
-		pre.Next, head, head.Next = head, head.Next, pre.Next
+		head, head.Next, pre.Next = head.Next, pre.Next, head
 	}
 	return pre.Next
+
+	// 递归
+	//if head == nil {
+	//	return nil
+	//}
+	//pre := &ListNode{Next: head}
+	//for cur := head; cur.Next != nil; {
+	//	pre.Next, cur.Next, cur.Next.Next = cur.Next, cur.Next.Next, pre.Next
+	//}
+	//return pre.Next
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

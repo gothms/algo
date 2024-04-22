@@ -67,18 +67,40 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func combinationSum4(nums []int, target int) int {
 	// dp
-	dp := make([]int, target+1)
-	dp[0] = 1
-	for i := 1; i <= target; i++ {
-		for _, v := range nums {
-			if i >= v {
-				dp[i] += dp[i-v]
-			}
-		}
-	}
-	return dp[target]
+	//dp := make([]int, target+1)
+	//dp[0] = 1
+	//for i := 1; i <= target; i++ {
+	//	for _, v := range nums {
+	//		if i >= v {
+	//			dp[i] += dp[i-v]
+	//		}
+	//	}
+	//}
+	//return dp[target]
 
 	// 记忆化搜索
+	memo := make([]int, target+1)
+	for i := range memo {
+		memo[i] = -1 // 防止 0，否则超时
+	}
+	var dfs func(int) int
+	dfs = func(t int) int {
+		if t == 0 {
+			return 1
+		}
+		if memo[t] != -1 {
+			return memo[t]
+		}
+		ret := 0
+		for _, v := range nums {
+			if t >= v {
+				ret += dfs(t - v)
+			}
+		}
+		memo[t] = ret
+		return ret
+	}
+	return dfs(target)
 
 	// dfs：超时
 	//sort.Ints(nums)

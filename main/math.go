@@ -95,15 +95,28 @@ func main() {
 	fmt.Println("PermuteAll：", permuteK, len(permuteK))
 	//nums = []int{1, 1, 2}
 	//nums = []int{1, 2, 3, 3, 1}
-	nums = []int{1, 2, 3, 3, 1, 5, 3, 2, 4}
+	//nums = []int{1, 2, 3, 3, 1, 5, 3, 2, 4}
 	//nums = []int{1, 3, 4, 8, 10, 11, 15, 17, 18}
-	//permuteK = math.SubsetsAndPermute(nums)
-	//fmt.Println("SubsetsAndPermute：", len(permuteK))
+	nums = []int{1, 3, 4, 1, 3, 4}
+	permuteK = math.SubsetsAndPermute(nums)
+	fmt.Println("SubsetsAndPermute：", len(permuteK))
+	nums = []int{1, 3, 4, 8, 10, 11}
 	permuteK = math.PermuteUnique(nums)
-	//fmt.Println("PermuteUnique：", permuteK, len(permuteK))
+	fmt.Println("PermuteUnique：", permuteK, len(permuteK))
+	const z = 7
+	for _, p := range permuteK {
+		for i, x := range p {
+			for _, y := range p[i+1:] {
+				if x%z == y%z && x > y {
+					fmt.Println(x, y)
+				}
+			}
+		}
+	}
 	fmt.Println("PermuteUnique：", len(permuteK))
 	//permuteK = math.PermuteUniqueMemo(nums)
 	//fmt.Println("PermuteUniqueMemo：", len(permuteK))
 	permuteK = math.PermuteUniqueK(nums, k)
 	//fmt.Println("PermuteUniqueK：", permuteK, len(permuteK))
+	fmt.Println("PermuteUniqueK：", len(permuteK))
 }

@@ -178,6 +178,18 @@ func PermuteUnique(nums []int) [][]int {
 			// 0 和第一个 1 已经交换过，如果 0 和第二个 1 再交换，就出现了重复的排列
 			// 但在操作 [1 0 2 1 3] 时，0 和第二个 1 是可以交换的
 			// 效率：PermuteUnique > PermuteUniqueMemo > subsets.go SubsetsAndPermute
+			/*
+				测试：if check(i, j) 交换
+					const x = 7
+					if nums[i]%x == nums[j]%x
+					nums = []int{1, 3, 4, 8, 10, 11}
+				[1 3 4 8 10 11]：交换 1 4
+				[4 3 1 8 10 11]：交换 3 11
+				[4 11 1 8 10 3]：交换 1 10
+				[4 11 10 8 1 3]：交换 8 3
+				[4 11 10 3 1 8]
+				结论：3 和 10 被设为了同“质”的元素，但是 10 仍会被交换到 3 的前面
+			*/
 			if check(i, j) { // [i,j] 存在和 j 重复的元素：即 nums[j] 在区间内第一次出现时才交换
 				nums[i], nums[j] = nums[j], nums[i]
 				dfs(i + 1)

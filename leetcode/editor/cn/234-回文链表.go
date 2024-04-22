@@ -96,6 +96,17 @@ func isPalindrome(head *ListNode) bool {
 	//	return true
 	//}
 	//return dfs(head)
+
+	//arr := make([]int, 0)
+	//for ; head != nil; head = head.Next {
+	//	arr = append(arr, head.Val)
+	//}
+	//for i, j := 0, len(arr)-1; i < j; i, j = i+1, j-1 {
+	//	if arr[i] != arr[j] {
+	//		return false
+	//	}
+	//}
+	//return true
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

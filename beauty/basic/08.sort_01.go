@@ -60,3 +60,36 @@ package basic
 		请分析比较次数
 	如果能，那相应的时间、空间复杂度又是多少呢？
 */
+
+func BubbleSortTest(arr []int) {
+	n := len(arr)
+	for i := n - 1; i > 0; i-- {
+		for j := 0; j < i; j++ {
+			if arr[j] > arr[j+1] {
+				arr[j], arr[j+1] = arr[j+1], arr[j]
+			}
+		}
+	}
+}
+func InsertSortTest(arr []int) {
+	n := len(arr)
+	for i := 1; i < n; i++ {
+		j, v := i-1, arr[i]
+		for j >= 0 && arr[j] > v {
+			arr[j+1] = arr[j]
+			j--
+		}
+		arr[j+1] = v
+	}
+}
+func SelectSortTest(arr []int) {
+	n := len(arr) - 1
+	for i, idx := 0, 0; i < n; i++ {
+		for j := i + 1; j <= n; j++ {
+			if arr[idx] > arr[j] {
+				idx = j
+			}
+		}
+		arr[idx], arr[i] = arr[i], arr[idx]
+	}
+}
