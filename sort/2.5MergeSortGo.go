@@ -22,10 +22,10 @@ func stable(data Interface, n int) {
 	}
 	insertionSort(data, a, n)
 
-	for blockSize < n {
+	for blockSize < n { // blockSize *= 2
 		a, b = 0, 2*blockSize
 		for b <= n {
-			symMerge(data, a, a+blockSize, b)
+			symMerge(data, a, a+blockSize, b) // 两两合并
 			a = b
 			b += 2 * blockSize
 		}

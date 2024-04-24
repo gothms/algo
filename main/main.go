@@ -6,6 +6,7 @@ import (
 	"algo/tree"
 	"fmt"
 	"math/bits"
+	"sort"
 )
 
 func main() {
@@ -55,21 +56,20 @@ func main() {
 	//var x interface{} = nil
 	//var x error = nil
 
-	fmt.Println('.' - '0')
-
-	//arr := [2]int{1, 2}
-	//fmt.Printf("%p", &arr)
-	//test(arr)
-
 	// 二分
 	arr := []int{1, 2, 3, 3, 3, 3, 4, 4, 5, 7, 7}
-	arr = []int{2}
-	smaller := binary.BinarySearchLastSmaller(arr, 3)
-	fmt.Println(smaller)
+	ret := binary.BinarySearchFirstEqual(arr, 3)
+	fmt.Println("BinarySearchFirstEqual:", ret)
+	ret = binary.BinarySearchLastEqual(arr, 1)
+	fmt.Println(ret)
+	for i := 0; i < 8; i++ {
+		ret = binary.BinarySearchLastSmaller(arr, i)
+		idx := sort.Search(len(arr), func(x int) bool { // 通过 API 验证 BinarySearchLastSmaller
+			return arr[x] > i
+		}) - 1
+		fmt.Println(i, ret, ret == idx)
+	}
 
-	fmt.Println("mod", 5%-3) // 2
-	fmt.Println("mod", -7%4) // -3
-}
-func test(arr [2]int) {
-	fmt.Printf("%p", &arr)
+	//fmt.Println("mod", 5%-3) // 2
+	//fmt.Println("mod", -7%4) // -3
 }

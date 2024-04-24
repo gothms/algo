@@ -34,10 +34,6 @@
 
 package main
 
-import (
-	"math"
-)
-
 func main() {
 	root := &TreeNode{5, &TreeNode{3, &TreeNode{1, nil, &TreeNode{2, nil, nil}}, &TreeNode{8, nil, nil}},
 		&TreeNode{7, &TreeNode{6, nil, nil}, &TreeNode{9, &TreeNode{4, nil, nil}, nil}}}
@@ -60,65 +56,69 @@ type TreeNode struct {
  * }
  */
 func recoverTree(root *TreeNode) {
-	// Morris 遍历
-	var (
-		preTN = &TreeNode{Val: math.MinInt32} // 中序遍历的前一个节点
-		x     *TreeNode                       // 先遍历到的，要交换的节点
-		y     *TreeNode                       // 后遍历到的，要交换的节点
-		pre   *TreeNode
-	)
-	check := func(curr *TreeNode) { // 检查是否符合二叉搜索树规则
-		if preTN.Val > curr.Val {
-			y = curr
-			if x == nil {
-				x = preTN
-			}
-		}
-		preTN = curr
-	}
-	// Morris 遍历：未破坏结构
-	for curr := root; curr != nil; {
-		if curr.Left == nil {
-			check(curr)
-			curr = curr.Right
-		} else {
-			pre = curr.Left
-			for pre.Right != nil && pre.Right != curr {
-				pre = pre.Right
-			}
-			if pre.Right == nil {
-				pre.Right, curr = curr, curr.Left // 破坏结构
-			} else {
-				check(curr)
-				pre.Right, curr = nil, curr.Right // 恢复结构
-			}
-		}
-	}
-	x.Val, y.Val = y.Val, x.Val
-
-	// dfs：中序遍历中，记录逆序数对
-	//var (
-	//	pre = &TreeNode{Val: math.MinInt32} // 中序遍历的前一个节点
-	//	x   *TreeNode                       // 先遍历到的，要交换的节点
-	//	y   *TreeNode                       // 后遍历到的，要交换的节点
-	//	dfs func(*TreeNode)
-	//)
-	//dfs = func(r *TreeNode) {
-	//	if r == nil {
-	//		return
-	//	}
-	//	dfs(r.Left)
-	//	if pre.Val > r.Val {
-	//		y = r
-	//		if x == nil {
-	//			x = pre
-	//		}
-	//	}
-	//	pre = r
-	//	dfs(r.Right)
-	//}
-	//dfs(root)
-	//x.Val, y.Val = y.Val, x.Val
 }
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+//func recoverTree(root *TreeNode) {
+//	// Morris 遍历
+//	//var (
+//	//	preTN = &TreeNode{Val: math.MinInt32} // 中序遍历的前一个节点
+//	//	x     *TreeNode                       // 先遍历到的，要交换的节点
+//	//	y     *TreeNode                       // 后遍历到的，要交换的节点
+//	//	pre   *TreeNode
+//	//)
+//	//check := func(curr *TreeNode) { // 检查是否符合二叉搜索树规则
+//	//	if preTN.Val > curr.Val {
+//	//		y = curr
+//	//		if x == nil {
+//	//			x = preTN
+//	//		}
+//	//	}
+//	//	preTN = curr
+//	//}
+//	//// Morris 遍历：未破坏结构
+//	//for curr := root; curr != nil; {
+//	//	if curr.Left == nil {
+//	//		check(curr)
+//	//		curr = curr.Right
+//	//	} else {
+//	//		pre = curr.Left
+//	//		for pre.Right != nil && pre.Right != curr {
+//	//			pre = pre.Right
+//	//		}
+//	//		if pre.Right == nil {
+//	//			pre.Right, curr = curr, curr.Left // 破坏结构
+//	//		} else {
+//	//			check(curr)
+//	//			pre.Right, curr = nil, curr.Right // 恢复结构
+//	//		}
+//	//	}
+//	//}
+//	//x.Val, y.Val = y.Val, x.Val
+//
+//	// dfs：中序遍历中，记录逆序数对
+//	var x, y *TreeNode                  // 记录需要交换的节点
+//	last := &TreeNode{Val: math.MinInt} // 中序遍历的前一个节点
+//	var dfs func(*TreeNode)
+//	dfs = func(cur *TreeNode) {
+//		if cur == nil {
+//			return
+//		}
+//		dfs(cur.Left)
+//		if cur.Val < last.Val {
+//			if x == nil { // 第一次，记录两个节点。last 为确定的第一个目标
+//				x, y = last, cur
+//			} else { // 第二次，记录第二个结点
+//				y = cur
+//				return
+//			}
+//		}
+//		last = cur
+//		dfs(cur.Right)
+//	}
+//	dfs(root)
+//	x.Val, y.Val = y.Val, x.Val
+//}
 
 //leetcode submit region end(Prohibit modification and deletion)

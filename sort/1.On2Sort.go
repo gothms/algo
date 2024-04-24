@@ -19,11 +19,11 @@ func BubbleSort(arr []int) {
 // InsertionSort 插入排序
 func InsertionSort(arr []int) {
 	for i := 1; i < len(arr); i++ {
-		j, curr := i-1, arr[i]
-		for ; j >= 0 && arr[j] > curr; j-- {
+		j, cur := i-1, arr[i]
+		for ; j >= 0 && arr[j] > cur; j-- {
 			arr[j+1] = arr[j]
 		}
-		arr[j+1] = curr
+		arr[j+1] = cur
 	}
 }
 

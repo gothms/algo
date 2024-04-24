@@ -1,13 +1,13 @@
 package tree
 
 /*
-lc-94
-lc-99
+	lc-94
+	lc-99
 */
 
 // InorderTraversal 二叉树中序遍历
 func InorderTraversal(root *TreeNode) []int {
-	// Morris：未破坏原二叉树结构
+	// Morris：未破坏原二叉树结构，lc-99
 	inorder, curr := make([]int, 0), root
 	var pre *TreeNode
 	for curr != nil {

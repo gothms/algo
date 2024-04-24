@@ -66,6 +66,27 @@ func inorderTraversal(root *TreeNode) []int {
 		ret = append(ret, cur.Val)
 	}
 	return ret
+
+	//inorder, curr := make([]int, 0), root
+	//var pre *TreeNode
+	//for curr != nil {
+	//	if curr.Left == nil {
+	//		inorder = append(inorder, curr.Val)
+	//		curr = curr.Right
+	//	} else {
+	//		pre = curr.Left
+	//		for pre.Right != nil && pre.Right != curr {
+	//			pre = pre.Right
+	//		}
+	//		if pre.Right == nil {
+	//			pre.Right, curr = curr, curr.Left // 破坏结构
+	//		} else {
+	//			inorder = append(inorder, curr.Val)
+	//			pre.Right, curr = nil, curr.Right // 恢复结构
+	//		}
+	//	}
+	//}
+	//return inorder
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

@@ -42,13 +42,13 @@ func main() {
 		array[i] = i + 1
 	}
 	n := len(array)
-	stLen := 1 << (bits.Len(uint(n-1)) + 1)
-	if n > 1 {
-		k := stLen >> 2
-		fmt.Println(bits.Len(uint(n - stLen>>2)))
-		stLen -= 1<<(bits.Len(uint(k))-bits.Len(uint(n-k))+1) - 2
-	}
-	fmt.Println(stLen)
+	//stLen := 1 << (bits.Len(uint(n-1)) + 1)
+	//if n > 1 {
+	//	k := stLen >> 2
+	//	fmt.Println(bits.Len(uint(n - stLen>>2)))
+	//	stLen -= 1<<(bits.Len(uint(k))-bits.Len(uint(n-k))+1) - 2
+	//}
+	//fmt.Println(stLen)
 	/*
 		st n  d
 		32 9  7 1 7 14
@@ -63,7 +63,16 @@ func main() {
 		(32>>1-n)
 	*/
 	//st := make([]int, n<<2)
-	st := make([]int, stLen)
+	//st := make([]int, stLen)
+	st := make([]int, func(n int) int {
+		stLen := 1 << (bits.Len(uint(n-1)) + 1)
+		if n > 1 {
+			k := stLen >> 2
+			fmt.Println(bits.Len(uint(n - stLen>>2)))
+			stLen -= 1<<(bits.Len(uint(k))-bits.Len(uint(n-k))+1) - 2
+		}
+		return stLen
+	}(n))
 	//tree.Build(0, n-1, array, 0, st)
 	tree.Build(0, n-1, array, 1, st) // 从 1 开始
 	fmt.Println("线段树：", st, len(st))

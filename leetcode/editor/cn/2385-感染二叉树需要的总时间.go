@@ -45,8 +45,26 @@
 
 package main
 
-func main() {
+import "fmt"
 
+func main() {
+	root := &TreeNode{Val: 1}
+	start := 1 // 0
+	root = &TreeNode{1, &TreeNode{2, &TreeNode{3, &TreeNode{4, &TreeNode{Val: 5}, nil}, nil}, nil}, nil}
+	start = 3 // 2
+	root = &TreeNode{1, nil, &TreeNode{2, nil, &TreeNode{3, nil, &TreeNode{4, nil, &TreeNode{Val: 5}}}}}
+	start = 2 // 3
+	root = &TreeNode{2, &TreeNode{3, &TreeNode{4, nil, nil}, &TreeNode{1, nil, &TreeNode{Val: 5}}}, nil}
+	root = &TreeNode{Left: root}
+	start = 1 // 2
+	time := amountOfTime(root, start)
+	fmt.Println(time)
+}
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
 }
 
 //leetcode submit region begin(Prohibit modification and deletion)
@@ -59,12 +77,7 @@ func main() {
  * }
  */
 func amountOfTime(root *TreeNode, start int) int {
-	maxVal := func(a, b int) int {
-		if b > a {
-			return b
-		}
-		return a
-	}
+	// dfs：个人
 	ret := 0
 	var dfs func(*TreeNode) (int, int)
 	dfs = func(r *TreeNode) (int, int) {
@@ -73,20 +86,50 @@ func amountOfTime(root *TreeNode, start int) int {
 		}
 		s1, d1 := dfs(r.Left)
 		s2, d2 := dfs(r.Right)
-		var sick, d int
+		var sick, d int               // 感染源的深度，子树的深度
 		if sick = s1 + s2; sick > 0 { // 左/右子树是感染源
-			ret = maxVal(ret, d1+d2+sick) // 感染源深度 + 无感染子树
+			// 必须在此处结算，因为往后的“归”中 d = 0
+			ret = max(ret, d1+d2+sick) // 感染源深度 + 无感染子树 + 0
 			sick++
 		} else if r.Val == start { // 感染源
-			ret = maxVal(d1, d2) // 肯定是 ret 第一次赋值
-			sick = 1             // 标识感染源的深度
+			ret = max(d1, d2) // 肯定是 ret 第一次赋值
+			sick = 1          // 标识感染源的深度
 		} else {
-			d = maxVal(d1, d2) + 1 // 无感染的子树
+			d = max(d1, d2) + 1 // 无感染的子树
 		}
 		return sick, d // 两者至少一个是 0：是感染源所在子树，则 d 置为 0
 	}
 	dfs(root)
 	return ret
+
+	// lc：将 start “置为” root，再求扩散时间
+
+	// lc：不推荐
+	//ret, d := 0, -1
+	//var dfs func(*TreeNode, int) int
+	//dfs = func(r *TreeNode, depth int) int {
+	//	if r == nil {
+	//		return 0
+	//	}
+	//	if r.Val == start {
+	//		d = depth
+	//	}
+	//	ld := dfs(r.Left, depth+1)
+	//	inLeft := d > 0 // 左子树已遍历完，记录 inLeft
+	//	rd := dfs(r.Right, depth+1)
+	//	if r.Val == start {
+	//		ret = max(ret, max(ld, rd))
+	//	}
+	//	if inLeft {
+	//		// 最大值一定产生在感染源的祖先的计算，即 root 是 r 的祖先，r 是 感染源的祖先
+	//		ret = max(ret, d-depth+rd) // 算法：感染源深度 - r 的深度 + 右子树最大深度
+	//	} else {
+	//		ret = max(ret, d-depth+ld)
+	//	}
+	//	return max(ld, rd) + 1
+	//}
+	//dfs(root, 0)
+	//return ret
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
