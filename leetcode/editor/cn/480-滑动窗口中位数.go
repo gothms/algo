@@ -50,16 +50,21 @@ import (
 
 func main() {
 	nums := []int{1, 3, -1, -3, 5, 3, 6, 7}
-	nums = []int{1, 2, 3, 4, 2, 3, 1, 4, 2}
-	k := 3
-	nums = []int{7, 9, 3, 8, 0, 2, 4, 8, 3, 9}
-	nums = []int{1, 2}
-	k = 1
+	//nums = []int{1, 2, 3, 4, 2, 3, 1, 4, 2}
+	k := 3 // [1.00000,-1.00000,-1.00000,3.00000,5.00000,6.00000]
+	//nums = []int{7, 9, 3, 8, 0, 2, 4, 8, 3, 9}
+	//nums = []int{1, 2}
+	//k = 1
 	window := medianSlidingWindow(nums, k)
 	fmt.Println(window)
+
+	//for i := range nums[:len(nums)-1] {
+	//	fmt.Println(nums[i+1])
+	//}
 }
 
 /*
+堆 + 延迟删除
 重点：
 	1.保持堆顶元素是有效元素，否则 添加/删除 数据时，会误判堆顶元素
 		1.1.push 后
@@ -70,10 +75,234 @@ func main() {
 		go API 中，优先队列的缺点正是不能“正确”删除堆中的元素
 		此 lazy 方案提供了一种“正确“删除堆中元素的方式
 	4.delay map 记录了被淘汰元素，以及其数量
+		如果还有记录，则可以从堆顶删除
+		否则说明堆顶元素在窗口中
 */
 // leetcode submit region begin(Prohibit modification and deletion)
 func medianSlidingWindow(nums []int, k int) []float64 {
-	// 堆 + 延迟删除
+	// 执行耗时:56 ms,击败了97.67% 的Go用户
+	// 内存消耗:13.1 MB,击败了34.88% 的Go用户
+	n := len(nums)
+	ret := make([]float64, 0, n-k+1)
+	switch k {
+	case 1: // fast path
+		for _, v := range nums {
+			ret = append(ret, float64(v))
+		}
+		return ret
+	case 2:
+		for i := 1; i < n; i++ {
+			ret = append(ret, float64(nums[i]+nums[i-1])/2.0)
+		}
+		return ret
+	}
+	hMin, hMax := &hp480{}, &hp480{}
+	minCnt, maxCnt := (k+1)>>1, k>>1
+	median := func() {
+		if k&1 == 0 {
+			ret = append(ret, float64((*hMin)[0][0]-(*hMax)[0][0])/2.0)
+		} else {
+			if minCnt > maxCnt {
+				ret = append(ret, float64((*hMin)[0][0]))
+			} else {
+				ret = append(ret, float64(-(*hMax)[0][0]))
+			}
+		}
+	}
+	moveHeap := func(i int, f1, f2 func() bool) { // minCnt maxCnt 两者差的绝对值 > 1，则需要调整
+		var (
+			ma, mi *hp480
+			ad     int
+		)
+		if f1() {
+			ma, mi, ad = hMin, hMax, 1
+		} else if f2() {
+			ma, mi, ad = hMax, hMin, -1
+		}
+		for f1() || f2() {
+			v := heap.Pop(ma).([2]int)
+			if v[1] > i {
+				minCnt -= ad
+				maxCnt += ad
+				v[0] = -v[0]
+				heap.Push(mi, v)
+			}
+		}
+	}
+	balance := func(i int) {
+		if k&1 == 0 { // 偶数：元素多的堆弹出
+			moveHeap(i, func() bool {
+				return minCnt > maxCnt
+			}, func() bool {
+				return minCnt < maxCnt
+			})
+		} else { // 奇数：元素”相对多“的堆弹出
+			moveHeap(i, func() bool {
+				return minCnt > maxCnt+1
+			}, func() bool {
+				return minCnt+1 < maxCnt
+			})
+		}
+		for hMin.Len() > 0 && (*hMin)[0][1] <= i { // 平衡后，滑出淘汰的数据
+			heap.Pop(hMin)
+		}
+		for hMax.Len() > 0 && (*hMax)[0][1] <= i {
+			heap.Pop(hMax)
+		}
+	}
+	for i := 0; i < k; i++ { // 先处理前 k 个元素
+		heap.Push(hMin, [2]int{nums[i], i})
+	}
+	for i := k >> 1; i > 0; i-- {
+		v := heap.Pop(hMin).([2]int)
+		v[0] = -v[0]
+		heap.Push(hMax, v)
+	}
+	median() // 第一个中位数
+	for i := k; i < n; i++ {
+		d := i - k
+		out, in := nums[d], nums[i]
+		if out > (*hMin)[0][0] || out == (*hMin)[0][0] && d >= (*hMin)[0][1] { // 重要：滑出的元素在哪个堆
+			minCnt--
+		} else {
+			maxCnt--
+		}
+		if in > (*hMin)[0][0] { // 滑入的元素在哪个堆
+			heap.Push(hMin, [2]int{in, i})
+			minCnt++
+		} else {
+			heap.Push(hMax, [2]int{-in, i})
+			maxCnt++
+		}
+		balance(d)
+		median()
+	}
+	return ret
+
+}
+
+type hp480 [][2]int
+
+func (h hp480) Len() int { return len(h) }
+func (h hp480) Less(i, j int) bool {
+	return h[i][0] < h[j][0] || h[i][0] == h[j][0] && h[i][1] < h[j][1]
+}
+func (h hp480) Swap(i, j int) { h[i], h[j] = h[j], h[i] }
+func (h *hp480) Push(x any)   { *h = append(*h, x.([2]int)) }
+func (h *hp480) Pop() any {
+	v := (*h)[len(*h)-1]
+	*h = (*h)[:len(*h)-1]
+	return v
+}
+
+// leetcode submit region end(Prohibit modification and deletion)
+
+func medianSlidingWindow_(nums []int, k int) []float64 {
+	// 对顶堆：个人
+	// 执行耗时:60 ms,击败了97.67% 的Go用户
+	// 内存消耗:12.6 MB,击败了37.21% 的Go用户
+	n := len(nums)
+	ret := make([]float64, 0, n-k+1)
+	switch k {
+	case 1:
+		for _, v := range nums {
+			ret = append(ret, float64(v))
+		}
+		return ret
+	case 2:
+		for i := 1; i < n; i++ {
+			ret = append(ret, float64(nums[i]+nums[i-1])/2.0)
+		}
+		return ret
+	}
+	hMin, hMax := &hp480{}, &hp480{}
+	minCnt, maxCnt := (k+1)>>1, k>>1
+	median := func() {
+		if k&1 == 0 {
+			ret = append(ret, float64((*hMin)[0][0]-(*hMax)[0][0])/2.0)
+		} else {
+			if minCnt > maxCnt {
+				ret = append(ret, float64((*hMin)[0][0]))
+			} else {
+				ret = append(ret, float64(-(*hMax)[0][0]))
+			}
+		}
+	}
+	balance := func(i int) {
+		var (
+			ma, mi *hp480
+			ad     int
+		)
+		if k&1 == 0 { // 偶数：元素多的堆弹出
+			if minCnt > maxCnt {
+				ma, mi, ad = hMin, hMax, 1
+			} else if minCnt < maxCnt {
+				ma, mi, ad = hMax, hMin, -1
+			}
+			for minCnt != maxCnt { // 平衡对顶堆
+				v := heap.Pop(ma).([2]int)
+				if v[1] > i {
+					minCnt -= ad
+					maxCnt += ad
+					v[0] = -v[0]
+					heap.Push(mi, v)
+				}
+			}
+		} else { // 奇数：元素”相对多“的堆弹出
+			if minCnt > maxCnt+1 {
+				ma, mi, ad = hMin, hMax, 1
+			} else if minCnt+1 < maxCnt {
+				ma, mi, ad = hMax, hMin, -1
+			}
+			for minCnt != maxCnt+1 && minCnt+1 != maxCnt {
+				v := heap.Pop(ma).([2]int)
+				if v[1] > i {
+					minCnt -= ad
+					maxCnt += ad
+					v[0] = -v[0]
+					heap.Push(mi, v)
+				}
+			}
+		}
+		for hMin.Len() > 0 && (*hMin)[0][1] <= i { // 平衡后，滑出淘汰的数据
+			heap.Pop(hMin)
+		}
+		for hMax.Len() > 0 && (*hMax)[0][1] <= i {
+			heap.Pop(hMax)
+		}
+	}
+	for i := 0; i < k; i++ { // 先处理前 k 个元素
+		heap.Push(hMin, [2]int{nums[i], i})
+	}
+	for i := k >> 1; i > 0; i-- {
+		v := heap.Pop(hMin).([2]int)
+		v[0] = -v[0]
+		heap.Push(hMax, v)
+	}
+	median() // 第一个中位数
+	for i := k; i < n; i++ {
+		d := i - k
+		out, in := nums[d], nums[i]
+		if out > (*hMin)[0][0] || out == (*hMin)[0][0] && d >= (*hMin)[0][1] { // 重要：滑出的元素在哪个堆
+			minCnt--
+		} else {
+			maxCnt--
+		}
+		if in > (*hMin)[0][0] { // 滑入的元素在哪个堆
+			heap.Push(hMin, [2]int{in, i})
+			minCnt++
+		} else {
+			heap.Push(hMax, [2]int{-in, i})
+			maxCnt++
+		}
+		balance(d)
+		median()
+	}
+	return ret
+}
+
+func medianSlidingWindow_lc(nums []int, k int) []float64 {
+	// lc：堆 + 延迟删除，很复杂
 	n := len(nums)
 	ret := make([]float64, 0, n-k+1)
 	if k == 1 { // fast path
@@ -176,5 +405,3 @@ func (m *mswHp) Pop() any {
 	m.IntSlice = a[:len(a)-1]
 	return v
 }
-
-//leetcode submit region end(Prohibit modification and deletion)
