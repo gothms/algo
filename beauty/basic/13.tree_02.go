@@ -10,6 +10,9 @@ package basic
 	在树中的任意一个节点，其左子树中的每个节点的值，都要小于这个节点的值，而右子树节点的值都大于这个节点的值
 二叉查找树的查找操作
 二叉查找树的插入操作
+	新插入的数据一般都是在叶子节点上
+	如果要插入的数据比节点的数据大，并且节点的右子树为空，就将新数据直接插到右子节点的位置
+	如果要插入的数据比节点数值小，并且节点的左子树为空，就将新数据插入到左子节点的位置
 二叉查找树的删除操作
 	1.如果要删除的节点没有子节点
 		只需要直接将父节点中，指向要删除节点的指针置为 null
@@ -24,15 +27,18 @@ package basic
 		查找最大节点和最小节点、前驱节点和后继节点
 		中序遍历二叉查找树，可以输出有序的数据序列，时间复杂度是 O(n)，非常高效
 支持重复数据的二叉查找树
+	在二叉查找树中存储的，是一个包含很多字段的对象
+	利用对象的某个字段作为键值（key）来构建二叉查找树。把对象中的其他字段叫作卫星数据
 	方法一：
 		通过链表和支持动态扩容的数组等数据结构，把值相同的数据都存储在同一个节点上
 	方法二：
 		插入：
 		如果碰到一个节点的值，与要插入数据的值相同，就将这个要插入的数据放到这个节点的右子树
 		也就是说，把这个新插入的数据当作大于这个节点的值来处理
+		// TODO 右节点本身是更大的数据呢？
 		查找：
 		遇到值相同的节点，我们并不停止查找操作，而是继续在右子树中查找，直到遇到叶子节点，才停止
-		这样就可以把键值等于要查找值的所有节点都找出来。
+		这样就可以把键值等于要查找值的所有节点都找出来
 		删除：
 		需要先查找到每个要删除的节点，然后再按删除操作的方法，依次删除
 二叉查找树的时间复杂度分析
@@ -57,49 +63,8 @@ package basic
 
 思考
 	如何通过编程，求出一棵给定二叉树的确切高度呢？
+		DFS / BFS
+
+二叉搜索树的实现
+	E:\gothmslee\algo\tree\binarySearchTree.go
 */
-
-type TreeNode struct {
-	Val   int
-	Left  *TreeNode
-	Right *TreeNode
-}
-
-func delete(root *TreeNode, v int) bool {
-	var (
-		pre  *TreeNode // 父节点
-		curr = root    // 当前节点
-	)
-	for curr != nil && curr.Val != v { // 查询 v 节点
-		pre = curr
-		if v < curr.Val {
-			curr = curr.Left
-		} else {
-			curr = curr.Right
-		}
-	}
-	if curr == nil {
-		return false
-	}
-	if curr.Left != nil && curr.Right != nil { // 有两个子节点
-		p, c := curr, curr.Right // 找到右子树中最小的节点
-		for c.Left != nil {
-			p, c = c, c.Left
-		}
-		curr.Val, pre, curr = c.Val, p, c // 删除替换节点
-	}
-	var child *TreeNode
-	if curr.Left != nil { // 只有一个子节点
-		child = curr.Left
-	} else if curr.Right != nil {
-		child = curr.Right
-	} // else 没有子节点
-	if pre == nil { // 删除根节点
-		root = child
-	} else if pre.Left == curr {
-		pre.Left = child
-	} else {
-		pre.Right = child
-	}
-	return true
-}

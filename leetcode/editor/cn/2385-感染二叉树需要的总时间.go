@@ -67,6 +67,17 @@ type TreeNode struct {
 	Right *TreeNode
 }
 
+/*
+思路
+	用两个返回值来分别记录，sick 感染源的深度、d 子树的深度
+	所求值 = MAX（sick节点在root中的深度 + 与sick不同侧的root子树的最大深度, MAX（sick左子树的最大深度，sick右子树的最大深度）)
+	1.与sick不同侧的root子树的最大深度：变量 d 记录，即每遇到 sick 节点的子树，叶子结点返回深度为 0，保留最大深度即可
+	2.MAX（sick左子树的最大深度，sick右子树的最大深度）：当递归在“归”时，遇到 sick 节点就从 d 变量中求得该值。后续“归”中返回的 d 值都默认为 0
+	3.sick节点在root中的深度：当递归在“归”时，遇到 sick 节点，则返回 sick = 1。后续“归”中，只要 sick 返回值大于 0，则表示该子树是 sick 所在的子树，sick+1 后返回
+		以上root指的是任意节点为根
+	总结：sick 和 d 两个返回值，只会有一个是有效的（另一个无效且为 0）。优先级为 sick > d，即当 sick 大于 0，考虑的是 sick 节点的处理，否则才是考虑无感染子树的处理
+*/
+
 //leetcode submit region begin(Prohibit modification and deletion)
 /**
  * Definition for a binary tree node.
@@ -78,58 +89,60 @@ type TreeNode struct {
  */
 func amountOfTime(root *TreeNode, start int) int {
 	// dfs：个人
-	ret := 0
-	var dfs func(*TreeNode) (int, int)
-	dfs = func(r *TreeNode) (int, int) {
-		if r == nil {
-			return 0, 0
-		}
-		s1, d1 := dfs(r.Left)
-		s2, d2 := dfs(r.Right)
-		var sick, d int               // 感染源的深度，子树的深度
-		if sick = s1 + s2; sick > 0 { // 左/右子树是感染源
-			// 必须在此处结算，因为往后的“归”中 d = 0
-			ret = max(ret, d1+d2+sick) // 感染源深度 + 无感染子树 + 0
-			sick++
-		} else if r.Val == start { // 感染源
-			ret = max(d1, d2) // 肯定是 ret 第一次赋值
-			sick = 1          // 标识感染源的深度
-		} else {
-			d = max(d1, d2) + 1 // 无感染的子树
-		}
-		return sick, d // 两者至少一个是 0：是感染源所在子树，则 d 置为 0
-	}
-	dfs(root)
-	return ret
+	//ret := 0
+	//var dfs func(*TreeNode) (int, int)
+	//dfs = func(r *TreeNode) (int, int) {
+	//	if r == nil {
+	//		return 0, 0
+	//	}
+	//	s1, d1 := dfs(r.Left)
+	//	s2, d2 := dfs(r.Right)
+	//	var sick, d int               // 感染源的深度，子树的深度
+	//	if sick = s1 + s2; sick > 0 { // 左/右子树是感染源
+	//		// 必须在此处结算，因为往后的“归”中 d = 0
+	//		ret = max(ret, d1+d2+sick) // 感染源深度 + 无感染子树 + 0
+	//		sick++
+	//	} else if r.Val == start { // 感染源
+	//		ret = max(d1, d2) // 肯定是 ret 第一次赋值
+	//		sick = 1          // 标识感染源的深度
+	//	} else {
+	//		d = max(d1, d2) + 1 // 无感染的子树
+	//	}
+	//	return sick, d // 两者至少一个是 0：是感染源所在子树，则 d 置为 0
+	//}
+	//dfs(root)
+	//return ret
+
+	// lc 优秀题解：https://leetcode.cn/problems/amount-of-time-for-binary-tree-to-be-infected/solutions/2753470/cong-liang-ci-bian-li-dao-yi-ci-bian-li-tmt0x/
 
 	// lc：将 start “置为” root，再求扩散时间
-
-	// lc：不推荐
-	//ret, d := 0, -1
-	//var dfs func(*TreeNode, int) int
-	//dfs = func(r *TreeNode, depth int) int {
-	//	if r == nil {
-	//		return 0
-	//	}
-	//	if r.Val == start {
-	//		d = depth
-	//	}
-	//	ld := dfs(r.Left, depth+1)
-	//	inLeft := d > 0 // 左子树已遍历完，记录 inLeft
-	//	rd := dfs(r.Right, depth+1)
-	//	if r.Val == start {
-	//		ret = max(ret, max(ld, rd))
-	//	}
-	//	if inLeft {
-	//		// 最大值一定产生在感染源的祖先的计算，即 root 是 r 的祖先，r 是 感染源的祖先
-	//		ret = max(ret, d-depth+rd) // 算法：感染源深度 - r 的深度 + 右子树最大深度
-	//	} else {
-	//		ret = max(ret, d-depth+ld)
-	//	}
-	//	return max(ld, rd) + 1
-	//}
-	//dfs(root, 0)
-	//return ret
+	var ans int
+	var dfs func(*TreeNode) (int, bool)
+	dfs = func(node *TreeNode) (int, bool) {
+		if node == nil {
+			return 0, false
+		}
+		lLen, lFound := dfs(node.Left)
+		rLen, rFound := dfs(node.Right)
+		if node.Val == start {
+			// 计算子树 start 的最大深度
+			// 注意这里和方法一的区别，max 后面没有 +1，所以算出的也是最大深度
+			ans = max(lLen, rLen)
+			return 1, true // 找到了 start
+		}
+		if lFound || rFound {
+			// 只有在左子树或右子树包含 start 时，才能更新答案
+			ans = max(ans, lLen+rLen) // 两条链拼成直径
+			// 保证 start 是直径端点
+			if lFound {
+				return lLen + 1, true
+			}
+			return rLen + 1, true
+		}
+		return max(lLen, rLen) + 1, false
+	}
+	dfs(root)
+	return ans
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

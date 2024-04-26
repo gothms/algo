@@ -95,6 +95,7 @@ func parseBoolExpr(expression string) bool {
 	stAll, stOpt := []uint8{0}, []int{0} // 哨兵
 	check := func(i int, v uint8) int {
 		idx := stOpt[len(stOpt)-1]
+		// 可再优化：分别考虑 v==t/f，如 v==t 时只有 last==|/!，才会继续 for 循环
 		for last := stAll[idx]; last == '&' && v == 'f' || // &：一个 false，结果 false
 			last == '|' && v == 't' || // |：一个 true，结果 true
 			last == '!'; last = stAll[idx] { // !：只会操作一个值

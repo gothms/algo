@@ -31,7 +31,7 @@ package main
 import "fmt"
 
 func main() {
-	n := 4
+	n := 3
 	trees := numTrees(n)
 	fmt.Println(trees)
 }
