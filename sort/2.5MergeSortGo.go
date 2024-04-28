@@ -3,6 +3,28 @@ package sort
 /*
 	这里展示：zsortinterface.go
 	另外有：zsortfunc.go
+
+sort.Slice()
+	insertionSort_func：插入排序，长度小于等于 12
+	heapSort_func：堆排序
+	pdqsort_func：快排
+	partition_func
+	choosePivot_func：分区算法
+		[0,8]：选择一个静态支点
+		[8,shortestNinther)：使用简单的三者中位数方法，i j k
+		[shortestNinther,∞)：使用Tukey ninther方法，i-1 i i+1 取中(j k 同理)，再3数取中
+
+		shortestNinther = 50
+		swaps int	// 和逆序度有关，如果 == 12，则先反转原数据，并重新计算 pivot
+		l := b - a
+		var (
+			swaps int
+			i     = a + l/4*1
+			j     = a + l/4*2
+			k     = a + l/4*3
+		)
+	symMerge 合并两个排序子序列
+		E:\gothmslee\algo\sort\2.5MergeSortGo.go
 */
 
 func insertionSort(data Interface, a, b int) {

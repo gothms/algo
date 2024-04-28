@@ -53,14 +53,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func successfulPairs(spells []int, potions []int, success int64) []int {
-	n, m := len(spells), len(potions)
+	// 排序 + 二分
 	sort.Ints(potions)
-	ret := make([]int, n)
-	for i, v := range spells {
-		t := int((success-1)/int64(v)) + 1
-		ret[i] = m - sort.Search(m, func(j int) bool {
-			return potions[j] >= t
-		})
+	ret := make([]int, len(spells))
+	for i, s := range spells {
+		idx := sort.SearchInts(potions, int((success-1)/int64(s))+1)
+		ret[i] = len(potions) - idx
 	}
 	return ret
 }

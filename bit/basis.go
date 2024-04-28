@@ -43,9 +43,11 @@ func Basis(x, n int) int {
 	return y
 }
 
-// 正数：1
+// (x-1)>>31
+// x 为正数：0
 // 0：-1
 // 负数：-1
+// x-1 是为了将 0 划归为 -1
 func format(x int) int {
 	return (x-1)>>31 + 1
 }

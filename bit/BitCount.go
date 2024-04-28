@@ -1,6 +1,7 @@
 package bit
 
 // GetBitCount 获取位数
+// Go 源码： bits.Len
 func GetBitCount(i int) (n int) {
 	if i>>16 != 0 {
 		n += 16
