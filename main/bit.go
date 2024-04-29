@@ -19,4 +19,10 @@ func main() {
 	fmt.Println(y)
 	y = bits.Len(x)
 	fmt.Println(y)
+
+	n := 20
+	for i := 1; i < n; i++ {
+		v := i ^ (i - 1)
+		fmt.Println(i, v)
+	}
 }
