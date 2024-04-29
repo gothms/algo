@@ -1,4 +1,4 @@
-package string
+package str
 
 /*
 Rabin-Karp 字符串匹配算法

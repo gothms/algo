@@ -1,4 +1,4 @@
-package string
+package str
 
 /*
 Boyer-Moore 字符串匹配算法
@@ -105,10 +105,4 @@ func next(pattern, text string) []int {
 		i += max(badCharSkip[text[i]], goodSuffixSkip[j]) // 根据好后缀、坏字符规则，挪动 i
 	}
 	return ans
-}
-func max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
 }

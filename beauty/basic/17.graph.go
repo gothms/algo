@@ -43,6 +43,7 @@ package basic
 		方便军阵计算
 			可以将很多图的运算转换成矩阵之间的运算
 			如求解最短路径问题时，Floyd-Warshall 算法，就是利用矩阵循环相乘若干次得到结果
+			https://zh.wikipedia.org/wiki/Floyd-Warshall%E7%AE%97%E6%B3%95
 		空间换时间
 邻接表存储方法
 	邻接表（Adjacency List）：很像散列表
@@ -89,6 +90,16 @@ package basic
 
 思考
 	像微信这种无向图，应该怎么存储呢？
+		邻接表
+		动态数据结构改进链表，快速操作，如红黑树、跳表等
 	关于图这种数据结构，还能想到其他生活或者工作中的例子吗？
 		知识图谱（Knowledge Graph）
+		地图
+		网络
+		Gradle 编译工具，内部组织 task 的方式
+		Android framework 层提的 CoordinatorLayout，其内部协调子view的联动是用图
+		网页通过超链接形成一张有向图
+		城市交通网络
+		人与人之间的人际关系图
+		...
 */

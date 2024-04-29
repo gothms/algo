@@ -1,4 +1,4 @@
-package string
+package str
 
 /*
 Boyer-Moore：博伊尔-摩尔算法（后缀字符串匹配）

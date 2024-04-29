@@ -12,7 +12,7 @@ BF 算法（Brute Force）
 	在实际的开发中，是一个比较常用的字符串匹配算法
 		实际的软件开发中，大部分情况下，模式串和主串的长度都不会太长
 		朴素字符串匹配算法思想简单，代码实现也非常简单，简单意味着不容易出错，如果有 bug 也容易暴露和修复
-		KISS（Keep it Simple and Stupid）设计原则
+		在工程中，在满足性能要求的前提下，简单是首选。KISS（Keep it Simple and Stupid）设计原则
 RK 算法（Rabin-Karp）
 	BF 算法的升级版
 	因为哈希值是一个数字，数字之间比较是否相等是非常快速的，所以模式串和子串比较的效率就提高了
@@ -35,4 +35,5 @@ RK 算法（Rabin-Karp）
 		e f a d		e f
 		c c a f
 		d e f c
+	// TODO
 */

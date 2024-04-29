@@ -69,19 +69,19 @@ package main
 import "fmt"
 
 func main() {
-	zero, one, limit := 0, 13, 2 // test 隔板法
-	zero, one, limit = 1, 2, 1   // 1
-	zero, one, limit = 2, 1, 2   // 3
-	zero, one, limit = 3, 3, 2   // 14
-	zero, one, limit = 3, 4, 2   // 18
-	zero, one, limit = 6, 7, 3   // 1020
-	//zero, one, limit = 22, 64, 6 // 277316268
-	//zero, one, limit = 35, 35, 22 // 782677541
-	//zero, one, limit = 41, 29, 6  // 533918053
-	//zero, one, limit = 25, 75, 49 // 500481770
-	//zero, one, limit = 57, 47, 2  // 973560022
-	//zero, one, limit = 41, 29, 6  // 533918053
-	//zero, one, limit = 999, 999, 6 // 402567910
+	zero, one, limit := 0, 13, 2   // test 隔板法
+	zero, one, limit = 1, 2, 1     // 1
+	zero, one, limit = 2, 1, 2     // 3
+	zero, one, limit = 3, 3, 2     // 14
+	zero, one, limit = 3, 4, 2     // 18
+	zero, one, limit = 6, 7, 3     // 1020
+	zero, one, limit = 22, 64, 6   // 277316268
+	zero, one, limit = 35, 35, 22  // 782677541
+	zero, one, limit = 41, 29, 6   // 533918053
+	zero, one, limit = 25, 75, 49  // 500481770
+	zero, one, limit = 57, 47, 2   // 973560022
+	zero, one, limit = 41, 29, 6   // 533918053
+	zero, one, limit = 999, 999, 6 // 402567910
 	arrays := numberOfStableArrays(zero, one, limit)
 	fmt.Println(arrays)
 }
@@ -162,9 +162,9 @@ func numberOfStableArrays(zero int, one int, limit int) int {
 			}
 		}
 	}
-	for i, d := range dp {
-		fmt.Println(i, d)
-	}
+	//for i, d := range dp {
+	//	fmt.Println(i, d)
+	//}
 	/*
 		计算 x 和 y 组合起来的“排列数”：得到需要的合法排列数目矩阵以后，要计算数组可以怎样排列
 		1.分割数的差值，只可能是 -1 0 1
@@ -192,6 +192,11 @@ func numberOfStableArrays(zero int, one int, limit int) int {
 			ret += (dp[x][i] * dp[y][i+1]) % mod
 		}
 	}
+	// 精简
+	//ret = dp[x][y+1]*dp[y][y]%mod + dp[x][y]*(dp[y][y-1]+dp[y][y]<<1)%mod // i=y+1 + i=y
+	//for i := (x-1)/limit + 1; i < y; i++ {                                 // (x-1)/limit + 1，最少堆数，确定 i 的起始点
+	//	ret += (dp[x][i] * (dp[y][i-1] + dp[y][i]<<1 + dp[y][i+1])) % mod
+	//}
 	return ret % mod
 }
 

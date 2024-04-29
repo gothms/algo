@@ -1,4 +1,6 @@
-package string
+package str
+
+import "fmt"
 
 /*
 KMP 字符串匹配算法
@@ -7,7 +9,7 @@ KMP 字符串匹配算法
 前缀表：prefix-table
 	最长公共前后缀
 	示例：p = "ABABCABAA" prefix = [0 0 1 2 0 1 2 3 1]
-		sub 为模式串 p [0,i] 的子串，i<=len(p)-1
+		sub 为模式串 p [0,i] 的子串，i<len(p)
 		sub 前缀和后缀最长相同元素的长度，记录为 prefix-table
 		sub 分别为如下前缀子串时，prefix[i] 的取值：
 			A = 0
@@ -19,80 +21,61 @@ KMP 字符串匹配算法
 			ABABCAB = 2："AB" == "AB"
 			ABABCABA = 3："ABA" == "ABA"，第一个 "ABA" 的索引为 0 1 2，第二个 "ABA" 的索引为 5 6 7，则 prefix[i] = 3
 			ABABCABAA = 1："A" == "A"
-	前缀表优化：后移一位
-		为什么要后移一位？
-		1.匹配 s[i] =? p[j] 时，若不匹配，查询的是 prefix[j-1]，所以 prefix 最后一个元素其实是无用处的
-		2.模式串p 和 前缀表prefix 的索引 j 和 j-1 不对应，后移一位正好对应
-			同时将 prefix[0] 置为 -1，让计算更简便
-代码注释：
-	1.前缀表：可以实现前缀表的 0 开头的写法，这里实现 -1 开头的写法
-		p：模式串
-		s：文本字符串
-		i：文本字符串的索引
-		j：公共前后缀的长度，j 也指向公共前后缀的下一个字符
-		1.1.前缀尾字符和后缀尾字符相同
-			prefix[i] = j+1：即 i-1 时，最长公共前后缀 + 1
-			示例：p = "ABABCABAA" prefix = [0 0 1 2 0 1 2 3 1]
-				i =          7
-				j =     2
-				p[i] == p[j]
-				则有：prefix[7] = j+1 = 3
-		1.2.两者尾字符不同
-			1.2.1.先重置 j（公共前后缀的长度）的值，再计算（难点）
-				示例：p := "abaababaab" dp = [0 0 1 1 2 3 2 3 4 5]
-				j-1：前缀的最后一个字符
-				dp[j-1]：前缀的最后一个字符位置，有多长的公共前后缀
-				示例：p := "abaababaab"
-					i =          6：当前计算的子串为 abaabab
-					j =       3：i=5时，公共前后缀的长度为 3（j 也指向公共前后缀的下一个字符）
-					j-1 =    2：i=5时，公共前缀为 aba
-					dp[j-1]=1：表示
-						p := "abaababaab"
-							  aba
-						aba 公共前后缀的长度为 1
-					j = prefix[j-1]：j = 1
-						p := "abaababaab"
-							  ab
-						b 即为现在需要比较的字符：p[i] =? p[1]
-			1.2.2.上一个最长公共前后缀长度为 0，则当前计算的最长公共前后缀长度也为 0：省略 dp[i] = 0
-				i++，进行下一次计算
-
-			补充：j两个作用，1.公共前后缀的长度，2.公共前后缀结尾字符的索引（或索引的左边字符），这点非常重要
-				1.2.1.理解length = prefix[length-1]
-					例，ABADABAAC，D!=A时，i=7，length=3，prefix[7]的取值区间为[0,3]
-					如果ABA=BAA，为3；如果AB=AA，为2；如果A=A，为1。前两种情况，都可以推出prefix[3-1]>0
-					因为prefix[6]=3，则找ABAA可能存在的公共前后缀，即为找首3个字符，再加上p[7]的公共前后缀
-					所以prefix[3-1]>0，则prefix[7]可能为[0,3]
-
-					上述描述拗口，不如画图理解，后续补上
-				1.2.2.假如length=0，则比较的是p[0]==p[i]
-					前面已经比较不相同了，所以prefix[i]=0；则比较下一个，i++
-	2.KMP搜索：
-		2.1.匹配成功
-			2.1.1.len(p) == 1 时，j 为 -1
-			2.1.2.重置 i j 进行，开始新的一次匹配
-				也可以打补丁 if len(p) == 1：使用蛮力搜索匹配字符串
-			2.1.3.避免 len(p] == 1，出现 j 越界
-		2.2.匹配失败
-			2.2.1.根据前缀表，移动模式串
-			2.2.2.匹配失败的是模式串的第一个字符
-				重置 i j 进行，开始新的一次匹配
+KmpLc 写法
+	示例：pattern = abababzabababa
+		1.提出问题
+			最大匹配数：0 0 1 2 3 4 0 1 2 3 4 5 6 ?
+			对于字符串 abababzababab
+				前缀子串有：a, ab, aba, abab, ababa, ababab, abababz, ...
+				后缀子串有：b, ab, bab, abab, babab, ababab, zababab, ...
+			所以子字符串 abababzababab 的前缀子串和后缀子串最大匹配了 6 个（ababab），那“次”大匹配了多少呢？
+		2.最大匹配数 & 次大匹配数
+			容易看出次大匹配了 4 个（abab），更仔细地观察可以发现，次大匹配必定在最大匹配 ababab 中，所以次大匹配数就是 ababab 的最大匹配数
+				直接去查算出的表，可以得出该值为 4
+			第三大的匹配数同理，它既然比 4 要小，那真前缀和真后缀也只能在 abab 中找，即 abab 的最大匹配数，查表可得该值为 2
+				再往下就没有更短的匹配了
+		3.问题解答
+			计算 ? 的值：
+			既然末尾字母不是 z，那么就不能直接 6+1=7 了
+			回退到次大匹配 abab，刚好 abab 之后的 a 与末尾的 a 匹配，所以 ? 处的最大匹配数为 5
+		总结
+			匹配到 ? 时，如何快速定位到 ? 与哪个字符 x 比较？
+			核心：
+				“最大匹配数”等式：最长可匹配前缀子串 == 最长可匹配后缀子串（简称最长前/后缀）
+			转化：
+				找到“最长可匹配前缀子串”的最大匹配数，
+				则匹配 ? （匹配 “最长后缀”的后缀子串+? 与 “最长前缀”的前缀子串+x）
+				即匹配 “最长前缀”的后缀子串+? 与 “最长前缀”的前缀子串+x
+				转化为求：”最长可匹配前缀子串“的最大匹配数（已记录在 prefix 表中），然后再比较 最大匹配数 后一个字符是否 == ?
+	Kmp 总结
+		1.匹配失败时，总是能够让模式串回退到某个位置，使文本不用回退
+		2.在字符串比较时，模式串提供的信息越多，计算复杂度越低
+	时间复杂度分析：函数 func prefixTableLc(pattern string) []int
+		复杂度是线性的（即运算时间与模式串 pattern 的长度是线性关系）
+		由 注释2 可以看出 k（最大匹配数） 在整个 for 循环中最多增加 len(pattern) - 1 次，所以让 k 减少的 注释1 在整个 for 循环中最多会执行 len(pattern) - 1 次
+		从而 prefixTableLc 函数的复杂度是线性的
+	原文参考：灵茶山艾府
+		https://www.zhihu.com/question/21923021/answer/37475572
 */
 
-// Kmp 字符串匹配算法
-func Kmp(s, p string) []int {
+// ====================internet====================
+
+// KmpInternet KMP 字符串匹配算法，网络写法
+// prefixTableInternet 所得的前缀表最小值是 -1，故而 j = prefix[j]
+func KmpInternet(s, p string) []int {
 	n, m := len(s), len(p)-1
 	ans := make([]int, 0)
-	prefix := prefixTable(p)   // 1
-	for i, j := 0, 0; i < n; { // 3
-		if j == m && s[i] == p[j] { // 3.1
+	prefix := prefixTableInternet(p)
+	fmt.Println(prefix)
+	for i, j := 0, 0; i < n; {
+		if j == m && s[i] == p[j] {
 			ans = append(ans, i-m)
 			j = prefix[j]
 		}
 		if s[i] == p[j] {
 			i++
 			j++
-		} else { // 3.2
+		} else {
 			j = prefix[j]
 			if j == -1 {
 				i++
@@ -103,21 +86,106 @@ func Kmp(s, p string) []int {
 	return ans
 }
 
-func prefixTable(p string) []int {
-	prefix, n := make([]int, len(p)), len(p)-1
+func prefixTableInternet(p string) []int {
+	//prefix, n := make([]int, len(p)), len(p)-1	// old：n = len(p)-1
+	n := len(p)
+	prefix := make([]int, n)
+	// 如果 i < n-1，则始终 prefix[n-1] = 0，而不是可能的 prefix[n-1] > 0
+	// 即匹配到一个 pattern 后，从 j = 0 开始，而不是可能的 j > 0 开始
 	for i, length := 2, 0; i < n; {
-		if p[i] == p[length] { // 1.1
+		if p[i] == p[length] {
 			length++
 			prefix[i] = length
 			i++
-		} else { // 1.2
-			if length > 0 { // 1.2.1
+		} else {
+			if length > 0 {
 				length = prefix[length]
-			} else { // 1.2.2
+			} else {
 				i++
 			}
 		}
 	}
 	prefix[0] = -1
+	return prefix
+}
+
+// ====================beauty====================
+
+// KmpBeauty KMP 字符串匹配算法，数据结构与算法之美
+// prefixTableBeauty 所得的前缀表最小值是 -1，故而 j = prefix[j-1] + 1
+func KmpBeauty(s, p string) []int {
+	n, m := len(s), len(p)
+	ret, prefix := make([]int, 0), prefixTableBeauty(p)
+	fmt.Println(prefix)
+	for i, j := 0, 0; i < n; i++ {
+		for j > 0 && s[i] != p[j] {
+			j = prefix[j-1] + 1
+		}
+		if s[i] == p[j] {
+			j++
+		}
+		if j == m {
+			ret = append(ret, i-m+1)
+			j = prefix[j-1] + 1
+		}
+	}
+	return ret
+}
+
+func prefixTableBeauty(pattern string) []int {
+	k, m := -1, len(pattern)
+	prefix := make([]int, m)
+	prefix[0] = -1
+	for i := 1; i < m; i++ {
+		for k != -1 && pattern[k+1] != pattern[i] {
+			k = prefix[k]
+		}
+		if pattern[k+1] == pattern[i] {
+			k++
+		}
+		prefix[i] = k
+	}
+	return prefix
+}
+
+// ====================leetcode====================
+
+// KmpLc KMP 字符串匹配算法，LeetCode 灵茶山艾府
+// prefixTableLc 所得的前缀表最小值是 0，故而 j = prefix[j-1]
+// s：文本字符串，p：模式串，i：文本字符串的索引，j：模式串的索引
+// m == 1 时，暴力字符串匹配
+func KmpLc(s, p string) []int {
+	n, m := len(s), len(p)
+	ret, prefix := make([]int, 0), prefixTableLc(p)
+	fmt.Println(prefix)
+	for i, j := 0, 0; i < n; i++ {
+		for j > 0 && p[j] != s[i] {
+			j = prefix[j-1]
+		}
+		if p[j] == s[i] {
+			j++
+		}
+		if j == m {
+			ret = append(ret, i-m+1)
+			j = prefix[j-1]
+		}
+	}
+	return ret
+}
+
+// k：公共前后缀的长度，也指向公共前后缀匹配时前缀的尾字符
+// prefix：前缀表。可以实现前缀表的 -1 开头（或最小值）的写法，这里实现 0 开头的写法
+func prefixTableLc(pattern string) []int {
+	k, m := 0, len(pattern)
+	prefix := make([]int, m)
+	for i := 1; i < m; i++ {
+		for k > 0 && pattern[k] != pattern[i] { // 前缀尾字符和后缀尾字符不相同
+			k = prefix[k-1] // 1
+		}
+		if pattern[k] == pattern[i] { // 前缀尾字符和后缀尾字符相同
+			k++ // 2
+		}
+		prefix[i] = k
+	}
 	return prefix
 }
