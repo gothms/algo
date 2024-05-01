@@ -39,10 +39,6 @@
 
 package main
 
-import (
-    "fmt"
-)
-
 func main() {
 
 }
@@ -51,4 +47,5 @@ func main() {
 func solveNQueens(n int) [][]string {
 
 }
+
 //leetcode submit region end(Prohibit modification and deletion)

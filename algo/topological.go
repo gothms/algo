@@ -2,18 +2,6 @@ package algo
 
 import "fmt"
 
-func test() {
-	n := 5
-	edges := [][]int{{0, 3}, {3, 2}, {0, 1}, {1, 3}, {4, 1}, {4, 2}}
-	//edges = [][]int{{0, 3}, {3, 2}, {0, 1}, {1, 3}, {4, 1}, {4, 2}, {2, 1}} // 存在环
-	TopoSortByKahn(n, edges)
-	fmt.Println()
-	TopoSortByDFS(n, edges)
-	fmt.Println()
-	circle := TopoSortByDFSCircle(n, edges)
-	fmt.Println(circle)
-}
-
 /*
 课程表系列
 	lc-207
@@ -31,6 +19,8 @@ func TopoSortByKahn(n int, edges [][]int) {
 		adj[s] = append(adj[s], t)
 		inDegree[t]++ // 统计每个顶点的入度
 	}
+	fmt.Println(adj)
+	fmt.Println(inDegree)
 	queue := make([]int, 0)
 	for i := 0; i < n; i++ {
 		if inDegree[i] == 0 {
@@ -57,6 +47,7 @@ func TopoSortByDFS(n int, edges [][]int) {
 	for _, edge := range edges {
 		s, t := edge[0], edge[1]                 // s->t：s先于t，t依赖于s
 		inverseAdj[t] = append(inverseAdj[t], s) // dfs 方案适合逆邻接表：inverseAdj
+		//inverseAdj[s] = append(inverseAdj[s], t) // 邻接表 dfs 的拓扑排序是反的
 	}
 	visited := make([]bool, n)
 	for i := 0; i < n; i++ { // 遍历每个顶点

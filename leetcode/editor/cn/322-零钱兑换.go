@@ -40,7 +40,10 @@
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 func main() {
 	c := []int{1, 2, 5}
@@ -53,6 +56,20 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func coinChange(coins []int, amount int) int {
+	dp := make([]int, amount+1)
+	for i := 1; i <= amount; i++ {
+		dp[i] = math.MaxInt32
+		for _, v := range coins {
+			if i >= v {
+				dp[i] = min(dp[i], dp[i-v]+1)
+			}
+		}
+	}
+	if dp[amount] == math.MaxInt32 {
+		return -1
+	}
+	return dp[amount]
+
 	// 参考 2585，还未AC
 	//n := amount + 1
 	//dp := make([]int, n)

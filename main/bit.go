@@ -25,4 +25,10 @@ func main() {
 		v := i ^ (i - 1)
 		fmt.Println(i, v)
 	}
+
+	//a, b := 2*3*7*11*17*2*2*3, 3*17*13*5*2*5*23
+	//for a != 0 {
+	//	b, a = a, b%a
+	//}
+	//fmt.Println(a, b)
 }
