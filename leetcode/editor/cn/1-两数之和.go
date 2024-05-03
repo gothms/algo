@@ -59,11 +59,12 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func twoSum(nums []int, target int) []int {
 	memo := make(map[int]int)
-	for i := range nums {
-		if idx, ok := memo[nums[i]]; ok {
-			return []int{idx, i}
+	for i, v := range nums {
+		if j, ok := memo[v]; ok {
+			return []int{j, i}
+		} else {
+			memo[target-v] = i
 		}
-		memo[target-nums[i]] = i
 	}
 	return nil
 }
