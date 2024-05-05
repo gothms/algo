@@ -70,68 +70,34 @@ func main() {
 	fmt.Println(reachTarget)
 }
 
+/*
+【模板】多重背包求方案数
+	https://leetcode.cn/problems/number-of-ways-to-earn-points/solutions/2148313/fen-zu-bei-bao-pythonjavacgo-by-endlessc-ludl/
+*/
+
 // leetcode submit region begin(Prohibit modification and deletion)
 func waysToReachTarget(target int, types [][]int) int {
 	const mod = 1_000_000_007
-	// lc：dp
+	// dp
 	// 爬楼梯：排列，方法数：组合
 	// 时间复杂度：O(TS)，其中 T 为 target，S 为所有 count-i 之和
 	dp := make([]int, target+1)
 	dp[0] = 1
 	for _, t := range types {
-		c, m := t[0], t[1]
-		for i := target; i > 0; i-- { // 滚动数组，则从 target 开始遍历
-			for j, maxC := 1, min(c, i/m); j <= maxC; j++ { // 最多有 c 或 i/m 题
-				dp[i] += dp[i-j*m]
+		for i := target; i > 0; i-- {
+			//for j := 1; j <= min(t[0], min(t[0], target/t[1]); j++ { // min(t[0], target/t[1])：不能超过 target
+			//	k := i - j*t[1]
+			//	if k < 0 {
+			//		break
+			//	}
+			//dp[i] += dp[k] % mod
+			for j := 1; j <= min(t[0], i/t[1]); j++ { // 优化
+				k := i - j*t[1]
+				dp[i] += dp[k] % mod
 			}
-			dp[i] %= mod
 		}
 	}
-	return dp[target]
-
-	// dp
-	//sort.Slice(types, func(i, j int) bool {
-	//	return types[i][1] < types[j][1]
-	//})
-	//n := len(types)
-	//dp, sum := make([][]int, target+1), make([]int, n)
-	//for i := 0; i <= target; i++ {
-	//	dp[i] = make([]int, n)
-	//}
-	//for j := 0; j < n; j++ {
-	//	dp[0][j] = 1
-	//	sum[j] = types[j][0] * types[j][1]
-	//	if j > 0 {
-	//		sum[j] += sum[j-1]
-	//	}
-	//}
-	//fmt.Println(sum)
-	//defer func() {
-	//	fmt.Println(dp)
-	//}()
-	//for i := 1; i <= target; i++ {
-	//	for j := 0; j < n; j++ {
-	//		t := i - types[j][1]
-	//		switch {
-	//		case t < 0:
-	//			break
-	//		case t == 0:
-	//			dp[i][j] = 1
-	//		case t > 0:
-	//			for k := 0; k < j; k++ {
-	//				dp[i][j] += dp[t][k]
-	//			}
-	//			if sum[j] >= i { // TODO 超过总数
-	//				dp[i][j] += dp[t][j]
-	//			}
-	//		}
-	//	}
-	//}
-	//ret := 0
-	//for _, v := range dp[target] {
-	//	ret = (ret + v) % mod
-	//}
-	//return ret
+	return dp[target] % mod
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

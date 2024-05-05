@@ -46,8 +46,6 @@ package main
 
 import (
 	"fmt"
-	"math"
-	"math/bits"
 )
 
 func main() {
@@ -59,26 +57,27 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func minimumXORSum(nums1 []int, nums2 []int) int {
+
 	// 状态压缩
-	n := len(nums1)
-	m := 1 << n
-	dp := make([]int, m)
-	for mask := 1; mask < m; mask++ {
-		dp[mask] = math.MaxInt32
-		cnt := bits.OnesCount(uint(mask)) - 1
-		// 写法二
-		for i := mask; i > 0; i &= i - 1 { // 从低到高，移除 1
-			k := i & -i                                                                 // 取出低位的 1
-			dp[mask] = min(dp[mask], nums1[cnt]^nums2[bits.Len(uint(k))-1]+dp[mask&^k]) // ^ 运算优先级等于 +
-		}
-		// 写法一
-		//for i := 0; i < n; i++ {
-		//	if mask&(1<<i) > 0 {
-		//		dp[mask] = min(dp[mask], nums1[cnt]^nums2[i]+dp[mask^(1<<i)])
-		//	}
-		//}
-	}
-	return dp[m-1]
+	//n := len(nums1)
+	//m := 1 << n
+	//dp := make([]int, m)
+	//for mask := 1; mask < m; mask++ {
+	//	dp[mask] = math.MaxInt32
+	//	cnt := bits.OnesCount(uint(mask)) - 1
+	//	// 写法二
+	//	for i := mask; i > 0; i &= i - 1 { // 从低到高，移除 1
+	//		k := i & -i                                                                 // 取出低位的 1
+	//		dp[mask] = min(dp[mask], nums1[cnt]^nums2[bits.Len(uint(k))-1]+dp[mask&^k]) // ^ 运算优先级等于 +
+	//	}
+	//	// 写法一
+	//	//for i := 0; i < n; i++ {
+	//	//	if mask&(1<<i) > 0 {
+	//	//		dp[mask] = min(dp[mask], nums1[cnt]^nums2[i]+dp[mask^(1<<i)])
+	//	//	}
+	//	//}
+	//}
+	//return dp[m-1]
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
