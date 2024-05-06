@@ -63,90 +63,83 @@ func main() {
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
-type FrontMiddleBackQueue struct {
-	f, m, b *fmbq
-	n       int
-}
+
 type fmbq struct {
-	val       int
 	pre, next *fmbq
+	val       int
+}
+type FrontMiddleBackQueue struct {
+	h, m, t *fmbq
+	n       int
 }
 
 func Constructor() FrontMiddleBackQueue {
-	q := &fmbq{}
-	q.pre, q.next = q, q
-	return FrontMiddleBackQueue{q, q, q, 0}
-}
-func (this *FrontMiddleBackQueue) push(q *fmbq, val int) {
-	node := &fmbq{val: val}
-	node.pre, node.next, q.next, q.next.pre = q, q.next, node, node // 增加结点
-	this.n++
+	f := &fmbq{}
+	f.pre, f.next = f, f
+	return FrontMiddleBackQueue{f, f, f, 0}
 }
 func (this *FrontMiddleBackQueue) PushFront(val int) {
-	this.push(this.f, val)
-	if this.n&1 == 0 || this.n == 1 { // 奇偶讨论
+	insertAfter(this.h, &fmbq{val: val})
+	this.n++
+	if this.n == 1 || this.n&1 == 0 {
 		this.m = this.m.pre
 	}
 }
-
 func (this *FrontMiddleBackQueue) PushMiddle(val int) {
-	if this.n&1 == 0 {
-		this.push(this.m, val)
-		this.m = this.m.next
-	} else {
-		this.push(this.m.pre, val)
-		this.m = this.m.pre
+	f := &fmbq{val: val}
+	if this.n&1 == 0 { // 往后插入
+		insertAfter(this.m, f)
+	} else { // 往前
+		insertBefore(this.m, f)
 	}
+	this.n++
+	this.m = f
 }
-
 func (this *FrontMiddleBackQueue) PushBack(val int) {
-	this.push(this.b.pre, val)
+	insertBefore(this.t, &fmbq{val: val})
+	this.n++
 	if this.n&1 == 1 {
 		this.m = this.m.next
 	}
 }
-
-func (this *FrontMiddleBackQueue) pop(q *fmbq) bool {
-	if this.n == 0 {
-		return false
-	}
-	this.n--
-	q.pre.next, q.next.pre = q.next, q.pre // 删除结点
-	return true
-}
 func (this *FrontMiddleBackQueue) PopFront() int {
-	q := this.f.next
-	if !this.pop(q) {
-		return -1
-	}
-	if this.n&1 == 1 || this.n == 0 { // 奇偶讨论
-		this.m = this.m.next
-	}
-	return q.val
+	return this.pop(this.h.next, func() {
+		if this.n == 0 || this.n&1 == 1 {
+			this.m = this.m.next
+		}
+	})
 }
-
 func (this *FrontMiddleBackQueue) PopMiddle() int {
-	q := this.m
-	if !this.pop(q) {
-		return -1
-	}
-	if this.n&1 == 0 {
-		this.m = this.m.pre
-	} else {
-		this.m = this.m.next
-	}
-	return q.val
+	return this.pop(this.m, func() {
+		if this.n&1 == 0 {
+			this.m = this.m.pre
+		} else {
+			this.m = this.m.next
+		}
+	})
 }
-
 func (this *FrontMiddleBackQueue) PopBack() int {
-	q := this.b.pre
-	if !this.pop(q) {
+	return this.pop(this.t.pre, func() {
+		if this.n&1 == 0 {
+			this.m = this.m.pre
+		}
+	})
+}
+func insertAfter(pre, c *fmbq) {
+	pre.next, c.pre, c.next, pre.next.pre = c, pre, pre.next, c
+}
+func insertBefore(next, c *fmbq) {
+	next.pre, c.next, c.pre, next.pre.next = c, next, next.pre, c
+}
+func (this *FrontMiddleBackQueue) pop(c *fmbq, f func()) int {
+	if this.n == 0 {
 		return -1
 	}
-	if this.n&1 == 0 {
-		this.m = this.m.pre
-	}
-	return q.val
+	c.pre.next, c.next.pre = c.next, c.pre // 删除结点
+	this.n--
+	f()                      // 调整中点
+	c.pre, c.next = nil, nil // 回收
+	return c.val
 }
 
 /**
