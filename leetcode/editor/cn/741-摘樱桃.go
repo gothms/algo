@@ -53,7 +53,9 @@
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	grid := [][]int{{1, 1, -1}, {1, -1, 1}, {-1, 1, 1}}
@@ -66,12 +68,56 @@ func main() {
 		{0, 0, 0, 1, 0, 0, 0},
 		{0, 0, 0, 1, 0, 0, 0},
 		{0, 0, 0, 1, 1, 1, 1}} // 15
+	//grid = [][]int{
+	//	{1, -1, 1, -1, 1, 1, 1, 1, 1, -1},
+	//	{-1, 1, 1, -1, -1, 1, 1, 1, 1, 1},
+	//	{1, 1, 1, -1, 1, 1, 1, 1, 1, 1},
+	//	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//	{-1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	//	{1, -1, 1, 1, 1, 1, -1, 1, 1, 1},
+	//	{1, 1, 1, -1, 1, 1, -1, 1, 1, 1},
+	//	{1, -1, 1, -1, -1, 1, 1, 1, 1, 1},
+	//	{1, 1, -1, -1, 1, 1, 1, -1, 1, -1},
+	//	{1, 1, -1, 1, 1, 1, 1, 1, 1, 1}} // 0
 	pickup := cherryPickup(grid)
 	fmt.Println(pickup)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func cherryPickup(grid [][]int) int {
+	// dp
+	// 注意点：
+	// 1.倒序遍历，防止数据污染
+	// 2.dp 的所有值初始化为 inf，若哨兵初始化为 0，会造成数据污染（误把初始化的边界 0 当成可到达的起点）
+	// 3.dp[1][1] = grid[0][0]，让动态规划有起始值
+	const inf = -201
+	n := len(grid)
+	dp := make([][]int, n+1)
+	for i := range dp {
+		dp[i] = make([]int, n+1)
+		for j := range dp[i] {
+			dp[i][j] = inf // 2
+		}
+	}
+	dp[1][1] = grid[0][0] // 3
+	for s := 3; s <= n<<1; s++ {
+		//for i := max(1, s-n); i <= min(s-1, n); i++ {
+		//	for j := i; j <= min(s-1, n); j++ {
+		for i := min(s-1, n); i >= max(1, s-n); i-- { // 1
+			for j := min(s-1, n); j >= i; j-- {
+				if grid[i-1][s-i-1] == -1 || grid[j-1][s-j-1] == -1 {
+					dp[i][j] = inf
+					continue
+				}
+				dp[i][j] = max(max(dp[i-1][j], dp[i][j-1]), max(dp[i-1][j-1], dp[i][j])) + grid[i-1][s-i-1]
+				if i != j {
+					dp[i][j] += grid[j-1][s-j-1]
+				}
+			}
+		}
+	}
+	return max(dp[n][n], 0)
+
 	// lc
 	// 假设两人同时出发，且速度相同。无论这两人怎么走，在时间相同的情况下，他们向右走的步数加上向下走的步数之和是一个定值（设为 k）
 	// 设两人的坐标为 (x1,y1) 和 (x2,y2)，则 x1+y1=x2+y2=k。当 x1=x2 时，两个人到达了同一个格子
@@ -82,49 +128,49 @@ func cherryPickup(grid [][]int) int {
 	// 往右，往下
 	// 都往下
 	// 代码实现：可以将 A 和 B 走出的路径的上轮廓看成是 A 走出的路径，下轮廓看成是 B 走出的路径，即视作 A 始终不会走到 B 的下方，则有 x1 ≤ x2
-	const inf = -201 // 1 <= n <= 50
-	n := len(grid)
-	dp := make([][][]int, n<<1-1)
-	for i := range dp {
-		dp[i] = make([][]int, n)
-		for j := range dp[i] {
-			dp[i][j] = make([]int, n)
-			for k := range dp[i][j] {
-				dp[i][j][k] = inf
-			}
-		}
-	}
-	dp[0][0][0] = grid[0][0]
-	for k := 1; k < n<<1-1; k++ {
-		for x1 := max(0, k-n+1); x1 <= min(k, n-1); x1++ {
-			y1 := k - x1
-			if grid[x1][y1] == -1 {
-				continue
-			}
-			for x2 := x1; x2 <= min(k, n-1); x2++ {
-				y2 := k - x2
-				if grid[x2][y2] == -1 {
-					continue
-				}
-				ans := dp[k-1][x1][x2] // 都往右
-				if x1 > 0 {
-					ans = max(ans, dp[k-1][x1-1][x2]) // 往下、右
-				}
-				if x2 > 0 {
-					ans = max(ans, dp[k-1][x1][x2-1]) // 往右、下
-				}
-				if x1 > 0 && x2 > 0 {
-					ans = max(ans, dp[k-1][x1-1][x2-1]) // 都往下
-				}
-				ans += grid[x1][y1]
-				if x1 != x2 {
-					ans += grid[x2][y2]
-				}
-				dp[k][x1][x2] = ans
-			}
-		}
-	}
-	return max(0, dp[n<<1-2][n-1][n-1])
+	//const inf = -201 // 1 <= n <= 50
+	//n := len(grid)
+	//dp := make([][][]int, n<<1-1)
+	//for i := range dp {
+	//	dp[i] = make([][]int, n)
+	//	for j := range dp[i] {
+	//		dp[i][j] = make([]int, n)
+	//		for k := range dp[i][j] {
+	//			dp[i][j][k] = inf
+	//		}
+	//	}
+	//}
+	//dp[0][0][0] = grid[0][0]
+	//for k := 1; k < n<<1-1; k++ {
+	//	for x1 := max(0, k-n+1); x1 <= min(k, n-1); x1++ {
+	//		y1 := k - x1
+	//		if grid[x1][y1] == -1 {
+	//			continue
+	//		}
+	//		for x2 := x1; x2 <= min(k, n-1); x2++ {
+	//			y2 := k - x2
+	//			if grid[x2][y2] == -1 {
+	//				continue
+	//			}
+	//			ans := dp[k-1][x1][x2] // 都往右
+	//			if x1 > 0 {
+	//				ans = max(ans, dp[k-1][x1-1][x2]) // 往下、右
+	//			}
+	//			if x2 > 0 {
+	//				ans = max(ans, dp[k-1][x1][x2-1]) // 往右、下
+	//			}
+	//			if x1 > 0 && x2 > 0 {
+	//				ans = max(ans, dp[k-1][x1-1][x2-1]) // 都往下
+	//			}
+	//			ans += grid[x1][y1]
+	//			if x1 != x2 {
+	//				ans += grid[x2][y2]
+	//			}
+	//			dp[k][x1][x2] = ans
+	//		}
+	//	}
+	//}
+	//return max(0, dp[n<<1-2][n-1][n-1])
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
