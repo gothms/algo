@@ -51,7 +51,6 @@ package main
 
 import (
 	"fmt"
-	"sort"
 )
 
 func main() {
@@ -67,79 +66,84 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func distanceLimitedPathsExist(n int, edgeList [][]int, queries [][]int) []bool {
-	// 优化：不重新申请空间
-	// 执行耗时:247 ms,击败了100.00% 的Go用户
-	// 内存消耗:18.3 MB,击败了25.00% 的Go用户
-	idx := make([]int, len(queries)) // 优化
-	for i := range idx {
-		idx[i] = i
-	}
-	sort.Slice(idx, func(i, j int) bool { // queries 排序
-		return queries[idx[i]][2] < queries[idx[j]][2]
-	})
-	sort.Slice(edgeList, func(i, j int) bool { // edgeList 排序
-		return edgeList[i][2] < edgeList[j][2]
-	})
-	uni := make([]int, n) // 并查集
-	for i := range uni {
-		uni[i] = i
-	}
-	var find func(int) int
-	find = func(x int) int {
-		if uni[x] != x {
-			uni[x] = find(uni[x])
-		}
-		return uni[x]
-	}
-	merge := func(p, q int) {
-		uni[find(q)] = find(p) // uni[find(id)] 将整个并查集合并到 p
-	}
-	ans := make([]bool, len(queries))
-	k := 0
-	for _, i := range idx { // 核心逻辑
-		for ; k < len(edgeList) && edgeList[k][2] < queries[i][2]; k++ { // 易错点：k < len(edgeList)
-			merge(edgeList[k][0], edgeList[k][1])
-		}
-		ans[i] = find(queries[i][0]) == find(queries[i][1]) // 在 id[2] 的限制下，id[0] 和 id[1] 的路径是否已通
-	}
-	return ans
+	// 并查集
 
-	// 并查集 + 排序
-	// 思路：请见代码
-	// 执行耗时:279 ms,击败了25.00% 的Go用户
-	// 内存消耗:16.6 MB,击败了100.00% 的Go用户
-	//for i := range queries {
-	//	queries[i] = append(queries[i], i) // i 用于操作 ans。但会重新申请空间，所以耗时
-	//}
-	//sort.Slice(queries, func(i, j int) bool { // queries 排序
-	//	return queries[i][2] < queries[j][2]
-	//})
-	//sort.Slice(edgeList, func(i, j int) bool { // edgeList 排序
-	//	return edgeList[i][2] < edgeList[j][2]
-	//})
-	//uni := make([]int, n) // 并查集
-	//for i := range uni {
-	//	uni[i] = i
-	//}
-	//var find func(int) int
-	//find = func(x int) int {
-	//	if uni[x] != x {
-	//		uni[x] = find(uni[x])
-	//	}
-	//	return uni[x]
-	//}
-	//merge := func(p, id int) {
-	//	uni[find(id)] = find(p) // uni[find(id)] 将整个并查集合并到 p
-	//}
-	//ans := make([]bool, len(queries))
-	//k := 0
-	//for _, id := range queries { // 核心逻辑
-	//	for ; k < len(edgeList) && edgeList[k][2] < id[2]; k++ { // 易错点：k < len(edgeList)
-	//		merge(edgeList[k][0], edgeList[k][1])
-	//	}
-	//	ans[id[3]] = find(id[0]) == find(id[1]) // 在 id[2] 的限制下，id[0] 和 id[1] 的路径是否已通
-	//}
-	//return ans
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func distanceLimitedPathsExist(n int, edgeList [][]int, queries [][]int) []bool {
+//	// 优化：不重新申请空间
+//	// 执行耗时:247 ms,击败了100.00% 的Go用户
+//	// 内存消耗:18.3 MB,击败了25.00% 的Go用户
+//	idx := make([]int, len(queries)) // 优化
+//	for i := range idx {
+//		idx[i] = i
+//	}
+//	sort.Slice(idx, func(i, j int) bool { // queries 排序
+//		return queries[idx[i]][2] < queries[idx[j]][2]
+//	})
+//	sort.Slice(edgeList, func(i, j int) bool { // edgeList 排序
+//		return edgeList[i][2] < edgeList[j][2]
+//	})
+//	uni := make([]int, n) // 并查集
+//	for i := range uni {
+//		uni[i] = i
+//	}
+//	var find func(int) int
+//	find = func(x int) int {
+//		if uni[x] != x {
+//			uni[x] = find(uni[x])
+//		}
+//		return uni[x]
+//	}
+//	merge := func(p, q int) {
+//		uni[find(q)] = find(p) // uni[find(id)] 将整个并查集合并到 p
+//	}
+//	ans := make([]bool, len(queries))
+//	k := 0
+//	for _, i := range idx { // 核心逻辑
+//		for ; k < len(edgeList) && edgeList[k][2] < queries[i][2]; k++ { // 易错点：k < len(edgeList)
+//			merge(edgeList[k][0], edgeList[k][1])
+//		}
+//		ans[i] = find(queries[i][0]) == find(queries[i][1]) // 在 id[2] 的限制下，id[0] 和 id[1] 的路径是否已通
+//	}
+//	return ans
+//
+//	// 并查集 + 排序
+//	// 思路：请见代码
+//	// 执行耗时:279 ms,击败了25.00% 的Go用户
+//	// 内存消耗:16.6 MB,击败了100.00% 的Go用户
+//	//for i := range queries {
+//	//	queries[i] = append(queries[i], i) // i 用于操作 ans。但会重新申请空间，所以耗时
+//	//}
+//	//sort.Slice(queries, func(i, j int) bool { // queries 排序
+//	//	return queries[i][2] < queries[j][2]
+//	//})
+//	//sort.Slice(edgeList, func(i, j int) bool { // edgeList 排序
+//	//	return edgeList[i][2] < edgeList[j][2]
+//	//})
+//	//uni := make([]int, n) // 并查集
+//	//for i := range uni {
+//	//	uni[i] = i
+//	//}
+//	//var find func(int) int
+//	//find = func(x int) int {
+//	//	if uni[x] != x {
+//	//		uni[x] = find(uni[x])
+//	//	}
+//	//	return uni[x]
+//	//}
+//	//merge := func(p, id int) {
+//	//	uni[find(id)] = find(p) // uni[find(id)] 将整个并查集合并到 p
+//	//}
+//	//ans := make([]bool, len(queries))
+//	//k := 0
+//	//for _, id := range queries { // 核心逻辑
+//	//	for ; k < len(edgeList) && edgeList[k][2] < id[2]; k++ { // 易错点：k < len(edgeList)
+//	//		merge(edgeList[k][0], edgeList[k][1])
+//	//	}
+//	//	ans[id[3]] = find(id[0]) == find(id[1]) // 在 id[2] 的限制下，id[0] 和 id[1] 的路径是否已通
+//	//}
+//	//return ans
+//}

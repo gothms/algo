@@ -52,6 +52,8 @@ func main() {
 	nums := []int{4, 5, 6, 7, 0, 1, 2}
 	//nums = []int{0, 1, 2}
 	target := 0
+	nums = []int{3, 1}
+	target = 1
 	i := search(nums, target)
 	fmt.Println(i)
 }
@@ -70,20 +72,19 @@ func main() {
 */
 // leetcode submit region begin(Prohibit modification and deletion)
 func search(nums []int, target int) int {
-	l, r := 0, len(nums)-1
+	l, r, m := 0, len(nums)-1, 0
 	for l <= r {
-		m := (l + r) >> 1
-		switch {
-		case nums[m] == target:
+		m = (l + r) >> 1
+		if nums[m] == target {
 			return m
-		case nums[m] >= nums[0]:
-			if target < nums[m] && target >= nums[0] { // m在前半部分，且 target 往头移
+		} else if nums[m] < target {
+			if nums[0] > nums[m] && nums[0] <= target {
 				r = m - 1
 			} else {
 				l = m + 1
 			}
-		default:
-			if target > nums[m] && target < nums[0] { // m在后半部分，且 target 往尾移
+		} else {
+			if nums[0] > target && nums[0] <= nums[m] {
 				l = m + 1
 			} else {
 				r = m - 1
@@ -91,6 +92,28 @@ func search(nums []int, target int) int {
 		}
 	}
 	return -1
+
+	//l, r := 0, len(nums)-1
+	//for l <= r {
+	//	m := (l + r) >> 1
+	//	switch {
+	//	case nums[m] == target:
+	//		return m
+	//	case nums[m] >= nums[0]:
+	//		if target < nums[m] && target >= nums[0] { // m在前半部分，且 target 往头移
+	//			r = m - 1
+	//		} else {
+	//			l = m + 1
+	//		}
+	//	default:
+	//		if target > nums[m] && target < nums[0] { // m在后半部分，且 target 往尾移
+	//			l = m + 1
+	//		} else {
+	//			r = m - 1
+	//		}
+	//	}
+	//}
+	//return -1
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

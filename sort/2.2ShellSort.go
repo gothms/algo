@@ -1,4 +1,4 @@
-package sort
+package sorts
 
 // copyInsertionSort 插入排序
 func copyInsertionSort(arr []int) {

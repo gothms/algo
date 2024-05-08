@@ -1,4 +1,4 @@
-package sort
+package sorts
 
 // CountingSort 非稳定排序
 func CountingSort(arr []int, maxVal int) {

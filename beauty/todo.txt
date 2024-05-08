@@ -7,3 +7,6 @@
 20.trie
 23.divide_conquer
 advance\03.bitmap_bloom-filter
+practical\02.google_search
+practical\03.
+practical\04.

@@ -1,4 +1,4 @@
-package sort
+package sorts
 
 /*
 	这里展示：zsortinterface.go

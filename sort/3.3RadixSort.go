@@ -1,4 +1,4 @@
-package sort
+package sorts
 
 // RadixSort 稳定算法
 func RadixSort(arr []int) {
