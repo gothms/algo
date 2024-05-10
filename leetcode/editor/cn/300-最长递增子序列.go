@@ -46,7 +46,9 @@
 
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	nums := []int{1, 3, 6, 7, 9, 4, 10, 5, 6}
@@ -56,32 +58,34 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func lengthOfLIS(nums []int) int {
-	// 贪心 + 二分
-	//lfl := []int{math.MinInt32}
-	//for _, v := range nums {
-	//	if v > lfl[len(lfl)-1] {
-	//		lfl = append(lfl, v)
-	//	} else {
-	//		i := sort.SearchInts(lfl, v)
-	//		lfl[i] = v
-	//	}
-	//}
-	//return len(lfl) - 1
-
-	// dp：O(n^2)
-	ans, n := 1, len(nums)
-	dp := make([]int, n)
-	dp[0] = 1
-	for i := 1; i < n; i++ {
-		for j := 0; j < i; j++ {
-			if nums[i] > nums[j] {
-				dp[i] = max(dp[i], dp[j])
-			}
-		}
-		dp[i]++
-		ans = max(ans, dp[i])
-	}
-	return ans
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func lengthOfLIS(nums []int) int {
+//	// 二分查找
+//	lis := make([]int, 1, len(nums)+1)
+//	lis[0] = math.MinInt32 // 哨兵
+//	for _, v := range nums {
+//		if v > lis[len(lis)-1] { // 追加子序列
+//			lis = append(lis, v)
+//		} else {
+//			lis[sort.SearchInts(lis, v)] = v // 调整子序列
+//		}
+//	}
+//	return len(lis) - 1
+//
+//	// dp
+//	//var ans int
+//	//dp := make([]int, len(nums))
+//	//for i, v := range nums {
+//	//	for j := i - 1; j >= max(0, dp[i]-1); j-- { // max(0, dp[i]-1)：缩小遍历范围
+//	//		if v > nums[j] {
+//	//			dp[i] = max(dp[i], dp[j]) // 状态转移方程
+//	//		}
+//	//	}
+//	//	dp[i]++ // 自身
+//	//	ans = max(ans, dp[i])
+//	//}
+//	//return ans
+//}

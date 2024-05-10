@@ -42,71 +42,36 @@ package main
 
 import (
 	"fmt"
-	"math"
 )
 
 func main() {
 	c := []int{1, 2, 5}
 	amount := 11
-	c = []int{2}
-	amount = 3
+	//c = []int{2}
+	//amount = 3
 	change := coinChange(c, amount)
 	fmt.Println(change)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func coinChange(coins []int, amount int) int {
-	dp := make([]int, amount+1)
-	for i := 1; i <= amount; i++ {
-		dp[i] = math.MaxInt32
-		for _, v := range coins {
-			if i >= v {
-				dp[i] = min(dp[i], dp[i-v]+1)
-			}
-		}
-	}
-	if dp[amount] == math.MaxInt32 {
-		return -1
-	}
-	return dp[amount]
 
-	// 参考 2585，还未AC
-	//n := amount + 1
-	//dp := make([]int, n)
-	//for i := 1; i < n; i++ {
-	//	dp[i] = n
-	//}
-	//for _, c := range coins {
-	//	for i := amount; i > 0; i-- {
-	//		v := n
-	//		for j, m := 1, i/c; j <= m; j++ {
-	//			v = min(v, dp[i-j*c]+j)
-	//		}
-	//		if v < n {
-	//			dp[i] = v
-	//		}
-	//	}
-	//}
-	//if dp[amount] < n {
-	//	return dp[amount]
-	//}
-	//return -1
-
-	// dp
-	//n := amount + 1
-	//dp := make([]int, n)
-	//for i := 1; i < n; i++ {
-	//	dp[i] = n
-	//	for _, c := range coins {
-	//		if i >= c {
-	//			dp[i] = min(dp[i], dp[i-c]+1)
-	//		}
-	//	}
-	//}
-	//if dp[amount] == n {
-	//	return -1
-	//}
-	//return dp[amount]
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func coinChange(coins []int, amount int) int {
+//	dp := make([]int, amount+1)
+//	for i := 1; i <= amount; i++ {
+//		dp[i] = math.MaxInt32
+//		for _, v := range coins {
+//			if i >= v {
+//				dp[i] = min(dp[i], dp[i-v]+1)
+//			}
+//		}
+//	}
+//	if dp[amount] == math.MaxInt32 {
+//		return -1
+//	}
+//	return dp[amount] // amount=0 也能满足
+//}

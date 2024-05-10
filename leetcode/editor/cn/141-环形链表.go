@@ -76,23 +76,18 @@ LeetCode-141
  * }
  */
 func hasCycle(head *ListNode) bool {
-	// 快慢指针
-	for slow, fast := head, head; fast != nil && fast.Next != nil; {
-		slow, fast = slow.Next, fast.Next.Next
-		if slow == fast {
-			return true
-		}
-	}
-	return false
 
-	//slow, fast := head, head
-	//for fast != nil && fast.Next != nil {
-	//	slow, fast = slow.Next, fast.Next.Next
-	//	if slow == fast {
-	//		return true
-	//	}
-	//}
-	//return false
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func hasCycle(head *ListNode) bool {
+//	// 快慢指针
+//	for slow, fast := head, head; fast != nil && fast.Next != nil; {
+//		slow, fast = slow.Next, fast.Next.Next
+//		if slow == fast {
+//			return true
+//		}
+//	}
+//	return false
+//}

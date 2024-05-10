@@ -52,21 +52,19 @@ func main() {
 
 }
 
-//leetcode submit region begin(Prohibit modification and deletion)
+// leetcode submit region begin(Prohibit modification and deletion)
 func minimumTotal(triangle [][]int) int {
-	min := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	n := len(triangle)
-	for i := n - 2; i >= 0; i-- {
-		for j := i; j >= 0; j-- {
-			triangle[i][j] += min(triangle[i+1][j], triangle[i+1][j+1])
-		}
-	}
-	return triangle[0][0]
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func minimumTotal(triangle [][]int) int {
+//	dp := slices.Clone(triangle[len(triangle)-1])
+//	for i := len(dp) - 2; i >= 0; i-- { // 自底向上
+//		for j := 0; j <= i; j++ {
+//			dp[j] = min(dp[j], dp[j+1]) + triangle[i][j] // 状态转移方程
+//		}
+//	}
+//	return dp[0]
+//}

@@ -54,38 +54,63 @@ package main
 
 import (
 	"fmt"
-	"strings"
 )
 
 func main() {
-	s := "  hello world  "
+	s := "  hello world  " // len=15
 	words := reverseWords(s)
-	fmt.Println(words)
+	fmt.Println(words, len(words))
 }
 
-//leetcode submit region begin(Prohibit modification and deletion)
+// leetcode submit region begin(Prohibit modification and deletion)
 func reverseWords(s string) string {
-	i := len(s) - 1
-	var sb strings.Builder
-	for i >= 0 && s[i] == ' ' {
-		i--
-	}
-	for j := 0; i >= 0; i = j {
-		for j = i - 1; j >= 0 && s[j] != ' '; {
-			j--
-		}
-		if j < -1 {
-			break
-		}
-		sb.WriteString(s[j+1 : i+1])
-		for j >= 0 && s[j] == ' ' {
-			j--
-		}
-		if j >= 0 {
-			sb.WriteByte(' ')
-		}
-	}
-	return sb.String()
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func reverseWords(s string) string {
+//	// 迭代
+//	const space = ' '
+//	var sb strings.Builder
+//	for i, j := len(s)-1, 0; i >= 0; i = j - 1 { // i = j - 1
+//		for i >= 0 && s[i] == space {
+//			i--
+//		}
+//		j = i
+//		for j >= 0 && s[j] != space {
+//			j--
+//		}
+//		if j != i { // 相等说明没有单词
+//			if sb.Len() > 0 { // 第一个单词前不写入 ' '
+//				sb.WriteByte(space)
+//			}
+//			sb.WriteString(s[j+1 : i+1])
+//		}
+//	}
+//	return sb.String()
+//
+//	// 递归
+//	//n := len(s)
+//	//var sb strings.Builder
+//	//var dfs func(int)
+//	//dfs = func(i int) {
+//	//	if i == n {
+//	//		return
+//	//	}
+//	//	for i < n && s[i] == ' ' { // 去掉前置 ' '
+//	//		i++
+//	//	}
+//	//	j := i
+//	//	for j < n && s[j] != ' ' { // 有效字符
+//	//		j++
+//	//	}
+//	//	dfs(j)
+//	//	if sb.Len() > 0 { // 首单词前，不写入 ' '
+//	//		sb.WriteByte(' ')
+//	//	}
+//	//	sb.WriteString(s[i:j]) // i==n 时，不会写入
+//	//}
+//	//dfs(0)
+//	//return sb.String()
+//}

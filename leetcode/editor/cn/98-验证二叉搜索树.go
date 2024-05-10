@@ -54,17 +54,14 @@ func main() {
  * }
  */
 func isValidBST(root *TreeNode) bool {
-	var dfs func(*TreeNode, int, int) bool
-	dfs = func(r *TreeNode, min int, max int) bool {
-		if r == nil {
+	var dfs func(int, int, *TreeNode) bool
+	dfs = func(l, r int, cur *TreeNode) bool {
+		if cur == nil {
 			return true
 		}
-		if r.Val <= min || r.Val >= max {
-			return false
-		}
-		return dfs(r.Left, min, r.Val) && dfs(r.Right, r.Val, max)
+		return l < cur.Val && cur.Val < r && dfs(l, cur.Val, cur.Left) && dfs(cur.Val, r, cur.Right)
 	}
-	return dfs(root, math.MinInt64, math.MaxInt64)
+	return dfs(math.MinInt, math.MaxInt, root) // -231 <= Node.val <= 231 - 1
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

@@ -41,56 +41,28 @@ import (
 
 func main() {
 	nums := []int{3, -1, 4}
-	//nums = []int{-2, 3, -4}
-	//nums = []int{2, -5, -2, -4, 3}
+	nums = []int{-2, 3, -4}
+	nums = []int{2, -5, -2, -4, 3}
+	nums = []int{-2}
 	product := maxProduct(nums)
 	fmt.Println(product)
 }
 
-//leetcode submit region begin(Prohibit modification and deletion)
+// leetcode submit region begin(Prohibit modification and deletion)
 func maxProduct(nums []int) int {
-	// dp
-	maxMin := func(a, b, c int) (int, int) {
-		if b > a {
-			a, b = b, a
-		}
-		if c > a {
-			a, c = c, a
-		}
-		if b < c {
-			c = b
-		}
-		return a, c
-	}
-	max, dpMin, dpMax, n := nums[0], nums[0], nums[0], len(nums)
-	for i := 1; i < n; i++ {
-		dpMax, dpMin = maxMin(dpMax*nums[i], dpMin*nums[i], nums[i])
-		if dpMax > max {
-			max = dpMax
-		}
-	}
-	return max
 
-	//minMax := func(a, b int) (int, int) {
-	//	if a > b {
-	//		return b, a
-	//	}
-	//	return a, b
-	//}
-	//res, n := nums[0], len(nums)
-	//dpMin, dpMax := make([]int, n), make([]int, n)
-	//dpMin[0], dpMax[0] = nums[0], nums[0]
-	//for i := 1; i < n; i++ {
-	//	min, max := minMax(dpMin[i-1]*nums[i], dpMax[i-1]*nums[i])
-	//	_, dpMax[i] = minMax(max, nums[i])
-	//	dpMin[i], _ = minMax(min, nums[i])
-	//}
-	//for i := 1; i < n; i++ {
-	//	if dpMax[i] > res {
-	//		res = dpMax[i]
-	//	}
-	//}
-	//return res
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func maxProduct(nums []int) int {
+//	// 子数组为 [v]：重新开始
+//	// minDp：记录最小值（备用于两个负数相乘）
+//	ans, maxDp, minDp := math.MinInt32, 1, 1
+//	for _, v := range nums {
+//		maxV, minV := maxDp*v, minDp*v
+//		maxDp, minDp = max(v, maxV, minV), min(v, maxV, minV) // 状态转移方程
+//		ans = max(ans, maxDp)
+//	}
+//	return ans
+//}

@@ -38,20 +38,24 @@ func main() {
 
 }
 
-//leetcode submit region begin(Prohibit modification and deletion)
+// leetcode submit region begin(Prohibit modification and deletion)
 func majorityElement(nums []int) int {
-	v, c, n := 0, 0, len(nums)
-	for i := 0; i < n; i++ {
-		if c == 0 {
-			c++
-			v = nums[i]
-		} else if v == nums[i] {
-			c++
-		} else {
-			c--
-		}
-	}
-	return v
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func majorityElement(nums []int) int {
+//	me, cnt := 0, 0
+//	for _, v := range nums {
+//		if cnt == 0 {
+//			me = v
+//			cnt = 1
+//		} else if v == me {
+//			cnt++
+//		} else {
+//			cnt--
+//		}
+//	}
+//	return me
+//}

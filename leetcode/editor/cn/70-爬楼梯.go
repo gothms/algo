@@ -42,11 +42,11 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func climbStairs(n int) int {
-	o, s := 1, 1
+	o, t := 1, 1
 	for i := 2; i <= n; i++ {
-		o, s = o+s, o
+		o, t = t, o+t
 	}
-	return o
+	return t
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

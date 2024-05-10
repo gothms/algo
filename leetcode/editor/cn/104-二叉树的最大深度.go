@@ -19,7 +19,6 @@
 package main
 
 func main() {
-
 }
 
 //leetcode submit region begin(Prohibit modification and deletion)
@@ -32,12 +31,6 @@ func main() {
  * }
  */
 func maxDepth(root *TreeNode) int {
-	max := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
 	var dfs func(*TreeNode) int
 	dfs = func(r *TreeNode) int {
 		if r == nil {

@@ -53,11 +53,11 @@ package main
 
 import (
 	"fmt"
-	"sort"
 )
 
 func main() {
-	nums := []int{-1, 0, 1, 2, -1, -4}
+	nums := []int{-1, 0, 1, 2, -1, -4} // [-4 -1 -1 0 1 2]
+	nums = []int{0, 0, 0, 0}           // [-4 -1 -1 0 1 2]
 	sum := threeSum(nums)
 	fmt.Println(sum)
 }
@@ -74,70 +74,46 @@ func main() {
 			对于索引j：j < k && nums[j] == nums[j-1] 跳过
 			对于索引k：j < k && nums[k] == nums[k+1] 跳过
 */
+
 // leetcode submit region begin(Prohibit modification and deletion)
 func threeSum(nums []int) [][]int {
-	// 双指针
-	sort.Ints(nums) // 排序
-	ans, n := make([][]int, 0), len(nums)-2
-	for i := 0; i < n; i++ {
-		if nums[i] > 0 { // 剪枝
-			break
-		}
-		if i > 0 && nums[i] == nums[i-1] { // 避免重复三元组
-			continue
-		}
-		for j, k := i+1, n+1; j < k; {
-			if sum := nums[i] + nums[j] + nums[k]; sum > 0 {
-				k--
-			} else if sum < 0 {
-				j++
-			} else {
-				ans = append(ans, []int{nums[i], nums[j], nums[k]})
-				if nums[j] == nums[k] { // j k 互为哨兵
-					break
-				}
-				j++
-				for nums[j] == nums[j-1] { // 避免重复三元组
-					j++
-				}
-				k--
-				for nums[k] == nums[k+1] {
-					k--
-				}
-			}
-		}
-	}
-	return ans
 
-	// 双指针
-	//sort.Ints(nums)
-	//ans, n := make([][]int, 0), len(nums)-2
-	//for i := 0; i < n; i++ {
-	//	if nums[i] > 0 {
-	//		break
-	//	}
-	//	if i > 0 && nums[i] == nums[i-1] {
-	//		continue
-	//	}
-	//	for l, r := i+1, n+1; l < r; {
-	//		if sum := nums[i] + nums[l] + nums[r]; sum < 0 {
-	//			l++
-	//		} else if sum > 0 {
-	//			r--
-	//		} else if sum == 0 {
-	//			ans = append(ans, []int{nums[i], nums[l], nums[r]})
-	//			l++
-	//			r--
-	//			for nums[l] == nums[l-1] && l < r {
-	//				l++
-	//			}
-	//			for nums[r] == nums[r+1] && l < r {
-	//				r--
-	//			}
-	//		}
-	//	}
-	//}
-	//return ans
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func threeSum(nums []int) [][]int {
+//	// 双指针
+//	sort.Ints(nums) // 排序
+//	n := len(nums)
+//	ans := make([][]int, 0)
+//	for i := 0; i < n-2; i++ {
+//		if nums[i] > 0 { // 剪枝
+//			break
+//		}
+//		if i > 0 && nums[i] == nums[i-1] { // 避免重复三元组
+//			continue
+//		}
+//		for j, k := i+1, n-1; j < k; {
+//			if sum := nums[i] + nums[j] + nums[k]; sum > 0 {
+//				k--
+//			} else if sum < 0 {
+//				j++
+//			} else {
+//				ans = append(ans, []int{nums[i], nums[j], nums[k]})
+//				if nums[j] == nums[k] { // j k 互为哨兵
+//					break
+//				}
+//				j++
+//				for nums[j] == nums[j-1] { // 避免重复三元组
+//					j++
+//				}
+//				k--
+//				for nums[k] == nums[k+1] {
+//					k--
+//				}
+//			}
+//		}
+//	}
+//	return ans
+//}

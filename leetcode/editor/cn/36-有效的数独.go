@@ -69,25 +69,29 @@ func main() {
 
 }
 
-//leetcode submit region begin(Prohibit modification and deletion)
+// leetcode submit region begin(Prohibit modification and deletion)
 func isValidSudoku(board [][]byte) bool {
-	const N = 9
-	row, col, box := [N]int{}, [N]int{}, [N]int{}
-	for i := 0; i < N; i++ {
-		for j := 0; j < N; j++ {
-			v := board[i][j] - '0'
-			if v > 0 {
-				ok, idx := 1<<v, i-i%3+j/3
-				if row[i]&ok > 0 || col[j]&ok > 0 || box[idx]&ok > 0 {
-					return false
-				}
-				row[i] |= ok
-				col[j] |= ok
-				box[idx] |= ok
-			}
-		}
-	}
-	return true
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func isValidSudoku(board [][]byte) bool {
+//	const n, m, dot, z = 9, 3, '.', '0'
+//	row, col, box := [n]int{}, [n]int{}, [n]int{}
+//	for i, b := range board {
+//		for j, val := range b {
+//			if val == dot {
+//				continue
+//			}
+//			ok, idx := 1<<(val-z), i-i%m+j/m
+//			if row[i]&ok > 0 || col[j]&ok > 0 || box[idx]&ok > 0 {
+//				return false
+//			}
+//			row[i] |= ok
+//			col[j] |= ok
+//			box[idx] |= ok
+//		}
+//	}
+//	return true
+//}

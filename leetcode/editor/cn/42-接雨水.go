@@ -36,7 +36,9 @@ package main
 import "fmt"
 
 func main() {
-	height := []int{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1}
+	height := []int{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1} // 6
+	//height = []int{4, 2, 0, 3, 2, 5}                    // 9
+	//height = []int{5, 5, 1, 7, 1, 1, 5, 2, 7, 6}        // 23
 	i := trap(height)
 	fmt.Println(i)
 }
@@ -69,75 +71,62 @@ func main() {
 			else：左边界更新为 height[i]
 		2.2.同上
 */
+
 // leetcode submit region begin(Prohibit modification and deletion)
 func trap(height []int) int {
-	// 双指针
-	//maxV, lMax, rMax, n := 0, 0, 0, len(height)
-	//for i, j := 0, n-1; i < j; {
-	//	if height[i] < height[j] { // 右边界 height[j]
-	//		if height[i] < lMax { // 更新雨水
-	//			maxV += lMax - height[i]
-	//		} else {
-	//			lMax = height[i] // 更新左边界
-	//		}
-	//		i++
-	//	} else { // 左边界 height[i]
-	//		if height[j] < rMax { // 更新雨水
-	//			maxV += rMax - height[j]
-	//		} else {
-	//			rMax = height[j] // 更新右边界
-	//		}
-	//		j--
-	//	}
-	//}
-	//return maxV
 
-	// 栈
-	minVal := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	maxV, n := 0, len(height)
-	stack := []int{0} // 单调栈（非递增 / 递减）
-	for i := 1; i < n; i++ {
-		l := len(stack) - 1
-		for last := height[stack[l]]; height[i] > last; last = height[stack[l]] {
-			l--
-			if l < 0 { // 两个柱子没雨水
-				break
-			}
-			// 三个柱子：宽度 * (minVal(左高, 右高) - 中高)
-			maxV += (i - stack[l] - 1) * (minVal(height[i], height[stack[l]]) - last)
-		}
-		stack = append(stack[:l+1], i) // 添加当前柱子
-	}
-	return maxV
-
-	// dp
-	//maxVal := func(a, b int) int {
-	//	if a > b {
-	//		return a
-	//	}
-	//	return b
-	//}
-	//minVal := func(a, b int) int {
-	//	if a < b {
-	//		return a
-	//	}
-	//	return b
-	//}
-	//maxV, l, r, n := 0, 0, 0, len(height) // l/r 为 左/右 最高柱子
-	//lv, rv := make([]int, n), make([]int, n)
-	//for i, j := 0, n-1; i < n; i, j = i+1, j-1 {
-	//	l, r = maxVal(l, height[i]), maxVal(r, height[j]) // 更新 l r
-	//	lv[i], rv[j] = l-height[i], r-height[j]           // 更新 左/右 雨水量
-	//}
-	//for i := 0; i < n; i++ {
-	//	maxV += minVal(lv[i], rv[i])
-	//}
-	//return maxV
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func trap(height []int) int {
+//	// 双指针
+//	//maxV, lMax, rMax, n := 0, 0, 0, len(height)
+//	//for i, j := 0, n-1; i < j; {
+//	//	if height[i] < height[j] { // 易错：右边界 height[j]，且比较对象是 height[i] < height[j]
+//	//		if height[i] < lMax { // 更新雨水
+//	//			maxV += lMax - height[i]
+//	//		} else {
+//	//			lMax = height[i] // 更新左边界
+//	//		}
+//	//		i++
+//	//	} else { // 左边界 height[i]
+//	//		if height[j] < rMax { // 更新雨水
+//	//			maxV += rMax - height[j]
+//	//		} else {
+//	//			rMax = height[j] // 更新右边界
+//	//		}
+//	//		j--
+//	//	}
+//	//}
+//	//return maxV
+//
+//	// 栈
+//	//maxV, n := 0, len(height)
+//	//stack := []int{0} // 单调栈（非递增 / 递减）
+//	//for i := 1; i < n; i++ {
+//	//	l := len(stack) - 1
+//	//	for last := height[stack[l]]; height[i] > last; last = height[stack[l]] {
+//	//		l--
+//	//		if l < 0 { // 两个柱子没雨水
+//	//			break
+//	//		}
+//	//		// 三个柱子：宽度 * (minVal(左高, 右高) - 中高)
+//	//		maxV += (i - stack[l] - 1) * (min(height[i], height[stack[l]]) - last)
+//	//	}
+//	//	stack = append(stack[:l+1], i) // 添加当前柱子
+//	//}
+//	//return maxV
+//
+//	// dp
+//	maxV, l, r, n := 0, 0, 0, len(height) // l/r 为 左/右 最高柱子
+//	lv, rv := make([]int, n), make([]int, n)
+//	for i, j := 0, n-1; i < n; i, j = i+1, j-1 {
+//		l, r = max(l, height[i]), max(r, height[j]) // 更新 l r
+//		lv[i], rv[j] = l-height[i], r-height[j]     // 更新 左/右 雨水量
+//	}
+//	for i := 0; i < n; i++ {
+//		maxV += max(lv[i], rv[i])
+//	}
+//	return maxV
+//}

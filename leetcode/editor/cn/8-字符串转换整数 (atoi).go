@@ -84,8 +84,6 @@ package main
 
 import (
 	"fmt"
-	"math"
-	"unicode"
 )
 
 func main() {
@@ -94,32 +92,39 @@ func main() {
 	//s = " "
 	atoi := myAtoi(s)
 	fmt.Println(atoi)
+
+	//fmt.Println(math.MinInt32, math.MaxInt32) // -2147483648 2147483647
 }
 
-//leetcode submit region begin(Prohibit modification and deletion)
+// leetcode submit region begin(Prohibit modification and deletion)
 func myAtoi(s string) int {
-	v, i, n := int64(0), 0, len(s)
-	var sign uint8
-	for i < n && s[i] == ' ' {
-		i++
-	}
-	if i < n && (s[i] == '-' || s[i] == '+') {
-		sign = s[i]
-		i++
-	}
-	for ; i < n && unicode.IsDigit(rune(s[i])); i++ {
-		v = int64(s[i]-'0') + v*10
-		if v > math.MaxInt32 {
-			if sign == '-' {
-				return math.MinInt32
-			}
-			return math.MaxInt32
-		}
-	}
-	if sign == '-' {
-		return int(-v)
-	}
-	return int(v)
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func myAtoi(s string) int {
+//	const add, sub, space = '+', '-', ' '
+//	ans, i, n := 0, 0, len(s)
+//	for i < n && s[i] == space { // 丢弃空格
+//		i++
+//	}
+//	var sign uint8
+//	if i < n && (s[i] == add || s[i] == sub) { // 获取符号
+//		sign = s[i]
+//		i++
+//	}
+//	for ; i < n && unicode.IsDigit(rune(s[i])); i++ { // Atoi
+//		ans = ans*10 + int(s[i]-'0')
+//		if ans > math.MaxInt32 { // math.MinInt32 math.MaxInt32 = -2147483648 2147483647
+//			if sign == sub {
+//				return math.MinInt32
+//			}
+//			return math.MaxInt32
+//		}
+//	}
+//	if sign == sub {
+//		return -ans
+//	}
+//	return ans
+//}

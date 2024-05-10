@@ -42,19 +42,15 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func maxProfit(prices []int) int {
-	// dp
-	maxVal := func(a, b int) int {
-		if b > a {
-			return b
-		}
-		return a
-	}
-	mp, store, n := 0, -prices[0], len(prices)
-	for i := 1; i < n; i++ {
-		mp = maxVal(mp, prices[i]+store)
-		store = maxVal(store, -prices[i])
-	}
-	return mp
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func maxProfit(prices []int) int {
+//	stock, cash := math.MinInt32, 0
+//	for _, p := range prices {
+//		stock, cash = max(stock, -p), max(cash, p+stock)
+//	}
+//	return cash
+//}

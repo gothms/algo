@@ -63,38 +63,7 @@ Magic：
 */
 //leetcode submit region begin(Prohibit modification and deletion)
 func mySqrt(x int) int {
-	g := x
-	for g*g > x {
-		g = (g + x/g) / 2 // 二分
-	}
-	return g
 
-	// 二分
-	//l, r := 0, x
-	//for l <= r {
-	//	mid := (l + r) >> 1
-	//	if v := mid * mid; v == x {
-	//		return mid
-	//	} else if v < x {
-	//		l = mid + 1
-	//	} else {
-	//		r = mid - 1
-	//	}
-	//}
-	//return r
-
-	//l, r, sqrt := 0, x, 1
-	//for l <= r {
-	//	mid := (l + r) >> 1
-	//	if mid*mid <= x {
-	//		sqrt, l = mid, mid+1
-	//	} else {
-	//		r = mid - 1
-	//	}
-	//}
-	//return sqrt
-
-	//return int(InvSqrt(float32(x)))	// 太精准，提交不成功
 }
 
 // leetcode submit region end(Prohibit modification and deletion)
@@ -107,7 +76,23 @@ func sqrtK(x float64) float64 {
 		g = (g + x/g) / 2 // 二分
 	}
 	return g
+
+	// 二分
+	//l, r, sqrt := 0, x, 1
+	//for l <= r {
+	//	mid := (l + r) >> 1
+	//	if mid*mid <= x {
+	//		sqrt, l = mid, mid+1
+	//	} else {
+	//		r = mid - 1
+	//	}
+	//}
+	//return sqrt
+
+	// api
 	//return math.Trunc(g*1e6+0.5) * d
+
+	//return int(InvSqrt(float32(x)))	// 太精准，提交不成功
 }
 
 func InvSqrt(x float32) float32 {

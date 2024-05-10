@@ -108,3 +108,29 @@ func union(parent []int, p, q int) bool { // 1.3
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func numIslands(grid [][]byte) int {
+//	// 并查集
+//
+//	// dfs
+//	ans, m, n := 0, len(grid), len(grid[0])
+//	dx, dy := [4]int{0, -1, 0, 1}, [4]int{-1, 0, 1, 0}
+//	var dfs func(int, int)
+//	dfs = func(i, j int) {
+//		grid[i][j] = 'x' // 岛屿已访问的标记
+//		for k := 0; k < 4; k++ {
+//			if ni, nj := i+dx[k], j+dy[k]; ni >= 0 && ni < m && nj >= 0 && nj < n && grid[ni][nj] == '1' {
+//				dfs(ni, nj)
+//			}
+//		}
+//	}
+//	for i, g := range grid {
+//		for j, v := range g {
+//			if v == '1' { // dfs 该岛屿的所有位置
+//				dfs(i, j)
+//				ans++
+//			}
+//		}
+//	}
+//	return ans
+//}

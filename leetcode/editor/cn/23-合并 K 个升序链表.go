@@ -70,6 +70,13 @@ func main() {
  *     Next *ListNode
  * }
  */
+
+func mergeKLists(lists []*ListNode) *ListNode {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
 func mergeKLists(lists []*ListNode) *ListNode {
 	// 堆
 	//var pre ListNode
@@ -97,18 +104,10 @@ func mergeKLists(lists []*ListNode) *ListNode {
 
 type mkl []*ListNode
 
-func (m mkl) Len() int {
-	return len(m)
-}
-func (m mkl) Less(i, j int) bool {
-	return m[i].Val < m[j].Val
-}
-func (m mkl) Swap(i, j int) {
-	m[i], m[j] = m[j], m[i]
-}
-func (m *mkl) Push(x any) {
-	*m = append(*m, x.(*ListNode))
-}
+func (m mkl) Len() int           { return len(m) }
+func (m mkl) Less(i, j int) bool { return m[i].Val < m[j].Val }
+func (m mkl) Swap(i, j int)      { m[i], m[j] = m[j], m[i] }
+func (m *mkl) Push(x any)        { *m = append(*m, x.(*ListNode)) }
 func (m *mkl) Pop() any {
 	ln := (*m)[len(*m)-1]
 	*m = (*m)[:len(*m)-1]
@@ -126,7 +125,7 @@ func mergeK(lists []*ListNode, l, r int) *ListNode {
 		return mergeList(mergeK(lists, l, m), mergeK(lists, m+1, r))
 	}
 }
-func mergeList(a, b *ListNode) *ListNode {
+func mergeList(a, b *ListNode) *ListNode { // 递归写法
 	if a == nil {
 		return b
 	}
@@ -141,5 +140,3 @@ func mergeList(a, b *ListNode) *ListNode {
 		return b
 	}
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

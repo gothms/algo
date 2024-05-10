@@ -37,36 +37,48 @@
 
 package main
 
-func main() {
+import "fmt"
 
+func main() {
+	nums := []int{1, 2, 0}
+	nums = []int{3, 4, -1, 1}
+	nums = []int{7, 8, 9, 11, 12}
+	nums = []int{1}
+	//nums = []int{1, 1}
+	positive := firstMissingPositive(nums)
+	fmt.Println(positive)
 }
 
-//leetcode submit region begin(Prohibit modification and deletion)
+// leetcode submit region begin(Prohibit modification and deletion)
 func firstMissingPositive(nums []int) int {
-	abs := func(v int) int {
-		if v < 0 {
-			return -v
-		}
-		return v
-	}
-	n := len(nums)
-	for i := 0; i < n; i++ {
-		if nums[i] <= 0 {
-			nums[i] = n + 1
-		}
-	}
-	for _, v := range nums {
-		v = abs(v)
-		if v <= n {
-			nums[v-1] = -abs(nums[v-1])
-		}
-	}
-	for i := 0; i < n; i++ {
-		if nums[i] > 0 {
-			return i + 1
-		}
-	}
-	return n + 1
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func firstMissingPositive(nums []int) int {
+//	abs := func(v int) int {
+//		if v < 0 {
+//			return -v
+//		}
+//		return v
+//	}
+//	n := len(nums) + 1
+//	for i, v := range nums { // 只保留 [1,n) 的值
+//		if v <= 0 {
+//			nums[i] = n
+//		}
+//	}
+//	for _, v := range nums { // 将 [1,n) 的值对号入座 [0,len(nums)-1]
+//		v = abs(v)
+//		if v < n {
+//			nums[v-1] = -abs(nums[v-1])
+//		}
+//	}
+//	for i, v := range nums { // 第一个没有被入座的位置
+//		if v > 0 {
+//			return i + 1
+//		}
+//	}
+//	return n
+//}

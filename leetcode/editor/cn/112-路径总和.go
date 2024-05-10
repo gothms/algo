@@ -63,7 +63,7 @@ func hasPathSum(root *TreeNode, targetSum int) bool {
 		return false
 	}
 	targetSum -= root.Val
-	return targetSum == 0 && root.Left == nil && root.Right == nil ||
+	return root.Left == nil && root.Right == nil && targetSum == 0 ||
 		hasPathSum(root.Left, targetSum) || hasPathSum(root.Right, targetSum)
 }
 
