@@ -60,23 +60,21 @@ package main
 
 import (
 	"fmt"
-	"math/bits"
-	"strings"
 )
 
 func main() {
-	bitN := []int{1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728, 268435456, 536870912, 1073741824}
-	var sb strings.Builder
-	for i, v := range bitN {
-		sb.WriteString(fmt.Sprintf("%d : %d, ", v, i))
-	}
-	fmt.Println(sb.String())
-
-	zeros := bits.TrailingZeros(0)
-	fmt.Println(zeros)
+	//bitN := []int{1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304, 8388608, 16777216, 33554432, 67108864, 134217728, 268435456, 536870912, 1073741824}
+	//var sb strings.Builder
+	//for i, v := range bitN {
+	//	sb.WriteString(fmt.Sprintf("%d : %d, ", v, i))
+	//}
+	//fmt.Println(sb.String())
+	//
+	//zeros := bits.TrailingZeros(0)
+	//fmt.Println(zeros)
 
 	nums := []int{1, 32, 1, 2}
-	nums = []int{1, 2, 8}
+	//nums = []int{1, 2, 8}
 	target := 7
 	operations := minOperations(nums, target)
 	fmt.Println(operations)
@@ -100,55 +98,35 @@ func main() {
 */
 // leetcode submit region begin(Prohibit modification and deletion)
 func minOperations(nums []int, target int) int {
-	bitN := [31]int{}
-	sum := 0
-	for _, v := range nums {
-		bitN[bits.TrailingZeros(uint(v))]++ // 统计 2^i
-		sum += v
-	}
-	if sum < target { // 不可能，直接返回 -1
-		return -1
-	}
-	for i, sum, cnt := 0, 0, 0; ; {
-		if bitN[i] > 0 {
-			sum += 1 << i * bitN[i] // 累加细粒度的 2^i
-			if sum >= target {      // 组合成功
-				return cnt
-			}
-		}
-		if sum >= target&(1<<(i+1)-1) { // 多个细粒度的 2^i 总能组合成 2^j（i<j）
-			i++
-			continue
-		}
-		cnt++ // 向高位的 2^j 借
-		for i++; bitN[i] == 0; i++ {
-			cnt++
-		}
-	}
 
-	//bitN := make(map[int]int)
-	//cnt, sum := 0, 0
-	//for _, v := range nums {
-	//	bitN[v]++
-	//	sum += v
-	//}
-	//if sum < target {
-	//	return -1
-	//}
-	//sum = 0
-	//for i, b := 0, 0; b <= target; {
-	//	b = 1 << i
-	//	sum += bitN[b] << i
-	//	if sum >= target&(b<<1-1) { // 前 i+1 位比较
-	//		i++
-	//		continue // >= 说明子序列的和可以满足
-	//	}
-	//	cnt++
-	//	for i, b = i+1, b<<1; bitN[b] == 0; i, b = i+1, b<<1 {
-	//		cnt++
-	//	}
-	//}
-	//return cnt
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func minOperations(nums []int, target int) int {
+//	bitN := [31]int{}
+//	sum := 0
+//	for _, v := range nums {
+//		bitN[bits.TrailingZeros(uint(v))]++ // 统计 2^i
+//		sum += v
+//	}
+//	if sum < target { // 不可能，直接返回 -1
+//		return -1
+//	}
+//	for i, sum, cnt := 0, 0, 0; ; {
+//		if bitN[i] > 0 {
+//			sum += 1 << i * bitN[i] // 累加细粒度的 2^i
+//			if sum >= target {      // 组合成功
+//				return cnt
+//			}
+//		}
+//		if sum >= target&(1<<(i+1)-1) { // 多个细粒度的 2^i 总能组合成 2^j（i<j）
+//			i++
+//			continue
+//		}
+//		cnt++ // 向高位的 2^j 借
+//		for i++; bitN[i] == 0; i++ {
+//			cnt++
+//		}
+//	}
+//}

@@ -47,84 +47,51 @@
 package main
 
 import (
-	"container/heap"
 	"fmt"
-	"sort"
 )
 
 func main() {
 	courses := [][]int{{100, 200}, {200, 450}, {300, 400}, {2000, 3000}}
-	courses = [][]int{{5, 5}, {4, 6}, {2, 6}}
+	courses = [][]int{{3, 2}, {4, 3}}
+	//courses = [][]int{{5, 5}, {4, 6}, {2, 6}}
 	course := scheduleCourse(courses)
 	fmt.Println(course)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func scheduleCourse(courses [][]int) int {
-	// 排序 + 优先队列
-	sort.Slice(courses, func(i, j int) bool {
-		return courses[i][1] < courses[j][1] // 按期限排序
-	})
-	costTime, h := 0, sIS{0}
-	for _, c := range courses {
-		if t := c[0]; costTime+t <= c[1] { // 还能学就继续加课
-			costTime += t    // 总耗时
-			heap.Push(&h, t) // “已学”课程
-		} else if t <= h[0] { // 不能学就尝试优化
-			costTime -= h[0] - t // 修正耗时
-			h[0] = t             // 替换：用时更短，期限也更长
-			heap.Fix(&h, 0)
-		}
-	}
-	return h.Len() - 1
 
-	//sort.Slice(courses, func(i, j int) bool {
-	//	return courses[i][1] < courses[j][1] // 按期限排序
-	//})
-	//time, h := 0, &sc{sort.IntSlice{0}}
-	//for _, c := range courses {
-	//	// 写法二
-	//	if t := c[0]; time+t <= c[1] { // 能修一门课的条件
-	//		time += t       // 总耗时
-	//		heap.Push(h, t) // 修这门课
-	//	} else if c[0] < h.IntSlice[0] { // c 相较堆顶课程，耗时短，期限更宽裕，则替换它
-	//		time -= h.IntSlice[0] - t
-	//		h.IntSlice[0] = t
-	//		heap.Fix(h, 0)
-	//	}
-	//
-	//	// 写法一
-	//	//time += c[0]
-	//	//heap.Push(h, c[0]) // 修这门课
-	//	//if time > c[1] {
-	//	//	time -= heap.Pop(h).(int)
-	//	//}
-	//}
-	//return h.Len() - 1
 }
 
-type sIS sort.IntSlice
+//leetcode submit region end(Prohibit modification and deletion)
 
-func (s sIS) Len() int           { return len(s) }
-func (s sIS) Swap(i, j int)      { s[i], s[j] = s[j], s[i] }
-func (s sIS) Less(i, j int) bool { return s[i] > s[j] }
-func (s *sIS) Push(x any)        { *s = append(*s, x.(int)) }
-func (s *sIS) Pop() any {
-	v := (*s)[len(*s)-1]
-	*s = (*s)[:len(*s)-1]
-	return v
-}
-
-//type sc struct {
+//func scheduleCourse(courses [][]int) int {
+//	sort.Slice(courses, func(i, j int) bool {
+//		return courses[i][1] < courses[j][1] // 按期限排序
+//	})
+//	h := &hp630{sort.IntSlice{0}} // 大顶堆
+//	var curTimes int              // 总耗时
+//	for _, c := range courses {   // 还能学就继续加课
+//		if c[0]+curTimes <= c[1] {
+//			curTimes += c[0]
+//			heap.Push(h, c[0])
+//		} else if c[0] < h.IntSlice[0] { // 优化耗时最多的课程
+//			curTimes -= h.IntSlice[0] - c[0]
+//			h.IntSlice[0] = c[0] // 替换耗时最多的课程
+//			heap.Fix(h, 0)
+//		}
+//	}
+//	return h.Len() - 1
+//}
+//
+//type hp630 struct {
 //	sort.IntSlice
 //}
 //
-//func (s sc) Less(i, j int) bool { return s.IntSlice[i] > s.IntSlice[j] }
-//func (s *sc) Push(x any)        { s.IntSlice = append(s.IntSlice, x.(int)) }
-//func (s *sc) Pop() any {
-//	v := s.IntSlice[len(s.IntSlice)-1]
-//	s.IntSlice = s.IntSlice[:len(s.IntSlice)-1]
+//func (h hp630) Less(i, j int) bool { return h.IntSlice[i] > h.IntSlice[j] }
+//func (h *hp630) Push(x any)        { h.IntSlice = append(h.IntSlice, x.(int)) }
+//func (h *hp630) Pop() any {
+//	v := h.IntSlice[len(h.IntSlice)-1]
+//	h.IntSlice = h.IntSlice[:len(h.IntSlice)-1]
 //	return v
 //}
-
-//leetcode submit region end(Prohibit modification and deletion)

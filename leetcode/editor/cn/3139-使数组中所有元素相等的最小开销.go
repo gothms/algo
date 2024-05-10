@@ -91,7 +91,6 @@ package main
 
 import (
 	"fmt"
-	"math"
 )
 
 func main() {
@@ -103,30 +102,34 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func minCostToEqualizeArray(nums []int, cost1 int, cost2 int) int {
-	// lc：https://leetcode.cn/problems/minimum-cost-to-equalize-array/solutions/2766600/fen-lei-tao-lun-on-zuo-fa-pythonjavacgo-9bsb4/
-	const mod = 1_000_000_007
-	minV, maxV, s, n := math.MaxInt32, 0, 0, len(nums)
-	for _, v := range nums {
-		s += v
-		minV = min(minV, v)
-		maxV = max(maxV, v)
-	}
-	s = n*maxV - s
-	if n <= 2 || cost1<<1 <= cost2 {
-		return s * cost1 % mod
-	}
-	f := func(x int) int {
-		t, d := s+(x-maxV)*n, x-minV
-		if d<<1 <= t {
-			return (t>>1)*cost2 + (t&1)*cost1
-		}
-		return (t-d)*cost2 + (d<<1-t)*cost1
-	}
-	i := (n*maxV - minV<<1 - s + n - 3) / (n - 2)
-	if i <= maxV {
-		return min(f(maxV), f(maxV+1)) % mod
-	}
-	return min(f(maxV), f(i-1), f(i), f(i+1)) % mod
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func minCostToEqualizeArray(nums []int, cost1 int, cost2 int) int {
+//	// lc：https://leetcode.cn/problems/minimum-cost-to-equalize-array/solutions/2766600/fen-lei-tao-lun-on-zuo-fa-pythonjavacgo-9bsb4/
+//	const mod = 1_000_000_007
+//	minV, maxV, s, n := math.MaxInt32, 0, 0, len(nums)
+//	for _, v := range nums {
+//		s += v
+//		minV = min(minV, v)
+//		maxV = max(maxV, v)
+//	}
+//	s = n*maxV - s
+//	if n <= 2 || cost1<<1 <= cost2 {
+//		return s * cost1 % mod
+//	}
+//	f := func(x int) int {
+//		t, d := s+(x-maxV)*n, x-minV
+//		if d<<1 <= t {
+//			return (t>>1)*cost2 + (t&1)*cost1
+//		}
+//		return (t-d)*cost2 + (d<<1-t)*cost1
+//	}
+//	i := (n*maxV - minV<<1 - s + n - 3) / (n - 2)
+//	if i <= maxV {
+//		return min(f(maxV), f(maxV+1)) % mod
+//	}
+//	return min(f(maxV), f(i-1), f(i), f(i+1)) % mod
+//}

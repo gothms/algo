@@ -45,43 +45,52 @@
 
 package main
 
-func main() {
+import "fmt"
 
+func main() {
+	edges := [][]int{{0, 1}, {0, 2}, {0, 3}, {3, 4}, {4, 5}}
+	n := 6
+	trees := findMinHeightTrees(n, edges)
+	fmt.Println(trees)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func findMinHeightTrees(n int, edges [][]int) []int {
-	// top-sort
-	if n == 1 {
-		return []int{0}
-	}
-	kahn, adj := make([]int, n), make([][]int, n)
-	for _, e := range edges {
-		adj[e[0]] = append(adj[e[0]], e[1])
-		adj[e[1]] = append(adj[e[1]], e[0])
-		kahn[e[0]]++
-		kahn[e[1]]++
-	}
-	q := make([]int, 0)
-	for i, v := range kahn {
-		if v == 1 { // 叶子节点
-			q = append(q, i)
-		}
-	}
-	for cnt := n; cnt > 2; { // 最多有2个根
-		temp := q
-		cnt -= len(q)
-		q = q[len(q):]
-		for _, f := range temp {
-			for _, t := range adj[f] {
-				kahn[t]-- // 保证了不会重复/反向
-				if kahn[t] == 1 {
-					q = append(q, t)
-				}
-			}
-		}
-	}
-	return q
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func findMinHeightTrees(n int, edges [][]int) []int {
+//	// 拓扑排序：求树直径的中点
+//	if n == 1 {
+//		return []int{0}
+//	}
+//	kahn, adj := make([]int, n), make([][]int, n)
+//	for _, e := range edges {
+//		adj[e[0]] = append(adj[e[0]], e[1])
+//		adj[e[1]] = append(adj[e[1]], e[0])
+//		kahn[e[0]]++
+//		kahn[e[1]]++
+//	}
+//	q := make([]int, 0)
+//	for i, v := range kahn {
+//		if v == 1 { // 叶子节点
+//			q = append(q, i)
+//		}
+//	}
+//	for cnt := n; cnt > 2; { // 最多有2个根
+//		temp := q
+//		cnt -= len(q)
+//		q = q[len(q):]
+//		for _, f := range temp {
+//			for _, t := range adj[f] {
+//				kahn[t]-- // 保证了不会重复/反向
+//				if kahn[t] == 1 {
+//					q = append(q, t)
+//				}
+//			}
+//		}
+//	}
+//	return q
+//}

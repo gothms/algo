@@ -42,36 +42,40 @@ import "fmt"
 
 func main() {
 	nums := []int{1, 2, 3, 1}
-	//nums = []int{1, 2, 1, 3, 5, 6, 4}
-	//nums = []int{1, 2}
-	//nums = []int{1}
+	nums = []int{1, 2, 1, 3, 5, 6, 4}
+	nums = []int{1, 2}
+	nums = []int{1}
 	element := findPeakElement(nums)
 	fmt.Println(element)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func findPeakElement(nums []int) int {
-	// 二分查找
-	l, r := 0, len(nums)-1
-	for l < r {
-		m := (l + r) >> 1        // 保证了 m+1 不会越界
-		if nums[m] < nums[m+1] { // 与 nums[0] 或 nums[r] 比较的方案都不行
-			l = m + 1
-		} else {
-			r = m
-		}
-	}
-	return l
 
-	// 迭代
-	//last, n := nums[0], len(nums)
-	//for i := 1; i < n; i++ {
-	//	if nums[i] < last  {
-	//		return i-1
-	//	}
-	//	last = nums[i]
-	//}
-	//return n-1
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func findPeakElement(nums []int) int {
+//	// 二分查找
+//	l, r := 0, len(nums)-1
+//	for l < r {
+//		m := (l + r) >> 1        // 保证了 m+1 不会越界
+//		if nums[m] < nums[m+1] { // 与 nums[0] 或 nums[r] 比较的方案都不行
+//			l = m + 1
+//		} else {
+//			r = m
+//		}
+//	}
+//	return l
+//
+//	// 迭代
+//	//last, n := nums[0], len(nums)
+//	//for i := 1; i < n; i++ {
+//	//	if nums[i] < last  {
+//	//		return i-1
+//	//	}
+//	//	last = nums[i]
+//	//}
+//	//return n-1
+//}

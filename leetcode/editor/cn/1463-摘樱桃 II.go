@@ -79,36 +79,40 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func cherryPickup(grid [][]int) int {
-	// dp：个人
-	// 考虑每行的任意两个樱桃的组合
-	// 执行耗时:9 ms,击败了95.45% 的Go用户
-	// 内存消耗:3.5 MB,击败了86.36% 的Go用户
-	m, n := len(grid), len(grid[0])
-	dp, temp := make([][]int, n), make([][]int, n)
-	for i := 0; i < n; i++ {
-		dp[i], temp[i] = make([]int, n), make([]int, n)
-	}
-	dp[0][n-1] = grid[0][0] + grid[0][n-1] // 第 0 行
-	for i := 1; i < m; i++ {               // 第 i 行
-		for l := 0; l <= min(i, n-2); l++ { // 左边机器人
-			for r := max(l+1, n-1-i); r < n; r++ { // 右边机器人
-				for nl := max(0, l-1); nl <= min(r, l+1); nl++ { // 当 l,r 相邻时，可以有 nl == r
-					for nr := max(nl+1, r-1); nr <= min(n-1, r+1); nr++ { // nr 的左边界是 nl+1
-						temp[l][r] = max(temp[l][r], dp[nl][nr]) // 重点是几个 for 的边界考虑
-					}
-				}
-				temp[l][r] += grid[i][l] + grid[i][r] // 本行采集的草莓
-			}
-		}
-		dp, temp = temp, dp // 滚动
-	}
-	var ans int
-	for i := 0; i < n-1; i++ {
-		for j := i + 1; j < n; j++ {
-			ans = max(ans, dp[i][j])
-		}
-	}
-	return ans
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func cherryPickup(grid [][]int) int {
+//	// dp：个人
+//	// 考虑每行的任意两个樱桃的组合
+//	// 执行耗时:9 ms,击败了95.45% 的Go用户
+//	// 内存消耗:3.5 MB,击败了86.36% 的Go用户
+//	m, n := len(grid), len(grid[0])
+//	dp, temp := make([][]int, n), make([][]int, n)
+//	for i := 0; i < n; i++ {
+//		dp[i], temp[i] = make([]int, n), make([]int, n)
+//	}
+//	dp[0][n-1] = grid[0][0] + grid[0][n-1] // 第 0 行
+//	for i := 1; i < m; i++ {               // 第 i 行
+//		for l := 0; l <= min(i, n-2); l++ { // 左边机器人
+//			for r := max(l+1, n-1-i); r < n; r++ { // 右边机器人
+//				for nl := max(0, l-1); nl <= min(r, l+1); nl++ { // 当 l,r 相邻时，可以有 nl == r
+//					for nr := max(nl+1, r-1); nr <= min(n-1, r+1); nr++ { // nr 的左边界是 nl+1
+//						temp[l][r] = max(temp[l][r], dp[nl][nr]) // 重点是几个 for 的边界考虑
+//					}
+//				}
+//				temp[l][r] += grid[i][l] + grid[i][r] // 本行采集的草莓
+//			}
+//		}
+//		dp, temp = temp, dp // 滚动
+//	}
+//	var ans int
+//	for i := 0; i < n-1; i++ {
+//		for j := i + 1; j < n; j++ {
+//			ans = max(ans, dp[i][j])
+//		}
+//	}
+//	return ans
+//}
