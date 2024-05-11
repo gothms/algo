@@ -1,66 +1,9 @@
-//给你一个由 n 个正整数组成的数组 nums 。
-//
-// 你可以对数组的任意元素执行任意次数的两类操作：
-//
-//
-// 如果元素是 偶数 ，除以 2
-//
-//
-//
-// 例如，如果数组是 [1,2,3,4] ，那么你可以对最后一个元素执行此操作，使其变成 [1,2,3,2]
-//
-//
-// 如果元素是 奇数 ，乘上 2
-//
-// 例如，如果数组是 [1,2,3,4] ，那么你可以对第一个元素执行此操作，使其变成 [2,2,3,4]
-//
-//
-//
-//
-// 数组的 偏移量 是数组中任意两个元素之间的 最大差值 。
-//
-// 返回数组在执行某些操作之后可以拥有的 最小偏移量 。
-//
-//
-//
-// 示例 1：
-//
-//
-//输入：nums = [1,2,3,4]
-//输出：1
-//解释：你可以将数组转换为 [1,2,3,2]，然后转换成 [2,2,3,2]，偏移量是 3 - 2 = 1
-//
-//
-// 示例 2：
-//
-//
-//输入：nums = [4,1,5,20,3]
-//输出：3
-//解释：两次操作后，你可以将数组转换为 [4,2,5,5,3]，偏移量是 5 - 2 = 3
-//
-//
-// 示例 3：
-//
-//
-//输入：nums = [2,10,8]
-//输出：3
-//
-//
-//
-//
-// 提示：
-//
-//
-// n == nums.length
-// 2 <= n <= 5 * 10⁹
-//
-//
-// Related Topics 贪心 数组 有序集合 堆（优先队列） 👍 116 👎 0
-
 package main
 
 import (
 	"fmt"
+	"math/bits"
+	"sort"
 )
 
 func main() {
@@ -76,9 +19,37 @@ func main() {
 	//fmt.Println(v)
 }
 
+// https: //leetcode.cn/problems/minimize-deviation-in-array/solutions/503280/yi-chong-fu-za-du-geng-di-de-zuo-fa-by-heltion-2/
 // leetcode submit region begin(Prohibit modification and deletion)
 func minimumDeviation(nums []int) int {
-
+	var maxV, minV int
+	for _, v := range nums {
+		v >>= bits.TrailingZeros(uint(v))
+		maxV = max(maxV, v) // 最大的奇数
+	}
+	minV = maxV
+	maxVs := []int{maxV}
+	k := bits.Len(uint(maxV)) // maxV 的二进制位数
+	for _, v := range nums {
+		if v&1 == 1 {
+			v <<= 1
+		}
+		if v > maxV {
+			v >>= bits.Len(uint(v)) - k // v 现在和 maxV 的二进制位数相等
+			if v < maxV {
+				v <<= 1
+			}
+			maxVs = append(maxVs, v)
+		}
+		minV = min(minV, v) // 最小的偶数 / maxV
+	}
+	sort.Sort(sort.Reverse(sort.IntSlice(maxVs))) // 倒序排序
+	ans := maxVs[0] - minV
+	for i := 0; maxVs[i] > maxV; i++ {
+		minV = min(minV, maxVs[i]>>1)   // 更新最小值
+		ans = min(ans, maxVs[i+1]-minV) // 更新最小偏移量
+	}
+	return ans
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
@@ -96,27 +67,49 @@ func minimumDeviation(nums []int) int {
 //	var maxV, minV int
 //	for _, v := range nums {
 //		v >>= bits.TrailingZeros(uint(v))
-//		maxV = max(maxV, v) // 寻找最大的奇数
+//		maxV = max(maxV, v) // 最大的奇数
 //	}
-//	minV = maxV
-//	bigV := make([]int, 0)
+//	//minV = maxV
+//	//bigV := make([]int, 0)
+//	//for _, v := range nums {
+//	//	if v&1 == 1 { // 先统一为偶数，再操作。且奇数只有两个可选值
+//	//		v <<= 1
+//	//	}
+//	//	for v >= maxV<<1 { // 尽可能接近 maxV
+//	//		v >>= 1
+//	//	}
+//	//	if v >= maxV {
+//	//		bigV = append(bigV, v) // bigV 中都是 >maxV 的偶数，或 =maxV 的奇数
+//	//	}
+//	//	minV = min(minV, v)
+//	//}
+//	minV = maxV // 优化：位运算
+//	bigV := []int{maxV}
+//	k := bits.Len(uint(maxV))
 //	for _, v := range nums {
-//		if v&1 == 1 { // 先统一为偶数，再操作。且奇数只有两个可选值
+//		if v&1 == 1 {
 //			v <<= 1
 //		}
-//		for v >= maxV<<1 { // 尽可能接近 maxV
-//			v >>= 1
+//		if v > maxV {
+//			v >>= bits.Len(uint(v)) - k // v 现在和 maxV 的二进制位数相等
+//			if v < maxV {
+//				v <<= 1
+//			}
+//			bigV = append(bigV, v)
 //		}
-//		if v >= maxV {
-//			bigV = append(bigV, v) // bigV 中都是 >maxV 的偶数，或 =maxV 的奇数
-//		}
-//		minV = min(minV, v)
+//		minV = min(minV, v) // 最小的偶数 / maxV
 //	}
-//	sort.Ints(bigV) // 排序后更好计算
-//	ans := bigV[len(bigV)-1] - minV
-//	for i := len(bigV) - 1; bigV[i] > maxV; i-- { // maxV 本身也在 bigV 中，所以不会越界
-//		minV = min(minV, bigV[i]>>1)   // 更新最小值，且 bigV[i] 必然是偶数
-//		ans = min(ans, bigV[i-1]-minV) // 必有 i > 0
+//	//sort.Ints(bigV) // 排序后更好计算
+//	//ans := bigV[len(bigV)-1] - minV
+//	//for i := len(bigV) - 1; bigV[i] > maxV; i-- { // maxV 本身也在 bigV 中，所以不会越界
+//	//	minV = min(minV, bigV[i]>>1)   // 更新最小值，且 bigV[i] 必然是偶数
+//	//	ans = min(ans, bigV[i-1]-minV) // 必有 i > 0
+//	//}
+//	sort.Sort(sort.Reverse(sort.IntSlice(bigV))) // 优化：倒序排序
+//	ans := bigV[0] - minV
+//	for i := 0; bigV[i] > maxV; i++ {
+//		minV = min(minV, bigV[i]>>1)
+//		ans = min(ans, bigV[i+1]-minV)
 //	}
 //	return ans
 //
@@ -141,6 +134,7 @@ func minimumDeviation(nums []int) int {
 //	//}
 //	//return ans
 //}
+//
 //
 //type hp1675 struct {
 //	sort.IntSlice

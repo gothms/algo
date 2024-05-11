@@ -64,6 +64,7 @@ import "fmt"
 
 func main() {
 	nums := []int{4, -2, -3, 4, 1}
+	nums = []int{3, 1, 3}
 	ranges := subArrayRanges(nums)
 	fmt.Println(ranges)
 }
@@ -75,96 +76,63 @@ func main() {
 */
 //leetcode submit region begin(Prohibit modification and deletion)
 func subArrayRanges(nums []int) int64 {
-	// 单调栈
-	n := len(nums)
-	minLeft := make([]int, n)
-	maxLeft := make([]int, n)
-	var minStk, maxStk []int
-	for i, num := range nums {
-		for len(minStk) > 0 && nums[minStk[len(minStk)-1]] > num { // 递增
-			minStk = minStk[:len(minStk)-1]
-		}
-		if len(minStk) > 0 {
-			minLeft[i] = minStk[len(minStk)-1]
-		} else {
-			minLeft[i] = -1
-		}
-		minStk = append(minStk, i)
 
-		// 如果 nums[maxStk[len(maxStk)-1]] == num, 那么根据定义，
-		// nums[maxStk[len(maxStk)-1]] 逻辑上小于 num，因为 maxStk[len(maxStk)-1] < i
-		for len(maxStk) > 0 && nums[maxStk[len(maxStk)-1]] <= num { // 递减
-			maxStk = maxStk[:len(maxStk)-1]
-		}
-		if len(maxStk) > 0 {
-			maxLeft[i] = maxStk[len(maxStk)-1]
-		} else {
-			maxLeft[i] = -1
-		}
-		maxStk = append(maxStk, i)
-	}
-
-	minRight := make([]int, n)
-	maxRight := make([]int, n)
-	minStk = minStk[:0]
-	maxStk = maxStk[:0]
-	for i := n - 1; i >= 0; i-- {
-		num := nums[i]
-		// 如果 nums[minStk[len(minStk)-1]] == num, 那么根据定义，
-		// nums[minStk[len(minStk)-1]] 逻辑上大于 num，因为 minStk[len(minStk)-1] > i
-		for len(minStk) > 0 && nums[minStk[len(minStk)-1]] >= num {
-			minStk = minStk[:len(minStk)-1]
-		}
-		if len(minStk) > 0 {
-			minRight[i] = minStk[len(minStk)-1]
-		} else {
-			minRight[i] = n
-		}
-		minStk = append(minStk, i)
-
-		for len(maxStk) > 0 && nums[maxStk[len(maxStk)-1]] < num {
-			maxStk = maxStk[:len(maxStk)-1]
-		}
-		if len(maxStk) > 0 {
-			maxRight[i] = maxStk[len(maxStk)-1]
-		} else {
-			maxRight[i] = n
-		}
-		maxStk = append(maxStk, i)
-	}
-	/*
-		nums := []int{4, -2, -3, 4, 1}
-		[-1 -1 -1 2 2]
-		[-1 0 1 -1 3]
-		[1 2 5 4 5]
-		[3 3 3 5 5]
-	*/
-	//fmt.Println(minLeft)
-	//fmt.Println(maxLeft)
-	//fmt.Println(minRight)
-	//fmt.Println(maxRight)
-	var sumMax, sumMin int64
-	for i, num := range nums {
-		// 右侧 & 右侧以 num 为最大值的子数组的数量 = maxRight[i]-i & i-maxLeft[i]，则总数量为两者的乘积
-		sumMax += int64(maxRight[i]-i) * int64(i-maxLeft[i]) * int64(num) // 最大值之和
-		sumMin += int64(minRight[i]-i) * int64(i-minLeft[i]) * int64(num) // 最小值之和
-	}
-	return sumMax - sumMin
-
-	// 迭代
-	//sar, n := int64(0), len(nums)-1
-	//for i := 0; i < n; i++ {
-	//	minV, maxV := nums[i], nums[i]
-	//	for j := i + 1; j <= n; j++ {
-	//		if nums[j] < minV {
-	//			minV = nums[j]
-	//		} else if nums[j] > maxV {
-	//			maxV = nums[j]
-	//		}
-	//		sar += int64(maxV - minV)
-	//	}
-	//}
-	//return sar
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func subArrayRanges(nums []int) int64 {
+//	n := len(nums)
+//	var (
+//		minLeft  = make([]int, n)
+//		maxLeft  = make([]int, n)
+//		minRight = make([]int, n)
+//		maxRight = make([]int, n)
+//		minSt    = []int{-1}
+//		maxSt    = []int{-1}
+//	)
+//	for i, v := range nums {
+//		last := len(minSt) - 1
+//		// 要包含所有的子数组，所以 == 的情况也必须有“一边”要考虑包含 v 和 nums[minSt[last]] 的子数组
+//		// 约定：左边都管 =，右边都不管 =。即“左边”考虑元素相等的子数组，右边则避免
+//		for last > 0 && v <= nums[minSt[last]] { // 单调非递减
+//			last--
+//		}
+//		minLeft[i] = minSt[last] // 记录 v 作为子数组最小值的左范围，即在索引区间 (minSt[last],i] 内，v 都最小
+//		minSt = append(minSt[:last+1], i)
+//
+//		last = len(maxSt) - 1
+//		for last > 0 && v >= nums[maxSt[last]] { // 单调非递增
+//			last--
+//		}
+//		maxLeft[i] = maxSt[last]
+//		maxSt = append(maxSt[:last+1], i)
+//	}
+//	minSt, maxSt = minSt[:1], maxSt[:1]
+//	minSt[0], maxSt[0] = n, n
+//	for i := n - 1; i >= 0; i-- {
+//		last := len(minSt) - 1
+//		for last > 0 && nums[i] < nums[minSt[last]] {
+//			last--
+//		}
+//		minRight[i] = minSt[last]
+//		minSt = append(minSt[:last+1], i)
+//
+//		last = len(maxSt) - 1
+//		for last > 0 && nums[i] > nums[maxSt[last]] {
+//			last--
+//		}
+//		maxRight[i] = maxSt[last]
+//		maxSt = append(maxSt[:last+1], i)
+//	}
+//	var ans int
+//	for i, v := range nums {
+//		//ans -= v * (i - minLeft[i]) * (minRight[i] - i)
+//		//ans += v * (i - maxLeft[i]) * (maxRight[i] - i)
+//		ans += v * ((i-maxLeft[i])*(maxRight[i]-i) - (i-minLeft[i])*(minRight[i]-i))
+//		// v 作为最大值的 左范围 * 右范围 - v 作为最小值的 左范围 * 右范围
+//	}
+//	return int64(ans)
+//
+//	// 暴力法：O(n^2)
+//}

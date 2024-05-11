@@ -6,6 +6,11 @@ import (
 	"math"
 )
 
+/*
+lc
+	1553
+*/
+
 // AStar 从顶点s到顶点t的路径
 // n 为顶点的个数，edges 为有向有权图
 func AStar(n, s, t int, edges [][]int) {
