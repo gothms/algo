@@ -49,8 +49,6 @@
 
 package main
 
-import "fmt"
-
 func main() {
 
 }
@@ -62,36 +60,33 @@ type NumArray struct {
 }
 
 func Constructor(nums []int) NumArray {
-	return NumArray{nums, func() []int {
-		n := len(nums)
-		b := make([]int, n)
-		for i, j := 0, 0; i < n; i++ {
-			b[i] += nums[i]
-			if j = i | (i + 1); j < n {
-				b[j] += b[i]
-			}
+	n := len(nums)
+	bit := make([]int, n+1)
+	for i := 1; i <= n; i++ {
+		bit[i] += nums[i-1]
+		if j := i + i&-i; j <= n {
+			bit[j] += bit[i]
 		}
-		return b
-	}()}
+	}
+	return NumArray{nums, bit}
 }
-
 func (this *NumArray) Update(index int, val int) {
-	n, d := len(this.bit), val-this.arr[index]
+	delta := val - this.arr[index]
 	this.arr[index] = val
-	for i := index; i < n; i |= i + 1 {
-		this.bit[i] += d
+	index++
+	for ; index < len(this.bit); index += index & -index {
+		this.bit[index] += delta
 	}
 }
-
-func (this *NumArray) SumRange(left int, right int) int {
-	return this.prefixSum(right) - this.prefixSum(left-1)
-}
 func (this *NumArray) prefixSum(i int) int {
-	sum := 0
-	for ; i >= 0; i -= ^i & (i + 1) {
+	var sum int
+	for ; i > 0; i &= i - 1 {
 		sum += this.bit[i]
 	}
 	return sum
+}
+func (this *NumArray) SumRange(left int, right int) int {
+	return this.prefixSum(right+1) - this.prefixSum(left)
 }
 
 /**
@@ -101,3 +96,39 @@ func (this *NumArray) prefixSum(i int) int {
  * param_2 := obj.SumRange(left,right);
  */
 //leetcode submit region end(Prohibit modification and deletion)
+
+//type NumArray struct {
+//	arr []int
+//	bit []int
+//}
+//
+//func Constructor(nums []int) NumArray {
+//	return NumArray{nums, func() []int {
+//		n := len(nums)
+//		b := make([]int, n)
+//		for i, j := 0, 0; i < n; i++ {
+//			b[i] += nums[i]
+//			if j = i | (i + 1); j < n {
+//				b[j] += b[i]
+//			}
+//		}
+//		return b
+//	}()}
+//}
+//func (this *NumArray) Update(index int, val int) {
+//	n, d := len(this.bit), val-this.arr[index]
+//	this.arr[index] = val
+//	for i := index; i < n; i |= i + 1 {
+//		this.bit[i] += d
+//	}
+//}
+//func (this *NumArray) SumRange(left int, right int) int {
+//	return this.prefixSum(right) - this.prefixSum(left-1)
+//}
+//func (this *NumArray) prefixSum(i int) int {
+//	sum := 0
+//	for ; i >= 0; i -= ^i & (i + 1) {
+//		sum += this.bit[i]
+//	}
+//	return sum
+//}

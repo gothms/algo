@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math/bits"
-	"sort"
 )
 
 func main() {
@@ -22,34 +20,7 @@ func main() {
 // https: //leetcode.cn/problems/minimize-deviation-in-array/solutions/503280/yi-chong-fu-za-du-geng-di-de-zuo-fa-by-heltion-2/
 // leetcode submit region begin(Prohibit modification and deletion)
 func minimumDeviation(nums []int) int {
-	var maxV, minV int
-	for _, v := range nums {
-		v >>= bits.TrailingZeros(uint(v))
-		maxV = max(maxV, v) // 最大的奇数
-	}
-	minV = maxV
-	maxVs := []int{maxV}
-	k := bits.Len(uint(maxV)) // maxV 的二进制位数
-	for _, v := range nums {
-		if v&1 == 1 {
-			v <<= 1
-		}
-		if v > maxV {
-			v >>= bits.Len(uint(v)) - k // v 现在和 maxV 的二进制位数相等
-			if v < maxV {
-				v <<= 1
-			}
-			maxVs = append(maxVs, v)
-		}
-		minV = min(minV, v) // 最小的偶数 / maxV
-	}
-	sort.Sort(sort.Reverse(sort.IntSlice(maxVs))) // 倒序排序
-	ans := maxVs[0] - minV
-	for i := 0; maxVs[i] > maxV; i++ {
-		minV = min(minV, maxVs[i]>>1)   // 更新最小值
-		ans = min(ans, maxVs[i+1]-minV) // 更新最小偏移量
-	}
-	return ans
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

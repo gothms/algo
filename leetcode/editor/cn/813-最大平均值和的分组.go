@@ -5,15 +5,15 @@ import "fmt"
 func main() {
 	nums := []int{9, 1, 2, 3, 9}
 	k := 3
-	nums = []int{1, 2, 3, 4, 5, 6, 7}
-	k = 4
-	nums = []int{2561, 9087, 398, 8137, 7838, 7669, 8731, 2460, 1166, 619}
-	for i, v := range nums {
-		nums[i] = v / 36
-	}
-	// [71, 252, 11, 226, 217, 213, 242, 68, 32, 17]    471.40000
-	fmt.Println(nums)
-	k = 3 // 17012.75
+	//nums = []int{1, 2, 3, 4, 5, 6, 7}
+	//k = 4
+	//nums = []int{2561, 9087, 398, 8137, 7838, 7669, 8731, 2460, 1166, 619}
+	//for i, v := range nums {
+	//	nums[i] = v / 36
+	//}
+	//// [71, 252, 11, 226, 217, 213, 242, 68, 32, 17]    471.40000
+	//fmt.Println(nums)
+	//k = 3 // 17012.75
 	averages := largestSumOfAverages(nums, k)
 	fmt.Println(averages)
 }
@@ -32,7 +32,7 @@ func largestSumOfAverages(nums []int, k int) float64 {
 //	for i, v := range nums {
 //		pre[i+1] = pre[i] + float64(v) // 前缀和
 //	}
-//	for i := range dp {
+//	for i := range dp {	// 可用滚动数组
 //		dp[i] = make([]float64, n+1)
 //	}
 //	for i := 1; i <= n; i++ {

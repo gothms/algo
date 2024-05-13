@@ -64,7 +64,7 @@ func minDays_(n int) int {
 
 	// Dijkstra
 
-	// 记忆化搜索：最快
+	// 纯记忆化搜索最快
 	//memo := make(map[int]uint8) // 使用 uint8 优化空间
 	//var dfs func(int) uint8
 	//dfs = func(i int) uint8 {
