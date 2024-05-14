@@ -77,40 +77,44 @@ type ListNode struct {
  * }
  */
 func sortList(head *ListNode) *ListNode {
-	// 归并
-	if head == nil || head.Next == nil {
-		return head
-	}
-	n := 1
-	for cur := head.Next; cur != nil; cur = cur.Next {
-		n++ // 统计结点数
-	}
-	mergeList := func(l, r *ListNode) *ListNode { // 合并链表
-		pre := &ListNode{}
-		cur := pre
-		for r != nil {
-			for l != nil && l.Val < r.Val {
-				cur.Next, cur, l = l, l, l.Next
-			}
-			cur.Next, cur, r = r, r, r.Next
-		}
-		cur.Next = l // 收尾
-		return pre.Next
-	}
-	var dfs func(*ListNode, int) *ListNode
-	dfs = func(ln *ListNode, n int) *ListNode {
-		if n <= 1 {
-			return ln
-		}
-		m := (n + 1) >> 1 // 左边链表的结点数
-		cur := ln
-		for i := 1; i < m; i++ { // 左边的链表
-			cur = cur.Next
-		}
-		cur, cur.Next = cur.Next, nil               // 断开
-		return mergeList(dfs(ln, m), dfs(cur, n-m)) // 分治 & 归并
-	}
-	return dfs(head, n)
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+
+//func sortList(head *ListNode) *ListNode {
+//	// 归并
+//	if head == nil || head.Next == nil {
+//		return head
+//	}
+//	n := 1
+//	for cur := head.Next; cur != nil; cur = cur.Next {
+//		n++ // 统计结点数
+//	}
+//	mergeList := func(l, r *ListNode) *ListNode { // 合并链表
+//		pre := &ListNode{}
+//		cur := pre
+//		for r != nil {
+//			for l != nil && l.Val < r.Val {
+//				cur.Next, cur, l = l, l, l.Next
+//			}
+//			cur.Next, cur, r = r, r, r.Next
+//		}
+//		cur.Next = l // 收尾
+//		return pre.Next
+//	}
+//	var dfs func(*ListNode, int) *ListNode
+//	dfs = func(ln *ListNode, n int) *ListNode {
+//		if n <= 1 {
+//			return ln
+//		}
+//		m := (n + 1) >> 1 // 左边链表的结点数
+//		cur := ln
+//		for i := 1; i < m; i++ { // 左边的链表
+//			cur = cur.Next
+//		}
+//		cur, cur.Next = cur.Next, nil               // 断开
+//		return mergeList(dfs(ln, m), dfs(cur, n-m)) // 分治 & 归并
+//	}
+//	return dfs(head, n)
+//}

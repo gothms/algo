@@ -53,25 +53,23 @@ import (
 
 func main() {
 	nums := []int{-6, 2, 5, -2, -7, -1, 3}
-	target := -2
+	target := -2	// 10
 	i := countPairs(nums, target)
 	fmt.Println(i)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func countPairs(nums []int, target int) int {
-	cnt, n := 0, len(nums)
-	if n == 1 {
-		return 0
-	}
+	// 双指针
+	var ans int
 	sort.Ints(nums)
 	for i, j := 0, len(nums)-1; i < j; i++ {
 		for i < j && nums[i]+nums[j] >= target {
 			j--
 		}
-		cnt += j - i
+		ans += j - i
 	}
-	return cnt
+	return ans
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

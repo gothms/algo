@@ -29,6 +29,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func findShortestCycle(n int, edges [][]int) int {
+	return 0
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func findShortestCycle_(n int, edges [][]int) int {
 	// Dijkstra：比 bfs 慢
 	//adj := make([][]int, n)
 	//for _, e := range edges {
@@ -114,5 +120,3 @@ func findShortestCycle(n int, edges [][]int) int {
 //	*h = (*h)[:len(*h)-1]
 //	return v
 //}
-
-//leetcode submit region end(Prohibit modification and deletion)

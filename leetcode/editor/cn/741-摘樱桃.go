@@ -68,23 +68,29 @@ func main() {
 		{0, 0, 0, 1, 0, 0, 0},
 		{0, 0, 0, 1, 0, 0, 0},
 		{0, 0, 0, 1, 1, 1, 1}} // 15
-	//grid = [][]int{
-	//	{1, -1, 1, -1, 1, 1, 1, 1, 1, -1},
-	//	{-1, 1, 1, -1, -1, 1, 1, 1, 1, 1},
-	//	{1, 1, 1, -1, 1, 1, 1, 1, 1, 1},
-	//	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//	{-1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-	//	{1, -1, 1, 1, 1, 1, -1, 1, 1, 1},
-	//	{1, 1, 1, -1, 1, 1, -1, 1, 1, 1},
-	//	{1, -1, 1, -1, -1, 1, 1, 1, 1, 1},
-	//	{1, 1, -1, -1, 1, 1, 1, -1, 1, -1},
-	//	{1, 1, -1, 1, 1, 1, 1, 1, 1, 1}} // 0
+	grid = [][]int{
+		{1, -1, 1, -1, 1, 1, 1, 1, 1, -1},
+		{-1, 1, 1, -1, -1, 1, 1, 1, 1, 1},
+		{1, 1, 1, -1, 1, 1, 1, 1, 1, 1},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{-1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+		{1, -1, 1, 1, 1, 1, -1, 1, 1, 1},
+		{1, 1, 1, -1, 1, 1, -1, 1, 1, 1},
+		{1, -1, 1, -1, -1, 1, 1, 1, 1, 1},
+		{1, 1, -1, -1, 1, 1, 1, -1, 1, -1},
+		{1, 1, -1, 1, 1, 1, 1, 1, 1, 1}} // 0
 	pickup := cherryPickup(grid)
 	fmt.Println(pickup)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func cherryPickup(grid [][]int) int {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func cherryPickup_(grid [][]int) int {
 	// dp
 	// 注意点：
 	// 1.倒序遍历，防止数据污染
@@ -103,13 +109,13 @@ func cherryPickup(grid [][]int) int {
 	for s := 3; s <= n<<1; s++ {
 		//for i := max(1, s-n); i <= min(s-1, n); i++ {
 		//	for j := i; j <= min(s-1, n); j++ {
-		for i := min(s-1, n); i >= max(1, s-n); i-- { // 1
+		for i := min(s-1, n); i >= max(1, s-n); i-- { // 1：重要
 			for j := min(s-1, n); j >= i; j-- {
 				if grid[i-1][s-i-1] == -1 || grid[j-1][s-j-1] == -1 {
-					dp[i][j] = inf
+					dp[i][j] = inf // 重要
 					continue
 				}
-				dp[i][j] = max(max(dp[i-1][j], dp[i][j-1]), max(dp[i-1][j-1], dp[i][j])) + grid[i-1][s-i-1]
+				dp[i][j] = max(dp[i-1][j], dp[i][j-1], dp[i-1][j-1], dp[i][j]) + grid[i-1][s-i-1]
 				if i != j {
 					dp[i][j] += grid[j-1][s-j-1]
 				}
@@ -172,5 +178,3 @@ func cherryPickup(grid [][]int) int {
 	//}
 	//return max(0, dp[n<<1-2][n-1][n-1])
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

@@ -6,6 +6,7 @@ package dp
 
 lc
 	1473
+	2712
 
 树形 dp
 	2538

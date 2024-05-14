@@ -5,7 +5,8 @@ import "fmt"
 func main() {
 	poured, query_row, query_glass := 2, 1, 1
 	poured, query_row, query_glass = 25, 6, 1 // 0.1875
-	//poured, query_row, query_glass = 13, 4, 2
+	poured, query_row, query_glass = 13, 4, 2
+	poured, query_row, query_glass = 200, 15, 11 // 1.0
 	tower := champagneTower(poured, query_row, query_glass)
 	fmt.Println(tower)
 }
@@ -17,13 +18,16 @@ func champagneTower(poured int, query_row int, query_glass int) float64 {
 	dp[0] = float64(poured)
 	for i := 1; i <= query_row; i++ {
 		for j := i; j > 0; j-- {
-			dp[j] = max(0, (dp[j]-1)/2) + max(0, (dp[j-1]-1)/2)
+			dp[j] = (max(0, dp[j-1]-1) + max(0, dp[j]-1)) / 2
 		}
-		dp[0] = max(0, (dp[0]-1)/2)
+		dp[0] = max(0, dp[0]-1) / 2
+		//if i >= query_glass<<1 && dp[query_glass] == 0 {	// fast fail
+		//	return 0
+		//}
 	}
 	return min(1, dp[query_glass])
 
-	// 上一层的某个位置不一定满
+	// 错误：上一层的某个位置不一定满
 	//left := poured - query_row*(query_row+1)>>1
 	//if left <= 0 {
 	//	return 0

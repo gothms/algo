@@ -1,62 +1,23 @@
-//给你一棵树，树上有 n 个节点，按从 0 到 n-1 编号。树以父节点数组的形式给出，其中 parent[i] 是节点 i 的父节点。树的根节点是编号为 0
-// 的节点。
-//
-// 树节点的第 k 个祖先节点是从该节点到根节点路径上的第 k 个节点。
-//
-// 实现 TreeAncestor 类：
-//
-//
-// TreeAncestor（int n， int[] parent） 对树和父数组中的节点数初始化对象。
-// getKthAncestor(int node, int k) 返回节点 node 的第 k 个祖先节点。如果不存在这样的祖先节点，返回 -1 。
-//
-//
-//
-//
-// 示例 1：
-//
-//
-//
-//
-//输入：
-//["TreeAncestor","getKthAncestor","getKthAncestor","getKthAncestor"]
-//[[7,[-1,0,0,1,1,2,2]],[3,1],[5,2],[6,3]]
-//
-//输出：
-//[null,1,0,-1]
-//
-//解释：
-//TreeAncestor treeAncestor = new TreeAncestor(7, [-1, 0, 0, 1, 1, 2, 2]);
-//
-//treeAncestor.getKthAncestor(3, 1);  // 返回 1 ，它是 3 的父节点
-//treeAncestor.getKthAncestor(5, 2);  // 返回 0 ，它是 5 的祖父节点
-//treeAncestor.getKthAncestor(6, 3);  // 返回 -1 因为不存在满足要求的祖先节点
-//
-//
-//
-//
-// 提示：
-//
-//
-// 1 <= k <= n <= 5 * 10⁴
-// parent[0] == -1 表示编号为 0 的节点是根节点。
-// 对于所有的 0 < i < n ，0 <= parent[i] < n 总成立
-// 0 <= node < n
-// 至多查询 5 * 10⁴ 次
-//
-//
-// Related Topics 树 深度优先搜索 广度优先搜索 设计 二分查找 动态规划 👍 118 👎 0
-
 package main
 
 import (
 	"fmt"
-	"math/bits"
 )
 
 func main() {
-	n := 9
-	bit := bits.Len(uint(n))
-	fmt.Println(bit)
+	n := 5
+	parent := []int{-1, 0, 0, 0, 3}
+	con := Constructor(n, parent)
+	ret := con.GetKthAncestor(1, 5)
+	fmt.Println(ret)
+	ret = con.GetKthAncestor(3, 2)
+	fmt.Println(ret)
+	ret = con.GetKthAncestor(0, 1)
+	fmt.Println(ret)
+	ret = con.GetKthAncestor(3, 1)
+	fmt.Println(ret)
+	ret = con.GetKthAncestor(3, 5)
+	fmt.Println(ret)
 }
 
 /*
@@ -86,109 +47,95 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 type TreeAncestor struct {
-	memo [][]int
-	x    int
 }
 
 func Constructor(n int, parent []int) TreeAncestor {
-	memo := make([][]int, n)
-	k := bits.Len(uint(n))
-	for i := range memo {
-		memo[i] = make([]int, k)
-		memo[i][0] = parent[i]
-	}
-	for j := 1; j < k; j++ {
-		for i := range memo {
-			memo[i][j] = -1
-			if p := memo[i][j-1]; p != -1 {
-				memo[i][j] = memo[p][j-1]
-			}
-		}
-	}
-	//fmt.Println(memo)
-	return TreeAncestor{memo, k}
+
 }
 
 func (this *TreeAncestor) GetKthAncestor(node int, k int) int {
-	for i := 0; i < this.x; i++ {
-		if k>>i&1 == 1 {
-			node = this.memo[node][i]
-			if node == -1 {
-				break
-			}
-		}
-	}
-	return node
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
 
-type TreeAncestor struct {
-	memo [][]int
-	n    int
-}
-
-func Constructor(n int, parent []int) TreeAncestor {
-	//bit := bits.Len(uint(n)) + 1 // +1 多余
-	bit := bits.Len(uint(n)) // 小于 2^(bit+1) 个祖先
-	memo := make([][]int, n)
-	for i := 0; i < n; i++ {
-		memo[i] = make([]int, bit)
-		memo[i][0] = parent[i] // 第 0 个祖先
-	}
-	for j := 1; j < bit; j++ { // 第 0 个祖先已记录
-		memo[0][j] = -1          // 处理 0 节点
-		for i := 1; i < n; i++ { // 0 是根节点
-			// memo[binary][j-1] 已经遍历过，如果 =-1 说明已经超过 根节点
-			if binary := memo[i][j-1]; binary != -1 {
-				// i 的第 2^j 个祖先，是 i 的第 2^(j-1) 个祖先的第 2^(j-1) 个祖先
-				memo[i][j] = memo[binary][j-1]
-			} else {
-				memo[i][j] = -1
-			}
-		}
-	}
-	return TreeAncestor{memo, bit}
-
-	//bit := bits.Len(uint(n)) // 小于 2^(bit+1) 个祖先
-	//memo := make([][]int, n)
-	//for i := 0; i < n; i++ {
-	//	memo[i] = make([]int, bit)
-	//	for j := 1; j < bit; j++ {
-	//		memo[i][j] = -1 // 都初始化为 -1
-	//	}
-	//	memo[i][0] = parent[i] // 第 0 个祖先
-	//}
-	//for j := 1; j < bit; j++ { // 第 0 个祖先已记录
-	//	for i := 1; i < n; i++ { // 0 是根节点
-	//		if binary := memo[i][j-1]; binary != -1 {
-	//			// i 的第 2^j 个祖先，是 i 的第 2^(j-1) 个祖先的第 2^(j-1) 个祖先
-	//			memo[i][j] = memo[binary][j-1]
-	//		} // memo[binary][j-1] 已经遍历过，如果 =-1 说明已经超过 根节点
-	//	}
-	//}
-	//return TreeAncestor{memo, bit}
-}
-func (this *TreeAncestor) GetKthAncestor(node int, k int) int {
-	// 采用遍历的方式：node = this.t[node] 超时
-	//for ; node > 0 && k > 0; node = this.t[node] {
-	//	k--
-	//}
-	//if k > 0 {
-	//	return -1
-	//}
-	//return node
-	for j := 0; j < this.n; j++ {
-		if k>>j&1 == 0 {
-			continue
-		} // k 的二进制位为 1，才倍减
-		node = this.memo[node][j] // 倍减 k>>j&1
-		if node == -1 {           // 已超过 根节点
-			break
-		}
-	}
-	return node
-}
+//type TreeAncestor struct {
+//	memo [][]int
+//	n    int
+//}
+//
+//func Constructor(n int, parent []int) TreeAncestor {
+//	//bit := bits.Len(uint(n)) + 1 // +1 多余
+//	bit := bits.Len(uint(n)) // 小于 2^(bit+1) 个祖先
+//	memo := make([][]int, n)
+//	for i := 0; i < n; i++ {
+//		memo[i] = make([]int, bit)
+//		memo[i][0] = parent[i] // 第 0 个祖先
+//	}
+//	for j := 1; j < bit; j++ { // 第 0 个祖先已记录
+//		memo[0][j] = -1          // 处理 0 节点
+//		for i := 1; i < n; i++ { // 0 是根节点
+//			// memo[binary][j-1] 已经遍历过，如果 =-1 说明已经超过 根节点
+//			if binary := memo[i][j-1]; binary != -1 {
+//				// i 的第 2^j 个祖先，是 i 的第 2^(j-1) 个祖先的第 2^(j-1) 个祖先
+//				memo[i][j] = memo[binary][j-1]
+//			} else {
+//				memo[i][j] = -1
+//			}
+//		}
+//	}
+//	return TreeAncestor{memo, bit}
+//
+//	//bit := bits.Len(uint(n)) // 小于 2^(bit+1) 个祖先
+//	//memo := make([][]int, n)
+//	//for i := 0; i < n; i++ {
+//	//	memo[i] = make([]int, bit)
+//	//	for j := 1; j < bit; j++ {
+//	//		memo[i][j] = -1 // 都初始化为 -1
+//	//	}
+//	//	memo[i][0] = parent[i] // 第 0 个祖先
+//	//}
+//	//for j := 1; j < bit; j++ { // 第 0 个祖先已记录
+//	//	for i := 1; i < n; i++ { // 0 是根节点
+//	//		if binary := memo[i][j-1]; binary != -1 {
+//	//			// i 的第 2^j 个祖先，是 i 的第 2^(j-1) 个祖先的第 2^(j-1) 个祖先
+//	//			memo[i][j] = memo[binary][j-1]
+//	//		} // memo[binary][j-1] 已经遍历过，如果 =-1 说明已经超过 根节点
+//	//	}
+//	//}
+//	//return TreeAncestor{memo, bit}
+//}
+//func (this *TreeAncestor) GetKthAncestor(node int, k int) int {
+//	// 采用遍历的方式：node = this.t[node] 超时
+//	//for ; node > 0 && k > 0; node = this.t[node] {
+//	//	k--
+//	//}
+//	//if k > 0 {
+//	//	return -1
+//	//}
+//	//return node
+//
+//	for j := 0; j < this.n; j++ { // 写为 n 没问题，但其实是 j < bits.Len(uint(k))
+//		if k>>j&1 == 0 {
+//			continue
+//		} // k 的二进制位为 1，才倍减
+//		node = this.memo[node][j] // 倍减 k>>j&1
+//		if node == -1 {           // 已超过 根节点
+//			break
+//		}
+//	}
+//	return node
+//
+//	//for i := bits.Len(uint(k)) - 1; i >= 0; i-- {	// 其他写法
+//	//	if (1<<i)&k == 0 {
+//	//		continue
+//	//	}
+//	//	if node = this.memo[node][i]; node == -1 {
+//	//		break
+//	//	}
+//	//}
+//	//return node
+//}
 
 /**
  * Your TreeAncestor object will be instantiated and called as such:

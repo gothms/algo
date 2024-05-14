@@ -55,7 +55,7 @@ func Permute(nums []int) [][]int {
 			return
 		}
 		dfs(i + 1) // 分支：n*(n-1)*(n-2)*...*1
-		for j := i + 1; j <= n; j++ {
+		for j := i + 1; j < n; j++ {
 			nums[i], nums[j] = nums[j], nums[i]
 			dfs(i + 1)
 			nums[i], nums[j] = nums[j], nums[i] // 回溯

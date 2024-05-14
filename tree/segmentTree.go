@@ -205,7 +205,7 @@ func STUpdateNode(f, t, l, r, d int, cur *stNode) {
 // STRangeNode 查询区间和
 func STRangeNode(f, t, l, r int, cur *stNode) int {
 	if f <= l && r <= t {
-		// TODO
+		// TODO：nodeDown 懒惰标记可能没被更新（参考 lc-699）
 		return cur.v
 	}
 	m, ret := (l+r)>>1, 0
@@ -228,7 +228,7 @@ func nodeDown(cur *stNode, ll, rl int) {
 	if cur.d == 0 {
 		return
 	}
-	// TODO 区间
+	// TODO：cur.left.d += cur.d 更新懒惰标记
 	cur.left.v += cur.d * ll
 	cur.right.v += cur.d * rl
 	cur.left.d += cur.d // 更新子区间，下推懒惰标记（累加）

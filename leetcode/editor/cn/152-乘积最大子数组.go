@@ -44,6 +44,7 @@ func main() {
 	nums = []int{-2, 3, -4}
 	nums = []int{2, -5, -2, -4, 3}
 	nums = []int{-2}
+	nums = []int{2, 3, -2, 4} // 6
 	product := maxProduct(nums)
 	fmt.Println(product)
 }
