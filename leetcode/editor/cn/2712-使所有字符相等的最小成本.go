@@ -14,6 +14,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func minimumCost(s string) int64 {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func minimumCost_(s string) int64 {
 	// 终版
 	// 1.如果 s[i−1]≠s[i]，那么必须反转，不然没法都相等
 	// 要么翻转 s[0] 到 s[i−1]，成本为 i
@@ -46,5 +52,3 @@ func minimumCost(s string) int64 {
 	}
 	return int64(min(zero, one))
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

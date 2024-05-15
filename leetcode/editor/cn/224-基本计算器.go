@@ -8,16 +8,23 @@ import (
 
 func main() {
 	s := "1 + 1"
-	s = "2-1 + 2"
-	s = "(1+(4+5+2)-3)+(6+8)"   // 23
-	s = "1-(     -2)"           // 3
-	s = "- (3 - (- (4 + 5) ) )" // -12
+	s = "2-1 + 2" // 3
+	//s = "(1+(4+5+2)-3)+(6+8)"   // 23
+	//s = "1-(     -2)"           // 3
+	//s = "- (3 - (- (4 + 5) ) )" // -12
 	i := calculate(s)
 	fmt.Println(i)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func calculate(s string) int {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func calculate_(s string) int {
+	// 栈：迭代
 	ans, n := 0, len(s)
 	op := []bool{true} // op := []int{1}
 	sign := true       // 标记括号范围内的符号
@@ -48,78 +55,47 @@ func calculate(s string) int {
 	}
 	return ans
 
-	//vs, op := make([]int, 0), make([]uint8, 0)
+	// 递归
 	//n := len(s)
-	//val := func(i int) (int, int) {
-	//	j := i
-	//	for i < n && unicode.IsDigit(rune(s[i])) {
-	//		i++
-	//	}
-	//	v, _ := strconv.Atoi(s[j:i])
-	//	return i, v
-	//}
-	//operation := func(b int) {
+	//var dfs func(i int) (int, int)
+	//dfs = func(i int) (int, int) {
+	//	v, op := 0, true
 	//out:
-	//	for len(op) > 0 {
-	//		o := op[len(op)-1]
-	//		switch o {
-	//		case '+':
-	//			a := vs[len(vs)-1]
-	//			b += a
-	//			vs = vs[:len(vs)-1]
-	//		case '-':
-	//			if len(vs) > 0 {
-	//				a := vs[len(vs)-1]
-	//				b = a - b
-	//				vs = vs[:len(vs)-1]
-	//			} else {
-	//				b = -b
-	//			}
+	//	for i < n {
+	//		switch s[i] {
 	//		case '(':
+	//			val, j := dfs(i + 1)
+	//			i = j
+	//			if op {
+	//				v += val
+	//			} else {
+	//				v -= val
+	//			}
+	//		case ')':
+	//			i++
 	//			break out
+	//		case ' ':
+	//			i++
+	//		case '+':
+	//			op = true
+	//			i++
+	//		case '-':
+	//			op = false
+	//			i++
+	//		default:
+	//			val := int(s[i] - '0')
+	//			for i++; i < n && unicode.IsDigit(rune(s[i])); i++ {
+	//				val = val*10 + int(s[i]-'0')
+	//			}
+	//			if op {
+	//				v += val
+	//			} else {
+	//				v -= val
+	//			}
 	//		}
-	//		op = op[:len(op)-1]
 	//	}
-	//	vs = append(vs, b)
+	//	return v, i
 	//}
-	//for i, last := 0, false; i < n; i++ {
-	//	//if i == 9 {
-	//	//	fmt.Println()
-	//	//}
-	//	switch s[i] {
-	//	case '+':
-	//		op = append(op, s[i])
-	//		last = true
-	//	case '-':
-	//		if last {
-	//			j, v := val(i + 1)
-	//			i, v = j-1, -v
-	//			operation(v)
-	//			last = false
-	//		} else {
-	//			op = append(op, s[i])
-	//			last = true
-	//		}
-	//	case '(':
-	//		op = append(op, s[i])
-	//		last = true
-	//	case ')':
-	//		v := vs[len(vs)-1]
-	//		op = op[:len(op)-1]
-	//		vs = vs[:len(vs)-1]
-	//		operation(v)
-	//		last = false
-	//	case ' ':
-	//	default:
-	//		j, v := val(i)
-	//		i = j - 1
-	//		operation(v)
-	//		last = false
-	//	}
-	//	fmt.Println(i, vs)
-	//}
-	////fmt.Println(vs)
-	//return vs[0]
+	//v, _ := dfs(0)
+	//return v
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

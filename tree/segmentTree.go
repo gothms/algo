@@ -1,11 +1,14 @@
 package tree
 
+import "fmt"
+
 /*
 Segment Tree
-长度计算：1 << (bits.Len(uint(n-1)) + 1)
+长度计算：
 	n=8：16
 	n=[9,16]：32
 	stLen := 1 << (bits.Len(uint(n-1)) + 1)
+	从 0 开始：1 << (bits.Len(uint(n-1)) + 1) - 1
 长度修正：
 	方式一
 		k := bits.Len(uint(n - 1))
@@ -13,6 +16,7 @@ Segment Tree
 		if n > 1 {
 			stLen -= 1<<(k-bits.Len(uint(n-stLen>>2))+1) - 2
 		}
+		从 0 开始（包括方式二）：stLen := 1 << (k + 1) - 1
 	方式二
 		k := bits.Len(uint(n - 1))
 		stLen := 2	// n=0 时，不正确
@@ -47,6 +51,7 @@ lc
 	1157
 	2916：长度修正
 	699：“全量”更新、out of memory 和 动态开点
+	2589
 
 https://leetcode.cn/problems/range-module/solutions/1612955/by-lfool-eo50/
 	729. 我的日程安排表 I
@@ -192,24 +197,24 @@ func STUpdateNode(f, t, l, r, d int, cur *stNode) {
 		return
 	}
 	m := (l + r) >> 1
-	nodeDown(cur, m-l+1, r-m) // 下推：lazy 更新 d，同时防止 left / right = nil
+	pushDown(cur, m-l+1, r-m) // 下推：lazy 更新 d，同时防止 left / right = nil
 	if f <= m {
 		STUpdateNode(f, t, l, m, d, cur.left)
 	}
 	if t > m {
 		STUpdateNode(f, t, m+1, r, d, cur.right)
 	}
-	nodeUp(cur) // 向上更新
+	pushUp(cur) // 向上更新
 }
 
 // STRangeNode 查询区间和
 func STRangeNode(f, t, l, r int, cur *stNode) int {
 	if f <= l && r <= t {
-		// TODO：nodeDown 懒惰标记可能没被更新（参考 lc-699）
+		// TODO：pushDown 懒惰标记可能没被更新（参考 lc-699）
 		return cur.v
 	}
 	m, ret := (l+r)>>1, 0
-	nodeDown(cur, m-l+1, r-m)
+	pushDown(cur, m-l+1, r-m)
 	if f <= m {
 		ret = STRangeNode(f, t, l, m, cur.left)
 	}
@@ -218,7 +223,7 @@ func STRangeNode(f, t, l, r int, cur *stNode) int {
 	}
 	return ret
 }
-func nodeDown(cur *stNode, ll, rl int) {
+func pushDown(cur *stNode, ll, rl int) {
 	if cur.left == nil {
 		cur.left = &stNode{}
 	}
@@ -235,6 +240,22 @@ func nodeDown(cur *stNode, ll, rl int) {
 	cur.right.d += cur.d
 	cur.d = 0
 }
-func nodeUp(cur *stNode) {
+func pushUp(cur *stNode) {
 	cur.v = cur.left.v + cur.right.v
+}
+func LookSegmentTree(root *stNode) {
+	for q := []*stNode{root}; len(q) > 0; {
+		temp := make([]*stNode, 0)
+		for _, nod := range q {
+			if nod.left != nil {
+				temp = append(temp, nod.left)
+			}
+			if nod.right != nil {
+				temp = append(temp, nod.right)
+			}
+			fmt.Printf("%v\t", nod)
+		}
+		fmt.Println()
+		q = temp
+	}
 }

@@ -14,22 +14,57 @@ func main() {
 		{3, 0},
 		{2, 1}}
 	n := 6 // 4
-	edges = [][]int{{4, 2},
-		{5, 1},
-		{5, 0},
-		{0, 3},
-		{5, 2},
-		{1, 4},
-		{1, 3},
-		{3, 4}}
-	n = 6 // 3
+	//edges = [][]int{{4, 2},
+	//	{5, 1},
+	//	{5, 0},
+	//	{0, 3},
+	//	{5, 2},
+	//	{1, 4},
+	//	{1, 3},
+	//	{3, 4}}
+	//n = 6 // 3
 	cycle := findShortestCycle(n, edges)
 	fmt.Println(cycle)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func findShortestCycle(n int, edges [][]int) int {
-	return 0
+	adj := make([][]int, n)
+	for _, e := range edges {
+		x, y := e[0], e[1]
+		adj[x], adj[y] = append(adj[x], y), append(adj[y], x)
+	}
+	ans := n + 1
+	for i := 0; i < n; i++ {
+		q, depth := [][2]int{{i, -1}}, make([]int, n)
+		depth[i] = 1
+		var circle bool
+		for l := len(q); l > 0; l = len(q) {
+			for j := 0; j < l; j++ {
+				t, f := q[j][0], q[j][1]
+				for _, c := range adj[t] {
+					if c == f {
+						continue
+					}
+					if depth[c] > 0 {
+						ans = min(ans, depth[t]+depth[c]-1)
+						circle = true
+					} else {
+						depth[c] = depth[t] + 1
+						q = append(q, [2]int{c, t})
+					}
+				}
+			}
+			if circle {
+				break
+			}
+			q = q[l:]
+		}
+	}
+	if ans == n+1 {
+		return -1
+	}
+	return ans
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

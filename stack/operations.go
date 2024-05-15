@@ -2,7 +2,6 @@ package stack
 
 import (
 	"math"
-	"strconv"
 	"unicode"
 )
 
@@ -58,12 +57,14 @@ func StackOperation(s string) int {
 			}
 			stOpt = append(stOpt, c)
 			i++
+		case ' ':
+			i++
 		default:
-			f := i
-			for i++; i < n && unicode.IsDigit(rune(s[i])); {
-				i++
+			v := int(s[i] - '0')
+			for i++; i < n && unicode.IsDigit(rune(s[i])); i++ {
+				v = v*10 + int(s[i]-'0')
 			}
-			v, _ := strconv.Atoi(s[f:i]) // 取得操作数
+			//v, _ := strconv.Atoi(s[f:i]) // 取得操作数
 			stVal = append(stVal, v)
 		}
 	}

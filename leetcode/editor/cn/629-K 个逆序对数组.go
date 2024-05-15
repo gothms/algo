@@ -3,12 +3,13 @@ package main
 import "fmt"
 
 func main() {
-	n, k := 3, 2
-	n, k = 1, 1
-	n, k = 2, 2
-	n, k = 10, 4 // 440
-	n, k = 10, 5 // 1068
-	n, k = 10, 7 // 4489
+	n, k := 3, 2 // 2
+	n, k = 3, 1  // 2
+	//n, k = 1, 1  // 0
+	//n, k = 2, 2  // 0
+	//n, k = 10, 4 // 440
+	////n, k = 10, 5 // 1068
+	////n, k = 10, 7 // 4489
 	inversePairs := kInversePairs(n, k)
 	fmt.Println(inversePairs)
 
@@ -59,25 +60,26 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func kInversePairs(n int, k int) int {
-	// dp：个人
-	if k == 0 { // fast path
-		return 1
-	} else if n == 1 {
-		return 0
-	}
-	m := n*(n-1)>>1 + 1
-	if k >= m { // 超出可有的逆序对数
-		return 0
-	} else if k == m-1 { // 倒序排序
-		return 1
-	}
 	const mod = 1_000_000_007
-	last := (m - 1) >> 1 // n 个数有 m 个逆序对，中位值是 last
-	if k > last {        // 超过中位值，则映射到中位值之前
-		k = last<<1 - k + (m+1)&1
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func kInversePairs_(n int, k int) int {
+	// dp：个人
+	m := n*(n-1)>>1 + 1 // dp 数组最大长度
+	const mod = 1_000_000_007
+	if k > m>>1 {
+		k = m - k - 1
+	}
+	if k < 0 { // 超出可有的逆序对数
+		return 0
+	} else if k == 0 { // 已排序
+		return 1
 	}
 	dp, temp := make([]int, k+1), make([]int, k+1)
-	dp[0] = 1
+	dp[0], temp[0] = 1, 1
 	for i, maxIP := 2, 1; i <= n; i++ { // cur：最多 maxIP 个逆序对
 		for j := 1; j <= min(maxIP, k); j++ {
 			//if j > maxIP>>1 { // 也可以通过状态转移方程计算
@@ -97,5 +99,3 @@ func kInversePairs(n int, k int) int {
 	}
 	return dp[k]
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

@@ -1,4 +1,4 @@
-package divide
+package wiki
 
 import (
 	"fmt"

@@ -4,7 +4,7 @@ import (
 	"algo/sort"
 	"fmt"
 	"math/rand"
-	gosys "sort"
+	"sort"
 )
 
 func main() {
@@ -21,29 +21,29 @@ func main() {
 	//sort.SelectionSort(arr)
 	//sort.QuickSort(arr, 0, len(arr)-1)
 	fmt.Println(arr)
-	sort.HeapSort(arr)
+	sorts.HeapSort(arr)
 	b := check(arr)
 	fmt.Println("check:", b)
-	sort.MergeSort(arr, 0, len(arr)-1)
+	sorts.MergeSort(arr, 0, len(arr)-1)
 	fmt.Println(arr)
-	sort.QuickSort(brr, 0, len(brr)-1)
+	sorts.QuickSort(brr, 0, len(brr)-1)
 	fmt.Println(brr)
 
 	arr = []int{3, 2, 6, 0, 6, 0, 5, 4, 8, 1, 7, 7, 3, 9, 2, 2, 2, 5}
 	//sort.CountingSortGeekBang(arr, 9)
-	sort.CountingSort(arr, 9)
-	sort.CountingSortGeekBang(arr, 9)
+	sorts.CountingSort(arr, 9)
+	sorts.CountingSortGeekBang(arr, 9)
 	fmt.Println("CountingSort", arr)
 	fmt.Println("CountingSortGeekBang", arr)
 	arr = []int{3, 2, 6, 13, 54, 32, 65, 89, 44, 0, 34, 98, 45, 75, 23, 76, 13, 72, 51, 40}
-	sort.BucketSort(arr, 5)
+	sorts.BucketSort(arr, 5)
 	fmt.Println(arr)
 	arr = []int{3, 2, 6, 13, 54, 0, 32, 654, 0, 0, 889, 44, 0, 34, 987, 45, 765, 23, 76}
-	sort.RadixSort(arr)
+	sorts.RadixSort(arr)
 	fmt.Println(arr)
 
-	sortArr := gosys.IntSlice{1, 3, 5, 9, 7}
-	gosys.Sort(gosys.Reverse(sortArr)) // 只是逆序排序了
+	sortArr := sort.IntSlice{1, 3, 5, 9, 7}
+	sort.Sort(sort.Reverse(sortArr)) // 只是逆序排序了
 	fmt.Println("sort.Reverse:", sortArr)
 
 	// rand
@@ -65,6 +65,16 @@ func main() {
 		}
 	}
 	fmt.Println(start, r, p)
+
+	// Float64s 测试
+	//m := 10
+	//atlantisTest := make([]float64, m)
+	//for i := 0; i < m; i++ {
+	//	atlantisTest[i] = math.Ceil(rand.NormFloat64()*1000) / 100
+	//}
+	//fmt.Println(atlantisTest)
+	//sort.Float64s(atlantisTest)
+	//fmt.Println(atlantisTest)
 }
 func makeSortSlice(n, max int) []int {
 	ret := make([]int, n)

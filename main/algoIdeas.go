@@ -1,7 +1,7 @@
 package main
 
 import (
-	"algo/divide"
+	"algo/oiWiki"
 	"fmt"
 )
 
@@ -41,9 +41,9 @@ func main() {
 		{9, 10, 11, 12},
 		{13, 14, 15, 16},
 	}
-	mmf := divide.MatrixMultiplyForce(A, B)
+	mmf := oiWiki.MatrixMultiplyForce(A, B)
 	fmt.Println(mmf)
-	mms := divide.MatrixMultiplyDivide(A, B)
+	mms := oiWiki.MatrixMultiplyDivide(A, B)
 	fmt.Println(mms)
 
 	//mms := divide.MatrixMultiplyStrassen(A, B)

@@ -1,4 +1,4 @@
-package divide
+package wiki
 
 import (
 	"fmt"
@@ -97,7 +97,7 @@ func NearestPointsDivide(ps []*point) float64 {
 		// x 排序：用于分治
 		// y 排序：用于归并后 distance 的计算
 
-		temp := make([]*point, 0)       // 缓冲区
+		temp := make([]*point, 0)       // 缓冲区：分界点“周围” (mx-ans, mx+ans) 的点
 		for i, k := l, 0; i <= r; i++ { // 以 ps[i] 为关注点
 			if math.Abs(ps[i].x-mx) < ans {
 				// x 坐标限制 (mx-ans, mx+ans)
@@ -105,7 +105,7 @@ func NearestPointsDivide(ps []*point) float64 {
 				for j := k - 1; j >= 0 && ps[i].y-temp[j].y < ans; j-- {
 					ans = min(ans, distance(ps[i], temp[j]))
 				}
-				temp = append(temp, ps[i]) // 分界点“周围” (mx-ans, mx+ans) 的点
+				temp = append(temp, ps[i])
 				k++
 			}
 		}

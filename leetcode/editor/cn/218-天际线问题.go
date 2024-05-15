@@ -51,9 +51,7 @@
 package main
 
 import (
-	"container/heap"
 	"fmt"
-	"sort"
 )
 
 func main() {
@@ -70,42 +68,14 @@ func main() {
 
 // 每一座建筑的左边缘信息只被用作加入优先队列时的依据，当其加入优先队列后，只需要用到其高度信息（对最大高度有贡献）以及其右边缘信息（弹出优先队列的依据）
 // 因此只需要在优先队列中保存这两个元素即可
-// type pair struct{ right, height int }
-// type hp []pair
-//
-// func (h hp) Len() int            { return len(h) }
-// func (h hp) Less(i, j int) bool  { return h[i].height > h[j].height }
-// func (h hp) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
-// func (h *hp) Push(v interface{}) { *h = append(*h, v.(pair)) }
-// func (h *hp) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
 
 func getSkyline(buildings [][]int) [][]int {
-	// 堆
-	i, n := 0, len(buildings)
-	xs := make([]int, 0, n<<1)
-	for _, b := range buildings {
-		xs = append(xs, b[0], b[1])
-	}
-	sort.Ints(xs)
-	ret, h := make([][]int, 0), &hp218{}
-	for _, x := range xs {
-		for ; i < n && buildings[i][0] <= x; i++ { // buildings 按 lefti 非递减排序
-			heap.Push(h, [2]int(buildings[i][1:]))
-		}
-		for h.Len() > 0 && (*h)[0][0] <= x {
-			heap.Pop(h)
-		}
-		var height int
-		if h.Len() > 0 {
-			height = (*h)[0][1]
-		}
-		if len(ret) == 0 || height != ret[len(ret)-1][1] {
-			ret = append(ret, []int{x, height})
-		}
-	}
-	return ret
+}
 
-	// lc
+//leetcode submit region end(Prohibit modification and deletion)
+
+func getSkyline_(buildings [][]int) [][]int {
+	//  扫描线 + 堆
 	//n := len(buildings)
 	//boundaries := make([]int, 0, n*2)
 	//for _, building := range buildings {
@@ -130,23 +100,18 @@ func getSkyline(buildings [][]int) [][]int {
 	//	if len(h) > 0 {
 	//		maxn = h[0].height // 优先队列寻找最大高度：纵坐标为「包含该横坐标」的所有建筑的最大高度
 	//	}
-	//	if len(ans) == 0 || maxn != ans[len(ans)-1][1] { // 如果当前关键点的纵坐标大小与前一个关键点的纵坐标大小相同，则说明当前关键点无效，跳过该关键点
+	//	if len(ans) == 0 || maxn != ans[len(ans)-1][1] { // 无高度差：如果当前关键点的纵坐标大小与前一个关键点的纵坐标大小相同，则说明当前关键点无效，跳过该关键点
 	//		ans = append(ans, []int{boundary, maxn})
 	//	}
 	//}
 	//return ans
 }
 
-type hp218 [][2]int
-
-func (h hp218) Len() int           { return len(h) }
-func (h hp218) Less(i, j int) bool { return h[i][1] > h[j][1] }
-func (h hp218) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
-func (h *hp218) Push(x any)        { *h = append(*h, x.([2]int)) }
-func (h *hp218) Pop() any {
-	v := (*h)[len(*h)-1]
-	*h = (*h)[:len(*h)-1]
-	return v
-}
-
-//leetcode submit region end(Prohibit modification and deletion)
+//type pair struct{ right, height int }
+//type hp []pair
+//
+//func (h hp) Len() int            { return len(h) }
+//func (h hp) Less(i, j int) bool  { return h[i].height > h[j].height }
+//func (h hp) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
+//func (h *hp) Push(v interface{}) { *h = append(*h, v.(pair)) }
+//func (h *hp) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }

@@ -10,9 +10,11 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func isRectangleCover(rectangles [][]int) bool {
-	// 扫描线
-	// lc-218 lc-391 lc-850
+	// 格林公式：https://leetcode.cn/problems/perfect-rectangle/
 
+	// 扫描线
+
+	// 哈希表
 	memo := make(map[[2]int]int)
 	area, minX, minY, maxX, maxY := 0, math.MaxInt32, math.MaxInt32, math.MinInt32, math.MinInt32
 	for _, r := range rectangles {
