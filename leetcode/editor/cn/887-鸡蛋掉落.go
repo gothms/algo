@@ -61,6 +61,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func superEggDrop(k int, n int) int {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func superEggDrop_(k int, n int) int {
 	// 滚动 dp
 	if k == 1 { // fast path
 		return n
@@ -156,7 +162,4 @@ func superEggDrop(k int, n int) int {
 	//return dp[n][k]
 
 	// 决策单调性：竞赛中的考点
-	// 这里我们不会叙述 何为决策单调性 以及 如何根据决策单调性写出优化的动态规划，而是仅指出决策单调性的存在性
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

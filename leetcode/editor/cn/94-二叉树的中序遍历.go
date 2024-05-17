@@ -54,39 +54,25 @@ func main() {
  * }
  */
 func inorderTraversal(root *TreeNode) []int {
-	ret, stack := make([]int, 0), make([]*TreeNode, 0)
-	for cur := root; cur != nil || len(stack) > 0; cur = cur.Right {
-		if cur == nil {
-			cur, stack = stack[len(stack)-1], stack[:len(stack)-1]
+	ans := make([]int, 0)
+	for cur := root; cur != nil; {
+		if cur.Left == nil {
+			ans = append(ans, cur.Val)
+			cur = cur.Right
 		} else {
-			for ; cur.Left != nil; cur = cur.Left {
-				stack = append(stack, cur)
+			pre := cur.Left
+			for pre.Right != nil && pre.Right != cur {
+				pre = pre.Right
+			}
+			if pre.Right == nil {
+				pre.Right, cur = cur, cur.Left
+			} else {
+				ans = append(ans, cur.Val)
+				pre.Right, cur = nil, cur.Right
 			}
 		}
-		ret = append(ret, cur.Val)
 	}
-	return ret
-
-	//inorder, curr := make([]int, 0), root
-	//var pre *TreeNode
-	//for curr != nil {
-	//	if curr.Left == nil {
-	//		inorder = append(inorder, curr.Val)
-	//		curr = curr.Right
-	//	} else {
-	//		pre = curr.Left
-	//		for pre.Right != nil && pre.Right != curr {
-	//			pre = pre.Right
-	//		}
-	//		if pre.Right == nil {
-	//			pre.Right, curr = curr, curr.Left // 破坏结构
-	//		} else {
-	//			inorder = append(inorder, curr.Val)
-	//			pre.Right, curr = nil, curr.Right // 恢复结构
-	//		}
-	//	}
-	//}
-	//return inorder
+	return ans
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

@@ -1,31 +1,19 @@
 package dp
 
 /*
-887
-1884
+	887
+	1884：数学解法，类似 754
 */
 
 var tedDp []int
 
 func init() {
-	maxVal := func(a, b int) int {
-		if b > a {
-			return b
-		}
-		return a
-	}
-	minVal := func(a, b int) int {
-		if b < a {
-			return b
-		}
-		return a
-	}
 	N := 1000
 	tedDp = make([]int, N+1)
 	tedDp[1] = 1
 	for i := 2; i <= N; i++ {
 		for j := 1; j < i; j++ {
-			tedDp[i] = minVal(tedDp[i], maxVal(j, tedDp[i-j]+1)) // 碎 / 不碎
+			tedDp[i] = min(tedDp[i], max(j, tedDp[i-j]+1)) // 碎 / 不碎
 		}
 	}
 }
@@ -43,19 +31,7 @@ func superEggDrop(k int, n int) int {
 	// 状态转移方程：二者取大
 	// 碎：dp[i][k] = dp[j-1][k-1] + 1
 	// 不碎：dp[i][k] = dp[i-j][k] + 1
-	// 超时优化：二分查找代替 for j := 1; j <= i; j++
-	maxVal := func(a, b int) int {
-		if b > a {
-			return b
-		}
-		return a
-	}
-	minVal := func(a, b int) int {
-		if b < a {
-			return b
-		}
-		return a
-	}
+	// 超时优化：二分查找代替 for 遍历
 	dp := make([][]int, n+1)
 	dp[0] = make([]int, k+1)
 	for i := 1; i <= n; i++ {
@@ -65,7 +41,7 @@ func superEggDrop(k int, n int) int {
 			// 迭代：超时
 			//dp[i][c] = i
 			//for j := 1; j <= i; j++ {
-			//	dp[i][c] = minVal(dp[i][c], 1+maxVal(dp[j-1][c-1], dp[i-j][c])) // 碎 / 不碎
+			//	dp[i][c] = min(dp[i][c], 1+max(dp[j-1][c-1], dp[i-j][c])) // 碎 / 不碎
 			//}
 			// 二分查找：最接近的 l、r
 			l, r := 1, i
@@ -81,9 +57,9 @@ func superEggDrop(k int, n int) int {
 					l, r = m, m
 				}
 			}
-			dp[i][c] = 1 + minVal( // 取小
-				maxVal(dp[l-1][c-1], dp[i-l][c]),
-				maxVal(dp[r-1][c-1], dp[i-r][c]))
+			dp[i][c] = 1 + min( // 取小
+				max(dp[l-1][c-1], dp[i-l][c]),
+				max(dp[r-1][c-1], dp[i-r][c]))
 		}
 	}
 	return dp[n][k]
@@ -92,7 +68,7 @@ func superEggDropMath(k int, n int) int {
 	// math
 	// 状态转移方程：f(t,k) 操作 t 次，有 k 个鸡蛋，能找到的最高楼层
 	// t=[1,n]：f(t,1)=t，f(1,k)=1
-	// 碎 / 不碎（+当前楼层）：f(t,k) = f(t-1,k-1) + f(t-1,k)+1
+	// 碎 / 不碎（+当前楼层）：f(t,k) = f(t-1,k-1) + f(t-1,k) + 1
 	// 思路：
 	// + 1：当前楼层
 	// + dp[i-1][j]：对于 dp[i][j]，j 个鸡蛋操作 i-1 次肯定不会碎

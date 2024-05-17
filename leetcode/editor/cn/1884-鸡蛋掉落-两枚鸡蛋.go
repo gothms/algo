@@ -62,6 +62,31 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func twoEggDrop(n int) int {
 	// dp
+	k := 2
+	dp := make([][]int, n+1)
+	for i := range dp {
+		dp[i] = make([]int, k+1)
+		if i > 0 {
+			dp[i][1] = i
+			for j := 2; j <= k; j++ {
+				dp[i][j] = math.MaxInt32
+			}
+		}
+	}
+	for j := 2; j <= k; j++ {
+		for i := 1; i <= n; i++ {
+			for t := 1; t <= i; t++ {
+				dp[i][j] = min(dp[i][j], max(dp[i-t][j], dp[t-1][j-1])+1)
+			}
+		}
+	}
+	return dp[n][k]
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func twoEggDrop_(n int) int {
+	// dp
 	return tedDP[n]
 
 	// 记忆化搜索
@@ -132,5 +157,3 @@ func init() {
 		}
 	}
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

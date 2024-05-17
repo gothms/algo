@@ -63,23 +63,45 @@ func main() {
 }
 
 // There is no code of Go type for this problem
+// 牛客：https://www.nowcoder.com/practice/947f6eb80d944a84850b0538bf0ec3a5?tpId=13&tqId=11179&ru=/exam/oj
 func treeToDoublyList(root *TreeNode) *TreeNode {
-	var head, pre *TreeNode          // 新的头节点，pre 节点
-	head.Left, pre.Right = pre, head // 环形链表
-	var dfs func(*TreeNode)
-	dfs = func(cur *TreeNode) {
-		if cur == nil {
-			return
-		}
-		dfs(cur.Left)
-		if pre == nil {
-			head = cur // 最小值
-		} else {
-			pre.Right = cur
-		}
-		cur.Left, pre = pre, cur
-		dfs(cur.Right)
+	if root == nil {
+		return nil
 	}
-	dfs(root)
-	return head
+	list := &TreeNode{}
+	for cur, head := root, list; cur != nil; {
+		if cur.Left == nil {
+			head.Right, cur.Left, head, cur = cur, head, cur, cur.Right
+		} else {
+			pre := cur.Left
+			for pre.Right != nil {
+				pre = pre.Right
+			}
+			cur, cur.Left, pre.Right = cur.Left, nil, cur
+		}
+	}
+	ans := list.Right
+	list.Right, ans.Left = nil, nil
+	return ans
 }
+
+//func treeToDoublyList(root *TreeNode) *TreeNode {
+//	var head, pre *TreeNode          // 新的头节点，pre 节点
+//	head.Left, pre.Right = pre, head // 环形链表：error 空指针
+//	var dfs func(*TreeNode)
+//	dfs = func(cur *TreeNode) {
+//		if cur == nil {
+//			return
+//		}
+//		dfs(cur.Left)
+//		if pre == nil {
+//			head = cur // 最小值
+//		} else {
+//			pre.Right = cur
+//		}
+//		cur.Left, pre = pre, cur
+//		dfs(cur.Right)
+//	}
+//	dfs(root)
+//	return head
+//}

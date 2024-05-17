@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"slices"
 	"sort"
 )
 
@@ -17,43 +16,40 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func findMinimumTime(tasks [][]int) int {
 	// 线段树
-	n := len(tasks)
-	type segment []struct {
-		l, r int
-		cnt  int
-		todo bool
-	}
-	st := make(segment, func() {
 
-	})
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
 
 func findMinimumTime_(tasks [][]int) int {
-	// lc：栈 + 二分
-	slices.SortFunc(tasks, func(a, b []int) int { return a[1] - b[1] })
-	// 栈中保存闭区间左右端点，栈底到栈顶的区间长度的和
-	type tuple struct{ l, r, s int }
-	st := []tuple{{-2, -2, 0}} // 哨兵，保证不和任何区间相交
-	for _, p := range tasks {
-		start, end, d := p[0], p[1], p[2]
-		i := sort.Search(len(st), func(i int) bool { return st[i].l >= start }) - 1 // -1：st[i].l < start，找全所有已运行的时间点
-		d -= st[len(st)-1].s - st[i].s                                              // 去掉运行中的时间点
-		if start <= st[i].r {                                                       // start 在区间 st[i] 内
-			d -= st[i].r - start + 1 // 去掉运行中的时间点
+	// 栈 + 二分
+	sort.Slice(tasks, func(i, j int) bool {
+		return tasks[i][1] < tasks[j][1]
+	})
+	type space struct {
+		l, r int // 栈中保存闭区间左右端点，栈底到栈顶的区间长度的和
+		k    int // 统计已被选择的时间的总数
+	}
+	st := []space{{-1, -1, 0}} // 哨兵，保证不和任何区间相交
+	for _, t := range tasks {  // st 中的区间严格单调递增
+		s, e, d := t[0], t[1], t[2]
+		i := sort.Search(len(st), func(i int) bool {
+			return st[i].l >= s // 1.1.二分结果 i 的右边区间的所有运行中的时间点，都被选择
+		}) - 1
+		d -= st[len(st)-1].k - st[i].k // 前缀和，第一次去掉运行中的时间点
+		if s <= st[i].r {              // 1.2.当前区间 t 和栈中的区间 st[i] 有交集，则选择交集中的所有时间点
+			d -= st[i].r - s + 1 // 第二次去掉运行中的时间点
 		}
-		if d <= 0 {
+		if d <= 0 { // 已经选够了
 			continue
 		}
-		for end-st[len(st)-1].r <= d { // 剩余的 d 填充区间后缀，<= 则可以合并区间
-			top := st[len(st)-1]
-			st = st[:len(st)-1]
-			d += top.r - top.l + 1 // 合并区间
-		}
-		st = append(st, tuple{end - d + 1, end, st[len(st)-1].s + d})
+		for e-st[len(st)-1].r <= d { // 2.1.st 最后一个区间和当前区间 t 的 end 时间的空隙将被全部选择（剩余的 d 填充区间后缀，<= 则可以合并区间）
+			d += st[len(st)-1].r - st[len(st)-1].l + 1 // 间隙被全部选择
+			st = st[:len(st)-1]                        // 区间被合并
+		} // 因为 s <= st[i].r 且 st 中的区间有间隙，所有永远不会选到哨兵
+		st = append(st, space{e - d + 1, e, d + st[len(st)-1].k}) // 2.2.合并后的区间
 	}
-	return st[len(st)-1].s
+	return st[len(st)-1].k
 
 	// 线段树
 

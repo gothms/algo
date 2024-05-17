@@ -41,15 +41,7 @@ func Atlantis(rectangles [][]int) int {
 	}
 	ys = ys[:m+1]
 	var (
-		//stLen = func(n int) int {
-		//	k := bits.Len(uint(n - 1))
-		//	stLen := 1 << (k + 1)
-		//	if n > 1 {
-		//		stLen -= 1<<(k-bits.Len(uint(n-stLen>>2))+1) - 2
-		//	}
-		//	return stLen
-		//}(n)
-		stLen = m << 3 // stLen 需要足够大？
+		stLen = m << 3 // stLen 需要足够大？ TODO
 		st    = make([]atSeg, stLen)
 		lazy  = make([]int, stLen) // 标记线段树每个节点
 	)
