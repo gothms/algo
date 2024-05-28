@@ -57,32 +57,35 @@ import "fmt"
 
 func main() {
 	code := []int{5, 7, 1, 4}
-	k := -2
+	k := 3 // [7,6,9,8,9]
+	code = []int{5, 2, 2, 3, 1}
+	k = 3 // [7,6,9,8,9]
+	code = []int{10, 5, 7, 7, 3, 2, 10, 3, 6, 9, 1, 6}
+	k = -4 // [22,26,22,28,29,22,19,22,18,21,28,19]
 	ints := decrypt(code, k)
 	fmt.Println(ints)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func decrypt(code []int, k int) []int {
+	// 滑动窗体
 	n := len(code)
 	ans := make([]int, n)
-	if k == 0 {
-		return ans
-	} else if k > 0 {
-		for i, s := 0, 0; i < n+k; i++ { // 后 k 的和
-			s += code[i%n]
+	if sum := 0; k > 0 {
+		for i := 0; i < n+k; i++ {
 			if i >= k {
-				s -= code[i-k]
-				ans[i-k] = s
+				ans[(i+n-k-1)%n] = sum
+				sum -= code[(i+n-k)%n]
 			}
+			sum += code[i%n]
 		}
-	} else {
-		for i, s := 0, 0; i < n-k; i++ { // 前 k 的和
+	} else if k < 0 {
+		for i := 0; i < n-k; i++ {
 			if i+k >= 0 {
-				ans[i%n] = s
-				s -= code[(i+k)%n]
+				ans[i%n] = sum
+				sum -= code[(i+n+k)%n]
 			}
-			s += code[i%n]
+			sum += code[i%n]
 		}
 	}
 	return ans

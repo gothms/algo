@@ -88,12 +88,6 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func getMaxGridHappiness(m int, n int, introvertsCount int, extrovertsCount int) int {
 	// 状压dp
-	maxVal := func(a, b int) int {
-		if a > b {
-			return a
-		}
-		return b
-	}
 	// 1.状态定义
 	T := int(math.Pow(3, float64(n)))                            // 状态压缩，3进制
 	neighbors := [][]int{{0, 0, 0}, {0, -60, -10}, {0, -10, 40}} // 邻居幸福感的组合情况
@@ -159,7 +153,7 @@ func getMaxGridHappiness(m int, n int, introvertsCount int, extrovertsCount int)
 			if iCount[mask] > ic || eCount[mask] > ec { // 没有可居住的人了
 				continue
 			}
-			v = maxVal(v, innerScore[mask]+interScore[preMask][mask]+ // 截止当前行的幸福感
+			v = max(v, innerScore[mask]+interScore[preMask][mask]+ // 截止当前行的幸福感
 				dfs(mask, row+1, ic-iCount[mask], ec-eCount[mask])) // 下一行的幸福感
 		}
 		*p = v

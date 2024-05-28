@@ -78,6 +78,12 @@ func main() {
 */
 // leetcode submit region begin(Prohibit modification and deletion)
 func minimumIncompatibility(nums []int, k int) int {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func minimumIncompatibility_(nums []int, k int) int {
 	// 状压dp
 	n := len(nums)
 	if n == k { // 一个元素一个子集
@@ -251,14 +257,3 @@ out:
 	//}
 	//return -1
 }
-
-func GetHighestOneBit(c int) int {
-	c = c | (c >> 1)
-	c = c | (c >> 2)
-	c = c | (c >> 4)
-	c = c | (c >> 8)
-	c = c | (c >> 16)
-	return c>>1 + 1
-}
-
-//leetcode submit region end(Prohibit modification and deletion)

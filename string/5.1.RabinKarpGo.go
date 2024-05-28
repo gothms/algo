@@ -5,7 +5,8 @@ Rabin-Karp 字符串匹配算法
 
 Go源码 strings.Index()
 */
-const primeRK = 16777619
+//const primeRK = 16777619
+const primeRK = 2099999999
 
 func hashStr(sep string) (uint32, uint32) {
 	hash := uint32(0)

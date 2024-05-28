@@ -33,6 +33,8 @@ import (
 	2514：费马小定理
 */
 
+// permuteCnt 不含重复数字
+// 若含重复数字 x 有 k 个，则 /permuteCnt(k)
 func permuteCnt(n int) int {
 	N := 1
 	for i := 2; i <= n; i++ {

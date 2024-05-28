@@ -5,29 +5,37 @@ import "fmt"
 func main() {
 	nums := []int{2, 1, 4, 3}
 	left, right := 2, 3 // 3
-	nums = []int{2, 9, 2, 5, 6}
-	left, right = 2, 8 // 7
-	nums = []int{73, 55, 36, 5, 55, 14, 9, 7, 72, 52}
-	left, right = 32, 69 // 22
-	nums = []int{876, 880, 482, 260, 132, 421, 732,
-		703,
-		795, 420, 871, 445, 400, 291, 358, 589, 617, 202, 755, 810, 227, 813, 549, 791, 418, 528, 835, 401, 526, 584, 873,
-		662, 13, 314,
-		988, 101, 299, 816, 833, 224, 160, 852, 179, 769,
-		646, 558, 661,
-		808, 651, 982, 878, 918, 406, 551, 467, 87, 139, 387, 16, 531, 307, 389, 939, 551, 613, 36, 528, 460, 404, 314, 66, 111, 458, 531, 944, 461, 951, 419, 82, 896,
-		467, 353, 704,
-		905,
-		705,
-		760, 61, 422, 395, 298, 127, 516, 153, 299, 801,
-		341, 668, 598, 98, 241}
-	left, right = 658, 719 // 19
+	//nums = []int{2, 9, 2, 5, 6}
+	//left, right = 2, 8 // 7
+	//nums = []int{73, 55, 36, 5, 55, 14, 9, 7, 72, 52}
+	//left, right = 32, 69 // 22
+	//nums = []int{876, 880, 482, 260, 132, 421, 732,
+	//	703,
+	//	795, 420, 871, 445, 400, 291, 358, 589, 617, 202, 755, 810, 227, 813, 549, 791, 418, 528, 835, 401, 526, 584, 873,
+	//	662, 13, 314,
+	//	988, 101, 299, 816, 833, 224, 160, 852, 179, 769,
+	//	646, 558, 661,
+	//	808, 651, 982, 878, 918, 406, 551, 467, 87, 139, 387, 16, 531, 307, 389, 939, 551, 613, 36, 528, 460, 404, 314, 66, 111, 458, 531, 944, 461, 951, 419, 82, 896,
+	//	467, 353, 704,
+	//	905,
+	//	705,
+	//	760, 61, 422, 395, 298, 127, 516, 153, 299, 801,
+	//	341, 668, 598, 98, 241}
+	//left, right = 658, 719 // 19
+	//nums = []int{16, 69, 88, 85, 79, 87, 37, 33, 39, 34}
+	//left, right = 55, 57 // 0
 	boundedMax := numSubarrayBoundedMax(nums, left, right)
 	fmt.Println(boundedMax)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func numSubarrayBoundedMax(nums []int, left int, right int) int {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func numSubarrayBoundedMax_(nums []int, left int, right int) int {
 	// 个人：hash
 	// 1.计算公式：v 符合 [left,right] 且左右各有 l r 个小于等于 right 的元素，则满足的子数组有 (l+1)*(r+1)
 	// 2.去重：当 l r 中包含其他符合 [left,right] 的值（如右侧最近的是 rv），会重复计算
@@ -101,5 +109,3 @@ func numSubarrayBoundedMax(nums []int, left int, right int) int {
 	//}
 	//return ans
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

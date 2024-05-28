@@ -43,13 +43,19 @@ import (
 )
 
 func main() {
-	titles := "AAB"
-	titles = "AAABBC"
+	titles := "AAB"   // 8
+	titles = "AAABBC" // 188
 	possibilities := numTilePossibilities(titles)
 	fmt.Println(possibilities)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
+
+func numTilePossibilities(tiles string) int {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
 
 const mx = 8
 
@@ -64,101 +70,28 @@ func init() {
 	}
 }
 
-func numTilePossibilities(tiles string) int {
+func numTilePossibilities_(tiles string) int {
 	// NTT：O(n log2N)
 	// https://leetcode.cn/problems/letter-tile-possibilities/solutions/2275356/on2-ji-shu-dppythonjavacgo-by-endlessche-hmez/
 
 	//dp：终版
-	minVal := func(a, b int) int {
-		if b < a {
-			return b
-		}
-		return a
-	}
-	counts := make(map[rune]int)
-	for _, v := range tiles {
-		counts[v]++ // 统计每个字母的出现次数
-	}
-	dp := make([]int, len(tiles)+1)
-	dp[0] = 1 // 构造空序列的方案数
-	ret, sum := 0, 0
-	for _, cnt := range counts { // 枚举第 i 种字母
-		sum += cnt
-		for j := sum; j > 0; j-- { // 枚举序列长度 j
-			for k := 1; k <= minVal(j, cnt); k++ { // 枚举第 i 种字母选了 k 个
-				dp[j] += dp[j-k] * combineNTP[j][k] // 长度为 j，选出 k 个位置放置字母 "i"
-			}
-		}
-	}
-	for _, v := range dp[1:] {
-		ret += v
-	}
-	return ret
-
-	// dp：test
-	//minVal := func(a, b int) int {
-	//	if b < a {
-	//		return b
-	//	}
-	//	return a
+	//counts := make(map[rune]int)
+	//for _, v := range tiles {
+	//	counts[v]++ // 统计每个字母的出现次数
 	//}
-	//counts := map[rune]int{}
-	//for _, ch := range tiles {
-	//	counts[ch]++ // 统计每个字母的出现次数
-	//}
-	//ret, n, m := 0, len(tiles), len(counts)
-	//f := make([][]int, m+1)
-	//f[0] = make([]int, n+1)
-	//f[0][0] = 1 // 构造空序列的方案数
-	//i := 1
-	////for _, cnt := range counts { // 枚举第 i 种字母
-	//cnter := []int{3, 2, 1}
-	//for _, cnt := range cnter { // 枚举第 i 种字母
-	//	f[i] = make([]int, n+1)
-	//	for j := 0; j <= n; j++ { // 枚举序列长度 j
-	//		max := minVal(j, cnt)
-	//		for k := 0; k <= max; k++ { // 枚举第 i 种字母选了 k 个
-	//			//f[i][j] += f[i-1][j-k] * c[j][k] // 长度为 j，选出 k 个位置放置字母 "i"
-	//			f[i][j] += f[i-1][j-k] * c[max][k] // 会出现重复组合，如：AAABB，j=2，选择了两次 AB
-	//			if j == 2 {
-	//				fmt.Println(i, j, k, ",", f[i-1][j-k], c[max][k])
-	//			}
-	//		}
-	//	}
-	//	i++
-	//}
-	//for _, ints := range f {
-	//	fmt.Println(ints)
-	//}
-	//for _, x := range f[m][1:] {
-	//	ret += x
-	//}
-	//return ret
-
-	// dp
-	//counts := map[rune]int{}
-	//for _, ch := range tiles {
-	//	counts[ch]++ // 统计每个字母的出现次数
-	//}
-	//ret, n, m := 0, len(tiles), len(counts)
-	//f := make([][]int, m+1)
-	//f[0] = make([]int, n+1)
-	//f[0][0] = 1 // 构造空序列的方案数
-	//i := 1
+	//dp := make([]int, len(tiles)+1)
+	//dp[0] = 1 // 构造空序列的方案数
+	//ret, sum := 0, 0
 	//for _, cnt := range counts { // 枚举第 i 种字母
-	//	f[i] = make([]int, n+1)
-	//	for j := 0; j <= n; j++ { // 枚举序列长度 j
-	//		for k := 0; k <= j && k <= cnt; k++ { // 枚举第 i 种字母选了 k 个
-	//			f[i][j] += f[i-1][j-k] * c[j][k] // 长度为 j，选出 k 个位置放置字母 "i"
+	//	sum += cnt
+	//	for j := sum; j > 0; j-- { // 枚举序列长度 j
+	//		for k := 1; k <= min(j, cnt); k++ { // 枚举第 i 种字母选了 k 个
+	//			dp[j] += dp[j-k] * combineNTP[j][k] // 长度为 j，选出 k 个位置放置字母 "i"
 	//		}
 	//	}
-	//	i++
 	//}
-	////for _, ints := range f {
-	////	fmt.Println(ints)
-	////}
-	//for _, x := range f[m][1:] {
-	//	ret += x
+	//for _, v := range dp[1:] {
+	//	ret += v
 	//}
 	//return ret
 
@@ -186,26 +119,24 @@ func numTilePossibilities(tiles string) int {
 	//return cnt
 
 	// 回溯：map
-	//memo, n := make(map[uint8]int), len(tiles)
-	//for i := 0; i < n; i++ {
-	//	memo[tiles[i]]++
-	//}
-	//var dfs func(int, map[uint8]int) int
-	//dfs = func(i int, memo map[uint8]int) (c int) {
-	//	if i == 0 {
-	//		return 1
-	//	}
-	//	c++ // 1 到 n-1 的情况
-	//	for k, v := range memo {
-	//		if v > 0 {
-	//			memo[k]--
-	//			c += dfs(i-1, memo)
-	//			memo[k]++
-	//		}
-	//	}
-	//	return
-	//}
-	//return dfs(len(tiles), memo) - 1
+	memo, n := make(map[uint8]int), len(tiles)
+	for i := 0; i < n; i++ {
+		memo[tiles[i]]++
+	}
+	var dfs func(int, map[uint8]int) int
+	dfs = func(i int, memo map[uint8]int) (c int) {
+		if i == 0 {
+			return 1
+		}
+		c++ // 1 到 n-1 的情况
+		for k, v := range memo {
+			if v > 0 {
+				memo[k]--
+				c += dfs(i-1, memo)
+				memo[k]++
+			}
+		}
+		return
+	}
+	return dfs(len(tiles), memo) - 1
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

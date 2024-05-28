@@ -1,6 +1,41 @@
 package main
 
+func main() {
+
+}
+
+// leetcode submit region begin(Prohibit modification and deletion)
 func specialPerm(nums []int) int {
+	const mod = 1e9 + 7
+	n := len(nums)
+	m := 1 << n
+	dp := make([][]int, m)
+	for i := range dp {
+		dp[i] = make([]int, n)
+	}
+	for i := range dp[0] {
+		dp[0][i] = 1
+	}
+	for i := 1; i < m; i++ {
+		for j, x := range nums {
+			for k, y := range nums {
+				if i>>k&1 > 0 && (x%y == 0 || y%x == 0) {
+					dp[i][j] += dp[1<<k^i][k]
+				}
+			}
+			dp[i][j] %= mod
+		}
+	}
+	ans := 0
+	for i := range nums {
+		ans += dp[(m-1)^(1<<i)][i]
+	}
+	return ans % mod
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func specialPerm_(nums []int) int {
 	// 状压DP
 	// 记忆化
 	const mod = 1e9 + 7
@@ -22,14 +57,14 @@ func specialPerm(nums []int) int {
 		if *p >= 0 {
 			return *p
 		}
-		*p++ // -1 变 0
+		ret := 0
 		for k := 0; k < n; k++ {
 			if 1<<k&i > 0 && (nums[j]%nums[k] == 0 || nums[k]%nums[j] == 0) {
-				*p = (*p + dfs(1<<k^i, k)) % mod
+				ret = (ret + dfs(1<<k^i, k)) % mod
 			} // 遍历每个没用过，且符合条件的数
 		}
-		memo[i][j] = *p // 记忆化
-		return *p
+		*p = ret // 记忆化
+		return ret
 	}
 	nums = append(nums, 0) // 哨兵
 	cnt := dfs(m-1, n)
