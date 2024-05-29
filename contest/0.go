@@ -136,7 +136,7 @@ func test() int {
 	//const primeRK = 16777619
 	//n := 2_100_000_001
 	//n := 100_000_001
-	n := 16777619 + 1
+	n := 16777619 + 1000
 	prime := make([]bool, n)
 	for i := 2; i < n; i++ {
 		if prime[i] {

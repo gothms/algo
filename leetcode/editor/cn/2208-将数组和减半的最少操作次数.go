@@ -66,7 +66,7 @@ func main() {
 func halveArray(nums []int) int {
 	// 优先队列
 	sum, n := 0, len(nums)
-	h := ha{}
+	h := ha2208{}
 	for i := 0; i < n; i++ {
 		sum += nums[i]
 		heap.Push(&h, float64(nums[i]))
@@ -84,21 +84,21 @@ func halveArray(nums []int) int {
 	return cnt
 }
 
-type ha []float64
+type ha2208 []float64
 
-func (h ha) Len() int {
+func (h ha2208) Len() int {
 	return len(h)
 }
-func (h ha) Less(i, j int) bool {
+func (h ha2208) Less(i, j int) bool {
 	return h[i] > h[j]
 }
-func (h ha) Swap(i, j int) {
+func (h ha2208) Swap(i, j int) {
 	h[i], h[j] = h[j], h[i]
 }
-func (h *ha) Push(x any) {
+func (h *ha2208) Push(x any) {
 	*h = append(*h, x.(float64))
 }
-func (h *ha) Pop() any {
+func (h *ha2208) Pop() any {
 	v := (*h)[len(*h)-1]
 	*h = (*h)[:len(*h)-1]
 	return v
