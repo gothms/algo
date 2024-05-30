@@ -24,7 +24,7 @@ func BinarySearchCircle(arr []int, t int) int {
 	return -1
 }
 
-// 写法二
+// BinarySearchCircle_ 写法二
 func BinarySearchCircle_(arr []int, t int) int {
 	l, r, mid := 0, len(arr)-1, 0
 	for l <= r {

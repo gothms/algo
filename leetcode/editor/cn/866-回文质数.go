@@ -13,6 +13,7 @@ func main() {
 
 	n := 13
 	n = 9989900
+	n = 16777619 + 100
 	palindrome := primePalindrome(n)
 	fmt.Println(palindrome)
 }
@@ -41,7 +42,7 @@ func init() {
 			prime866 = append(prime866, i)
 		}
 	}
-	//fmt.Println(prime866, len(prime866))
+	fmt.Println(prime866, len(prime866))
 }
 func primePalindrome(n int) int {
 	return prime866[sort.SearchInts(prime866, n)]

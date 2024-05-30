@@ -61,7 +61,7 @@ func UpdateOne(b []int, i, delta int) {
 }
 func PrefixSumOne(b []int, i int) int {
 	sum := 0
-	for ; i >= 0; i &= i - 1 {
+	for ; i > 0; i &= i - 1 {
 		sum += b[i]
 	}
 	return sum

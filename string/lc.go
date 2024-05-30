@@ -8,8 +8,15 @@ import (
 
 /*
 lc
+	718
 	1044
 	1923
+
+总结
+	用 uint32 自然溢出，则可以不用 mod
+	用 int，则需要 mod 来控制自然溢出
+	数据“比较大”，使用 uint32 + 双 hash
+	数据“过大”，使用 uint64 + 双 hash + mod / uint32 + 双检查
 
 bug
 	lc-1293
@@ -24,45 +31,48 @@ bug
 	参考
 		https://prutekoi.github.io/post/qia-zi-ran-yi-chu-ha-xi/
 		https://blog.csdn.net/weixin_45750972/article/details/107457997
-
 */
 
-func longestCommonSubpath_test(n int, paths [][]int) int {
+// doubleHash lc 1923
+func doubleHash(n int, paths [][]int) int {
+	const prime1, prime2 = 16777619, 100030001
+	const mod1, mod2 = 1_000_000_007, 1_000_000_009
 	minL := math.MaxInt32
-	for _, path := range paths {
-		minL = min(minL, len(path))
+	for _, p := range paths {
+		minL = min(minL, len(p))
 	}
-	const prime1, prime2, X = 16777619, 2099999999, 1
-	binaryCheck := func(i int) bool {
-		var pow1, pow2 uint32 = 1, 1
-		var key [2]uint32
-		for _, v := range paths[0][:i] {
-			val := uint32(v + X)
-			key[0], key[1] = key[0]*prime1+val, key[1]*prime2+val
-			pow1, pow2 = pow1*prime1, pow2*prime2
-		}
-		memo := make(map[[2]uint32]struct{}, len(paths[0])-i+1)
-		memo[key] = struct{}{}
-		for j, v := range paths[0][i:] {
-			val, out := uint32(v+X), uint32(paths[0][j]+X)
-			key[0], key[1] = key[0]*prime1+val-out*pow1, key[1]*prime2+val-out*pow2
-			memo[key] = struct{}{}
-		}
-		for _, path := range paths[1:] {
-			key[0], key[1] = 0, 0
-			temp := make(map[[2]uint32]struct{}, len(memo))
-			for _, v := range path[:i] {
-				val := uint32(v + X)
-				key[0], key[1] = key[0]*prime1+val, key[1]*prime2+val
+	p := func(i int) (uint64, uint64) {
+		var b1, b2 uint64 = prime1, prime2
+		var p1, p2 uint64 = 1, 1
+		for ; i > 0; i >>= 1 {
+			if i&1 != 0 {
+				p1 = p1 * b1 % mod1
+				p2 = p2 * b2 % mod2
 			}
-			if _, ok := memo[key]; ok {
-				temp[key] = struct{}{}
+			b1 = b1 * b1 % mod1
+			b2 = b2 * b2 % mod2
+		}
+		return p1, p2
+	}
+	check := func(i int) bool {
+		memo := make(map[[2]uint64]struct{}, len(paths[0])-i+1)
+		var pow1, pow2 = p(i)
+		var hash [2]uint64
+		for idx, path := range paths {
+			hash[0], hash[1] = 0, 0
+			temp := make(map[[2]uint64]struct{}, len(memo))
+			for _, v := range path[:i] {
+				in := uint64(v + 1)
+				hash[0], hash[1] = (hash[0]*prime1+in)%mod1, (hash[1]*prime2+in)%mod2
+			}
+			if _, ok := memo[hash]; ok || idx == 0 {
+				temp[hash] = struct{}{}
 			}
 			for j, v := range path[i:] {
-				val, out := uint32(v+X), uint32(path[j]+X)
-				key[0], key[1] = key[0]*prime1+val-out*pow1, key[1]*prime2+val-out*pow2
-				if _, ok := memo[key]; ok {
-					temp[key] = struct{}{}
+				in, out := uint64(v+1), uint64(path[j]+1)
+				hash[0], hash[1] = (hash[0]*prime1-out*pow1%mod1+in+mod1)%mod1, (hash[1]*prime2-out*pow2%mod2+in+mod2)%mod2
+				if _, ok := memo[hash]; ok || idx == 0 {
+					temp[hash] = struct{}{}
 				}
 			}
 			if len(temp) == 0 {
@@ -77,7 +87,7 @@ func longestCommonSubpath_test(n int, paths [][]int) int {
 		if i <= ans {
 			return false
 		}
-		if binaryCheck(i) {
+		if check(i) {
 			ans = i
 			return false
 		}
@@ -86,6 +96,7 @@ func longestCommonSubpath_test(n int, paths [][]int) int {
 	return ans
 }
 
+// HashTest 测试 卡自然溢出哈希
 func HashTest() {
 	paths := [][]int{
 		{0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1, 0, 1, 2, 1, 2, 1, 0, 1, 0, 1, 2, 1, 2, 1, 0, 1, 2, 1, 0, 1, 0, 1, 2, 1},

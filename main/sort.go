@@ -1,7 +1,7 @@
 package main
 
 import (
-	"algo/sort"
+	"algo/sorts"
 	"fmt"
 	"math/rand"
 	"sort"

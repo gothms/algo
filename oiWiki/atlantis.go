@@ -10,11 +10,12 @@ import (
 lc
 	218
 	391
-	850：示例 func Atlantis(rectangles [][]int) int
+	850
 	1851
 	2589
 */
 
+// Atlantis lc 850
 func Atlantis(rectangles [][]int) int {
 	const mod = 1_000_000_007
 	var ans int
