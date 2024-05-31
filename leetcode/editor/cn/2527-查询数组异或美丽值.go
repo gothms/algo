@@ -79,11 +79,11 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func xorBeauty(nums []int) int {
-	ret := 0
+	var xor int
 	for _, v := range nums {
-		ret ^= v
+		xor ^= v
 	}
-	return ret
+	return xor
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

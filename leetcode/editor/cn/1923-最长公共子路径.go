@@ -42,6 +42,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func longestCommonSubpath(n int, paths [][]int) int {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func longestCommonSubpath_(n int, paths [][]int) int {
 	//const t = math.MaxInt32
 	//vs := make([]int, 0)
 	//minL := t // 二分的右边界
@@ -369,5 +375,3 @@ func longestCommonSubpath(n int, paths [][]int) int {
 	//})
 	//return ans
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

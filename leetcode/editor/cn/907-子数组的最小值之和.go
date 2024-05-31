@@ -45,20 +45,26 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func sumSubarrayMins(arr []int) int {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func sumSubarrayMins_(arr []int) int {
+	// 个人
 	const mod = 1_000_000_007
-	ret := 0
-	stack := []int{-1}
-	arr = append(arr, -1) // 关键
+	st := [][2]int{{-1, 0}}
+	ans := 0
 	for i, v := range arr {
-		last := len(stack) - 1
-		for last > 0 && v <= arr[stack[last]] {
-			ret += arr[stack[last]] * (stack[last] - stack[last-1]) * (i - stack[last])
-			last--
+		for len(st) > 1 && v < arr[st[len(st)-1][0]] {
+			st = st[:len(st)-1]
 		}
-		stack = stack[:last+1]
-		stack = append(stack, i)
+		last := st[len(st)-1]
+		cur := last[1] + (i-last[0])*v
+		ans += cur
+		st = append(st, [2]int{i, cur})
 	}
-	return ret % mod
+	return ans % mod
 
 	// lc
 	//ans := 0
@@ -75,5 +81,3 @@ func sumSubarrayMins(arr []int) int {
 	//}
 	//return ans % (1e9 + 7)
 }
-
-//leetcode submit region end(Prohibit modification and deletion)
