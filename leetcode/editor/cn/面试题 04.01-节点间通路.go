@@ -1,36 +1,90 @@
-//节点间通路。给定有向图，设计一个算法，找出两个节点之间是否存在一条路径。
-//
-// 示例1:
-//
-//  输入：n = 3, graph = [[0, 1], [0, 2], [1, 2], [1, 2]], start = 0, target = 2
-// 输出：true
-//
-//
-// 示例2:
-//
-//  输入：n = 5, graph = [[0, 1], [0, 2], [0, 4], [0, 4], [0, 1], [1, 3], [1, 4], [
-//1, 3], [2, 3], [3, 4]], start = 0, target = 4
-// 输出 true
-//
-//
-// 提示：
-//
-//
-// 节点数量n在[0, 1e5]范围内。
-// 节点编号大于等于 0 小于 n。
-// 图中可能存在自环和平行边。
-//
-//
-// Related Topics 深度优先搜索 广度优先搜索 图 👍 86 👎 0
-
 package main
 
-func main() {
+import "fmt"
 
+func main() {
+	graph := [][]int{{0, 1},
+		{1, 2},
+		{1, 3},
+		{1, 10},
+		{1, 11},
+		{1, 4},
+		{2, 4},
+		{2, 6},
+		{2, 9},
+		{2, 10},
+		{2, 4},
+		{2, 5},
+		{2, 10},
+		{3, 7},
+		{3, 7},
+		{4, 5},
+		{4, 11},
+		{4, 11},
+		{4, 10},
+		{5, 7},
+		{5, 10},
+		{6, 8},
+		{7, 11},
+		{8, 10}}
+	n, start, target := 12, 2, 3
+	path := findWhetherExistsPath(n, graph, start, target)
+	fmt.Println(path)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func findWhetherExistsPath(n int, graph [][]int, start int, target int) bool {
+	// 并查集：错误，因为是有向图
+	//uni := make([]int, n)
+	//for i := range uni {
+	//	uni[i] = i
+	//}
+	//var find func(int) int
+	//find = func(i int) int {
+	//	for uni[i] != i {
+	//		uni[i], i = uni[uni[i]], uni[i]
+	//	}
+	//	return uni[i]
+	//}
+	//union := func(p, q int) {
+	//	if rootP, rootQ := find(p), find(q); rootP != rootQ {
+	//		uni[rootQ] = rootP
+	//	}
+	//}
+	//for _, g := range graph {
+	//	union(g[0], g[1])
+	//}
+	//return find(start) == find(target)
+
+	// dfs
+
+	// bfs
+	adj := make([][]int, n)
+	for _, g := range graph {
+		x, y := g[0], g[1]
+		adj[x] = append(adj[x], y)
+	}
+	q, vis := []int{start}, make([]bool, n)
+	vis[start] = true
+	for len(q) > 0 {
+		i := q[0]
+		if i == target {
+			return true
+		}
+		for _, j := range adj[i] {
+			if !vis[j] {
+				vis[j] = true
+				q = append(q, j)
+			}
+		}
+		q = q[1:]
+	}
+	return false
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func findWhetherExistsPath_(n int, graph [][]int, start int, target int) bool {
 	adj, visited := make([][]int, n), make([]bool, n)
 	for _, g := range graph {
 		adj[g[0]] = append(adj[g[0]], g[1])
@@ -53,5 +107,3 @@ func findWhetherExistsPath(n int, graph [][]int, start int, target int) bool {
 	}
 	return dfs(-1, start)
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

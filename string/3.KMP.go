@@ -189,3 +189,48 @@ func prefixTableLc(pattern string) []int {
 	}
 	return prefix
 }
+
+// ====================扩展 KMP / Z Algorithm====================
+
+// zFunction 对于一个长度为 n 的字符串 s，定义函数 z[i] 表示 s 和 s[i,n-1]（即以 s[i] 开头的后缀）的最长公共前缀（LCP）的长度，则 z 被称为 s 的 Z 函数
+// 特别地，z[0] = 0
+// 国外一般将计算该数组的算法称为 Z Algorithm，而国内则称其为 扩展 KMP
+//
+// s[l,r] 是 s 的前缀，即 s[0,r-l] == s[l,r]
+// 在计算 z[i] 时我们保证 l <= i，初始时 l=r=0
+// 1.核心逻辑：如果 i <= r，那么根据 [l,r] 的定义有 s[i,r] = s[i-l,r-l]，因此 z[i] >= min(z[i-l],r-i+1)
+// 1)若 z[i-l] < r-i+1，则 z[i] = z[i-l]
+// 2)否则 z[i-l] >= r-i+1，这时我们令 z[i] = r-i+1，然后暴力枚举下一个字符扩展 z[i] 直到不能扩展为止
+// 2.如果 i>r，那么我们直接按照朴素算法，从 s[i] 开始比较，暴力求出 z[i]
+// 3.在求出 z[i] 后，如果 i+z[i]-1>r，我们就需要更新 [l,r]，即令 l=i, r=i+z[i]-1
+//
+// 总结：
+// s[0,r-l] == s[l,r]，充分利用 s[0,r-l] 的前缀已经计算
+// 当 l < i <= r 时，由于 s[i-l,r-l] == s[i,r]，必然有 z[i] >= z[i-l]
+// 1.若 z[i-l] < r-i+1，说明 s[i-l,r-l] 不全是前缀匹配，则 z[i] = z[i-l]
+// 2.若 z[i-l] >= r-i+1，说明 s[i-l,r-l] 全部前缀匹配，并有未计算的字符匹配，则 z[i] >= r-i+1
+func zFunction(s string) []int {
+	n := len(s)
+	z := make([]int, n)
+	for i, l, r := 1, 0, 0; i < n; i++ {
+		if i <= r && z[i-l] < r-i+1 { // 1
+			z[i] = z[i-l]
+		} else {
+			z[i] = max(0, r-i+1)
+			for i+z[i] < n && s[z[i]] == s[i+z[i]] { // 2
+				z[i]++
+			}
+		}
+		if i+z[i]-1 > r { // 3
+			l, r = i, i+z[i]-1
+		}
+
+		// lc 写法：
+		z[i] = max(0, min(z[i-l], r-i+1))
+		for i+z[i] < n && s[z[i]] == s[i+z[i]] {
+			l, r = i, i+z[i]
+			z[i]++
+		}
+	}
+	return z
+}

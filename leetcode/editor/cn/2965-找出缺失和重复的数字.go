@@ -15,6 +15,8 @@ func main() {
 	values := findMissingAndRepeatedValues(grid)
 	fmt.Println(values)
 
+	fmt.Println(-1 ^ -5)
+
 	n := 10
 	ret := make([]int, 0, n)
 	memo := make([][2]int, 0, n)
@@ -48,29 +50,30 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func findMissingAndRepeatedValues(grid [][]int) []int {
 	// 位运算：参考 260
-	xor, s, n := 0, 0, len(grid)*len(grid)
+	n := len(grid)
+	xor, s, m := 0, 0, n*n
 	for _, g := range grid {
 		for _, v := range g {
 			xor ^= v
 			s += v
 		}
 	}
-	if n&1 == 0 {
-		xor ^= n
+	if m&1 == 0 {
+		xor ^= m
 	} else {
 		xor ^= 1
 	}
-	k := bits.TrailingZeros(uint(xor))
+	k := bits.Len(uint(xor)) - 1
 	ans := make([]int, 2)
+	for i := 1; i <= m; i++ {
+		ans[i>>k&1] ^= i
+	}
 	for _, g := range grid {
 		for _, v := range g {
 			ans[v>>k&1] ^= v
 		}
 	}
-	for i := 1; i <= n; i++ {
-		ans[i>>k&1] ^= i
-	}
-	if (s-n*(n+1)>>1)^(ans[0]-ans[1]) < 0 {
+	if (s-m*(m+1)>>1)^(ans[0]-ans[1]) < 0 {
 		ans[0], ans[1] = ans[1], ans[0]
 	}
 	return ans

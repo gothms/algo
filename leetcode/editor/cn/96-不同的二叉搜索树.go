@@ -1,37 +1,9 @@
-//给你一个整数 n ，求恰由 n 个节点组成且节点值从 1 到 n 互不相同的 二叉搜索树 有多少种？返回满足题意的二叉搜索树的种数。
-//
-//
-//
-// 示例 1：
-//
-//
-//输入：n = 3
-//输出：5
-//
-//
-// 示例 2：
-//
-//
-//输入：n = 1
-//输出：1
-//
-//
-//
-//
-// 提示：
-//
-//
-// 1 <= n <= 19
-//
-//
-// Related Topics 树 二叉搜索树 数学 动态规划 二叉树 👍 2340 👎 0
-
 package main
 
 import "fmt"
 
 func main() {
-	n := 3
+	n := 2
 	trees := numTrees(n)
 	fmt.Println(trees)
 }
@@ -41,7 +13,7 @@ func numTrees(n int) int {
 	// math：卡特兰数
 	// https://baike.baidu.com/item/%E5%8D%A1%E7%89%B9%E5%85%B0%E6%95%B0/6125746?fromtitle=catalan&fromid=7605685
 	c := 1
-	for i := 2; i <= n; i++ {
+	for i := 1; i <= n; i++ {
 		c = c * (i<<2 - 2) / (i + 1)
 	}
 	return c

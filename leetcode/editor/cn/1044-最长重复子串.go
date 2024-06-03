@@ -2,18 +2,24 @@ package main
 
 import (
 	"fmt"
+	"index/suffixarray"
+	"reflect"
 	"sort"
 	"strings"
+	"unsafe"
 )
 
 func main() {
 	s := "banana"
-	// havbc
-	// aeeebaabd
+	s = "havbc"
+	s = "aeeebaabd"
+	s = "aaaaaaa"
+	s = "babab"
 	substring := longestDupSubstring(s)
+	fmt.Println(substring, len(s))
+
 	fmt.Println(len(strings.Split(s, "havbc")))
 	fmt.Println(len(strings.Split(s, "rvlmms")))
-	fmt.Println(substring, len(s))
 
 	//fmt.Println('a', '`')
 	//fmt.Printf("%c\n", '`')
@@ -21,7 +27,31 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func longestDupSubstring(s string) string {
-
+	// 后缀数组
+	ans, idx, n := 0, 0, len(s)
+	sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New([]byte(s))).Elem().FieldByName("sa").Field(0).UnsafeAddr()))
+	rk := make([]int, n)
+	for i, v := range sa {
+		rk[v] = i
+	}
+	height := make([]int, n)
+	for i, k := 0, 0; i < n; i++ {
+		if rk[i] == 0 {
+			continue
+		}
+		if k > 0 {
+			k--
+		}
+		for j := int(sa[rk[i]-1]); i+k < n && j+k < n && s[i+k] == s[j+k]; {
+			k++
+		}
+		if k > ans {
+			ans, idx = k, i
+		}
+		height[rk[i]] = k
+	}
+	fmt.Println(height)
+	return s[idx : idx+ans]
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

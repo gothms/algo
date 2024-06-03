@@ -59,7 +59,9 @@ height 数组
 					至少存在最长公共前缀 A
 
 lc
+	1044
 	1923
+	2223
 */
 
 // longestCommonSubpath lc 1923
@@ -73,13 +75,13 @@ func longestCommonSubpath(n int, paths [][]int) int {
 		minL = min(minL, len(path))
 	}
 	N, m := len(vs), len(paths)
-	ids, id := make([]int, N), -1
+	ids, setId := make([]int, N), -1
 	for i, v := range vs {
 		if v == t {
 			ids[i] = m // 集合分隔标记
-			id++
+			setId++
 		} else {
-			ids[i] = id // 同一集合标记
+			ids[i] = setId // 同一集合标记
 		}
 	}
 
@@ -113,43 +115,69 @@ func longestCommonSubpath(n int, paths [][]int) int {
 		height[rk[i]] = k
 	}
 
-	// 二分查找
+	// 二分查找：优化
 	return sort.Search(minL, func(k int) bool {
-		k++                   // 因为 sort.Search 返回的是 k+1
-		vis := make([]int, m) // 重点：标记，一个集合只访问一次
-		for i := 1; i < N; i++ {
+		k++
+		vis := make([]int, m)
+		for i := 1; i < N-m; i++ { // -m：分割标记
 			if height[i] < k {
 				continue
 			}
-			cnt := 0
-			// 检查 sa[i] 和 sa[i-1]
-			if id := ids[sa[i-1]]; id < m { // i 和 i-1 的公共前缀长度 = height[i]，但只考虑第一次的 i-1
-				vis[id] = i
-				cnt++
-			}
-			for tag := i; i < N && height[i] >= k; i++ {
-				if id := ids[sa[i]]; id < m && vis[id] != tag {
-					vis[id] = tag
+			cnt, tag := 1, i
+			vis[ids[sa[i-1]]] = tag
+			for ; i < N && height[i] >= k; i++ {
+				if id := ids[sa[i]]; vis[id] != tag {
 					cnt++
+					vis[id] = tag
 				}
-				//if id := ids[sa[i]]; id < m && vis[id] != tag {
-				//	vis[id] = tag
-				//	cnt++
-				//}
-				//if id := ids[sa[i-1]]; id < m && vis[id] != tag {
-				//	vis[id] = tag
-				//	cnt++
-				//}
 			}
-			if cnt == m { // 每个集合的公共子串长度 == k++
+			if cnt == m {
 				return false
 			}
 		}
 		return true
 	})
+
+	// 二分查找
+	//return sort.Search(minL, func(k int) bool {
+	//	k++                   // 因为 sort.Search 返回的是 k+1
+	//	vis := make([]int, m) // 重点：标记，一个集合只访问一次
+	//	for i := 1; i < N; i++ {
+	//		if height[i] < k {
+	//			continue
+	//		}
+	//		cnt := 0
+	//		// 检查 sa[i] 和 sa[i-1]
+	//		if id := ids[sa[i-1]]; id < m { // i 和 i-1 的公共前缀长度 = height[i]，但只考虑第一次的 i-1
+	//			vis[id] = i
+	//			cnt++
+	//		}
+	//		for tag := i; i < N && height[i] >= k; i++ {
+	//			if id := ids[sa[i]]; id < m && vis[id] != tag {
+	//				vis[id] = tag
+	//				cnt++
+	//			}
+	//			//if id := ids[sa[i]]; id < m && vis[id] != tag {
+	//			//	vis[id] = tag
+	//			//	cnt++
+	//			//}
+	//			//if id := ids[sa[i-1]]; id < m && vis[id] != tag {
+	//			//	vis[id] = tag
+	//			//	cnt++
+	//			//}
+	//		}
+	//		if cnt == m { // 每个集合的公共子串长度 == k++
+	//			return false
+	//		}
+	//	}
+	//	return true
+	//})
 }
 
 // suffixArray O(n) 求 height 数组的代码实现
+// sa[i]=v：排名 i 的后缀编号为 v
+// rk[i]=v：后缀编号为 i 的排名为 v
+// height[i]=v：排名 i 的与排名 i-1 的公共前缀长度为 v
 func suffixArray() {
 	s := "aabaaaab"
 	n := len(s)
@@ -157,13 +185,13 @@ func suffixArray() {
 	// TODO
 	sa := *(*[]int32)(unsafe.Pointer(reflect.ValueOf(suffixarray.New([]byte(s))).
 		Elem().FieldByName("sa").Field(0).UnsafeAddr()))
-	rk := make([]int, n)
-	for i := range rk { // rank 数组
+	rk := make([]int, n) // rank 数组
+	for i := range rk {
 		rk[sa[i]] = i
 	}
-	height := make([]int, n)
+	height := make([]int, n) // height 数组
 	k := 0
-	for i := 0; i < n; i++ { // height 数组
+	for i := 0; i < n; i++ { // k 不会超过 n，最多减 n 次，所以最多加 2n 次，总复杂度就是 O(n)
 		if rk[i] == 0 {
 			continue
 		}

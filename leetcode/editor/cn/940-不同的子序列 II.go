@@ -7,7 +7,7 @@ func main() {
 	s = "aaa"   // 3
 	s = "adba"  // 14
 	s = "adbae" // 29
-	//s = "z"     // 1
+	s = "lee"   // 5
 	ii := distinctSubseqII(s)
 	fmt.Println(ii)
 }

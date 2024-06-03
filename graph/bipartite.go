@@ -1,8 +1,11 @@
 package graph
 
 /*
-lc-785
-lc-2493
+https://oi-wiki.org/graph/bi-graph/
+
+lc
+	785
+	2493
 */
 
 // BipartiteDFS 染色法判断二分图
@@ -76,7 +79,7 @@ func BipartiteBFS(n int, edges [][]int) bool {
 // BipartiteUnion 并查集判断二分图
 func BipartiteUnion(n int, edges [][]int) bool {
 	uni := make([]int, n)
-	for i := 1; i < n; i++ {
+	for i := range uni {
 		uni[i] = i
 	}
 	find := func(p int) int {
