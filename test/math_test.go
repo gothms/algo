@@ -1,7 +1,7 @@
 package test
 
 import (
-	"algo/math"
+	"algo/maths"
 	"testing"
 )
 
@@ -28,14 +28,14 @@ var arr_math_test = []int{1, 2, 3, 3, 1, 5, 3, 2, 4, 9, 5, 9}
 func BenchmarkPermuteUnique(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		math.PermuteUnique(arr_math_test)
+		maths.PermuteUnique(arr_math_test)
 	}
 	b.StopTimer()
 }
 func BenchmarkSubsetsAndPermute(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		math.SubsetsAndPermute(arr_math_test)
+		maths.SubsetsAndPermute(arr_math_test)
 	}
 	b.StopTimer()
 }

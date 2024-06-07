@@ -58,8 +58,11 @@ package main
 import "fmt"
 
 func main() {
-	n, k := 5, 2
-	//n, k = 3, 2
+	n, k := 5, 2 // 3
+	n, k = 4, 2  // 1
+	n, k = 3, 2  // 3
+	n, k = 2, 2  // 1
+	n, k = 8, 8  // 4
 	winner := findTheWinner(n, k)
 	fmt.Println(winner)
 }
@@ -95,6 +98,11 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func findTheWinner(n int, k int) int {
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func findTheWinner_(n int, k int) int {
 	// 迭代
 	//ret := 0 // 从 0 开始，而题意是从 1 开始
 	//for i := 2; i <= n; i++ {
@@ -121,5 +129,3 @@ func findTheWinner(n int, k int) int {
 	}
 	return q[0]
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

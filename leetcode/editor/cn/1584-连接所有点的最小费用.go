@@ -33,14 +33,13 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func minCostConnectPoints(points [][]int) int {
-	// 建图优化的 Kruskal：https://leetcode.cn/problems/min-cost-to-connect-all-points/solutions/565801/lian-jie-suo-you-dian-de-zui-xiao-fei-yo-kcx7/
-
 	abs := func(v int) int {
 		if v < 0 {
 			return -v
 		}
 		return v
 	}
+	// 建图优化的 Kruskal：https://leetcode.cn/problems/min-cost-to-connect-all-points/solutions/565801/lian-jie-suo-you-dian-de-zui-xiao-fei-yo-kcx7/
 
 	// kruskal
 	n := len(points)

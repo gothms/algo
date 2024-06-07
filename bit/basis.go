@@ -45,6 +45,7 @@ func Basis(x, n int) int {
 	return y
 }
 
+// 更多做法请参考：big.Int func (x *Int) Sign() int
 // (x-1)>>31
 // x 为正数：0
 // 0：-1

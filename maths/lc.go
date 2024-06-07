@@ -1,4 +1,4 @@
-package math
+package maths
 
 /*
 向上取整技巧

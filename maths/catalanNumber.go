@@ -1,4 +1,4 @@
-package math
+package maths
 
 /*
 卡特兰数：

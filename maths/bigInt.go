@@ -1,4 +1,4 @@
-package math
+package maths
 
 import (
 	"fmt"
@@ -8,6 +8,11 @@ import (
 )
 
 /*
+	big.Int 的比较
+		x.Cmp(y)
+	big.Int 转为 int64
+		x.Int64()
+
 lc
 	2117
 */
