@@ -25,6 +25,9 @@ sort.Slice()
 		)
 	symMerge 合并两个排序子序列
 		E:\gothmslee\algo\sort\2.5MergeSortGo.go
+
+Api
+	sort.SliceStable 稳定排序，使用了 插入 & 归并
 */
 
 func insertionSort(data Interface, a, b int) {

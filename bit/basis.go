@@ -1,6 +1,7 @@
 package bit
 
 import (
+	"fmt"
 	"math/bits"
 )
 
@@ -61,4 +62,13 @@ func api() int {
 	y = bits.TrailingZeros(x) // 2
 	y = bits.Len(x)           // 3
 	return y
+}
+
+// 一个 bug？
+// https://github.com/golang/go/issues/24523
+func uintBug() {
+	var i int
+	v := ^(^uint(0) << i) // yes
+	v = ^(^uint(0) << 7)  // no
+	fmt.Println(v)
 }

@@ -15,6 +15,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func watchedVideosByFriends(watchedVideos [][]string, friends [][]int, id int, level int) []string {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func watchedVideosByFriends_(watchedVideos [][]string, friends [][]int, id int, level int) []string {
 	// bfs
 	n := len(friends)
 	q, vis := []int{id}, make([]bool, n)
@@ -47,5 +53,3 @@ func watchedVideosByFriends(watchedVideos [][]string, friends [][]int, id int, l
 	})
 	return ans
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

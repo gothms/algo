@@ -27,10 +27,10 @@ func lengthOfLongestSubsequence(nums []int, target int) int {
 		for i := target - v; i >= 0; i-- {
 			s := i + v
 			if memo[i] != 0 {
-				memo[s] = maxVal(memo[i]+1, memo[s])
+				memo[s] = max(memo[i]+1, memo[s])
 			}
 		}
-		memo[v] = maxVal(memo[v], 1)
+		memo[v] = max(memo[v], 1)
 	}
 	if memo[target] > 0 {
 		return memo[target]
@@ -59,10 +59,4 @@ func lengthOfLongestSubsequence(nums []int, target int) int {
 	//	return c
 	//}
 	//return -1
-}
-func maxVal(a, b int) int {
-	if b > a {
-		return b
-	}
-	return a
 }
