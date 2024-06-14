@@ -1,6 +1,17 @@
 package str
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+)
+
+/*
+https://github.com/ctdk/go-trie
+
+https://github.com/appscodelabs/release-automaton
+
+*/
 
 var acRoot = &acNode{} // 模拟 Tire 树的根
 
@@ -68,9 +79,179 @@ func match(text string) {
 		for cur := p; cur != acRoot; cur = cur.fail { // 找出所有可匹配的模式串
 			if cur.isEndingChar {
 				pos := i - cur.length + 1 // 在 text 中的起始位置
-				msg := fmt.Sprintf("匹配起始下标 %d ，长度 %d\n", pos, cur.length)
+				msg := fmt.Sprintf("匹配起始下标 %d ，长度 %d", pos, cur.length)
 				fmt.Println(msg)
 			}
 		}
 	}
 }
+
+//type acTrie struct {
+//}
+
+const ALPHABET_SIZE = 26
+
+var tot int
+var tr [][ALPHABET_SIZE]int
+var e []int
+var fail []int
+
+// ====================AC 自动机，简单版====================
+func insert(s []byte) {
+	u := 0
+	for i := 1; i < len(s); i++ {
+		if tr[u][s[i]-'a'] == 0 {
+			tot++
+			tr[u][s[i]-'a'] = tot
+		}
+		u = tr[u][s[i]-'a']
+	}
+	e[u]++
+}
+func build() {
+	q := make([]int, 0)
+	for _, v := range tr[0] {
+		if v != 0 {
+			q = append(q, v)
+		}
+	}
+	for ; len(q) > 0; q = q[1:] {
+		u := q[0]
+		for i := range tr[u] {
+			if tr[u][i] != 0 {
+				fail[tr[u][i]] = tr[fail[u]][i]
+				q = append(q, tr[u][i])
+			} else {
+				tr[u][i] = tr[fail[u]][i]
+			}
+		}
+	}
+}
+func query(t []byte) int {
+	u, res := 0, 0
+	for i := range t {
+		u = tr[u][t[i]-'a']
+		for j := u; j != 0 && e[j] != -1; j = fail[j] {
+			res += e[j]
+			e[j] = -1
+		}
+	}
+	return res
+}
+
+// ====================AC 自动机，加强版====================
+
+const (
+	N  = 156
+	L  = 1e6 + 6
+	SZ = N * 80
+)
+
+var (
+	tot    int
+	tr     [SZ][26]int
+	fail   [SZ]int
+	idx    [SZ]int
+	val    [SZ]int
+	cnt    [N]int
+	n      int
+	s      [N][100]byte
+	t      [L]byte
+	queue  = make([]int, 0)
+	reader = bufio.NewReader(os.Stdin)
+	writer = bufio.NewWriter(os.Stdout)
+)
+
+func initAC() {
+	tot = 0
+	for i := 0; i < SZ; i++ {
+		fail[i] = 0
+		val[i] = 0
+		idx[i] = 0
+		for j := 0; j < 26; j++ {
+			tr[i][j] = 0
+		}
+	}
+	for i := 0; i < N; i++ {
+		cnt[i] = 0
+	}
+}
+
+func insert(s []byte, id int) {
+	u := 0
+	for i := 1; s[i] != 0; i++ {
+		if tr[u][s[i]-'a'] == 0 {
+			tot++
+			tr[u][s[i]-'a'] = tot
+		}
+		u = tr[u][s[i]-'a']
+	}
+	idx[u] = id
+}
+
+func build() {
+	for i := 0; i < 26; i++ {
+		if tr[0][i] != 0 {
+			queue = append(queue, tr[0][i])
+		}
+	}
+	for len(queue) > 0 {
+		u := queue[0]
+		queue = queue[1:]
+		for i := 0; i < 26; i++ {
+			if tr[u][i] != 0 {
+				fail[tr[u][i]] = tr[fail[u]][i]
+				queue = append(queue, tr[u][i])
+			} else {
+				tr[u][i] = tr[fail[u]][i]
+			}
+		}
+	}
+}
+
+func query(t []byte) int {
+	u, res := 0, 0
+	for i := 1; t[i] != 0; i++ {
+		u = tr[u][t[i]-'a']
+		for j := u; j != 0; j = fail[j] {
+			val[j]++
+		}
+	}
+	for i := 0; i <= tot; i++ {
+		if idx[i] != 0 {
+			if val[i] > res {
+				res = val[i]
+			}
+			cnt[idx[i]] = val[i]
+		}
+	}
+	return res
+}
+
+//func main() {
+//	scanner := bufio.NewScanner(os.Stdin)
+//	for scanner.Scan() {
+//		fmt.Sscanf(scanner.Text(), "%d", &n)
+//		if n == 0 {
+//			break
+//		}
+//		initAC()
+//		for i := 1; i <= n; i++ {
+//			scanner.Scan()
+//			copy(s[i][:], scanner.Text())
+//			insert(s[i][:], i)
+//		}
+//		build()
+//		scanner.Scan()
+//		copy(t[:], scanner.Text())
+//		x := query(t[:])
+//		fmt.Printf("%d\n", x)
+//		for i := 1; i <= n; i++ {
+//			if cnt[i] == x {
+//				fmt.Printf("%s\n", s[i][1:])
+//			}
+//		}
+//	}
+//}
+
+// ====================AC 自动机，二次加强版====================
