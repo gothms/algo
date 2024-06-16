@@ -61,26 +61,29 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func twoEggDrop(n int) int {
-	// dp
+	// 记忆化搜索
 	k := 2
-	dp := make([][]int, n+1)
-	for i := range dp {
-		dp[i] = make([]int, k+1)
-		if i > 0 {
-			dp[i][1] = i
-			for j := 2; j <= k; j++ {
-				dp[i][j] = math.MaxInt32
-			}
-		}
+	memo := make([][]int, n+1)
+	for i := range memo {
+		memo[i] = make([]int, k+1)
 	}
-	for j := 2; j <= k; j++ {
-		for i := 1; i <= n; i++ {
-			for t := 1; t <= i; t++ {
-				dp[i][j] = min(dp[i][j], max(dp[i-t][j], dp[t-1][j-1])+1)
-			}
+	var dfs func(int, int) int
+	dfs = func(n, k int) int {
+		if n == 1 || k == 1 {
+			return n
 		}
+		v := &memo[n][k]
+		if *v > 0 {
+			return *v
+		}
+		ret := n
+		for i := 2; i < n; i++ {
+			ret = min(ret, max(dfs(i-1, k-1), dfs(n-i, k))+1)
+		}
+		*v = ret
+		return ret
 	}
-	return dp[n][k]
+	return dfs(n, k)
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
@@ -90,18 +93,6 @@ func twoEggDrop_(n int) int {
 	return tedDP[n]
 
 	// 记忆化搜索
-	//minVal := func(a, b int) int {
-	//	if b < a {
-	//		return b
-	//	}
-	//	return a
-	//}
-	//maxVal := func(a, b int) int {
-	//	if b > a {
-	//		return b
-	//	}
-	//	return a
-	//}
 	//k := 2 // k 个鸡蛋
 	//memo := make([][]int, n+1)
 	//for i := 0; i <= n; i++ {
@@ -118,7 +109,7 @@ func twoEggDrop_(n int) int {
 	//	}
 	//	ret := math.MaxInt32
 	//	for i := 1; i <= n; i++ {
-	//		ret = minVal(ret, 1+maxVal(dfs(i-1, k-1), dfs(n-i, k))) // 碎 / 没碎
+	//		ret = min(ret, 1+max(dfs(i-1, k-1), dfs(n-i, k))) // 碎 / 没碎
 	//	}
 	//	*v = ret
 	//	return ret
@@ -133,18 +124,6 @@ func twoEggDrop_(n int) int {
 var tedDP []int
 
 func init() {
-	minVal := func(a, b int) int {
-		if b < a {
-			return b
-		}
-		return a
-	}
-	maxVal := func(a, b int) int {
-		if b > a {
-			return b
-		}
-		return a
-	}
 	const N = 1000
 	tedDP = make([]int, N+1)
 	//tedDP[0], tedDP[1], tedDP[2] = 0, 1, 2
@@ -153,7 +132,7 @@ func init() {
 	for i := 2; i <= N; i++ {
 		tedDP[i] = math.MaxInt32
 		for j := 1; j < i; j++ {
-			tedDP[i] = minVal(tedDP[i], maxVal(tedDP[i-j]+1, j)) // 没碎 / 碎
+			tedDP[i] = min(tedDP[i], max(tedDP[i-j]+1, j)) // 没碎 / 碎
 		}
 	}
 }

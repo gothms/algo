@@ -60,6 +60,7 @@ func UpdateOne(b []int, i, delta int) {
 		b[i] += delta
 	}
 }
+
 func PrefixSumOne(b []int, i int) int {
 	sum := 0
 	for ; i > 0; i &= i - 1 {
@@ -67,6 +68,7 @@ func PrefixSumOne(b []int, i int) int {
 	}
 	return sum
 }
+
 func RangeSumOne(b []int, f, t int) int {
 	return PrefixSumOne(b, t) - PrefixSumOne(b, f-1)
 }

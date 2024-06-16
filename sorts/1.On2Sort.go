@@ -31,6 +31,7 @@ func InsertionSort(arr []int) {
 func SelectionSort(arr []int) {
 	n := len(arr) - 1
 	for i, idx := 0, 0; i < n; i++ {
+		idx = i
 		for j := i + 1; j <= n; j++ {
 			if arr[j] < arr[idx] {
 				idx = j

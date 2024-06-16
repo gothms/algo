@@ -4,123 +4,151 @@ import (
 	"fmt"
 	"slices"
 	"sort"
-	"unicode"
 )
 
 func main() {
-	//skills := []int{4, 2, 6, 3, 9}
-	//k := 3
-	//skills = []int{4, 18, 17, 20, 15, 12, 8, 5}
-	//k = 1 // 1
-	//player := findWinningPlayer(skills, k)
-	//fmt.Println(player)
+	//arr := []int{72, 48, 24, 3}
+	//pairs := countCompleteDayPairs(arr)
+	//fmt.Println(pairs)
 
-	nums := []int{1, 2, 1, 1, 3}
-	k := 2
-	nums = []int{1, 2, 3, 4, 5, 1}
-	k = 0
-	//nums = []int{29, 29, 30}
-	//k = 3
-	//nums = []int{29, 30, 30}
-	//k = 0
-	//nums = []int{89, 89, 90, 88, 88, 88, 88, 90, 90}
-	//k = 2 // 8
-	length := maximumLength(nums, k)
-	fmt.Println(length)
-}
-func clearDigits(s string) string {
-	buf := make([]byte, 0)
-	for i, cnt := len(s)-1, 0; i >= 0; i-- {
-		if unicode.IsDigit(rune(s[i])) {
-			cnt++
-			continue
-		}
-		if cnt > 0 {
-			cnt--
-		} else {
-			buf = append(buf, s[i])
-		}
-	}
-	slices.Reverse(buf)
-	return string(buf)
-}
-func findWinningPlayer(skills []int, k int) int {
-	i, cnt := 0, 0
-	for j := 1; j < len(skills); j++ {
-		if skills[i] > skills[j] {
-			cnt++
-		} else {
-			cnt = 1
-			i = j
-		}
-		if cnt == k {
-			return i
-		}
-	}
-	return i
-}
-func maximumLength(nums []int, k int) int {
-	temp := slices.Clone(nums)
-	sort.Ints(temp)
-	temp = slices.Compact(temp)
-	ex := make([][]int, len(temp))
-	for i := range ex {
-		ex[i] = make([]int, k+1)
-	}
+	//arr := []int{7, 1, 6, 6}
+	//arr = []int{7, 1, 6, 3} // 10
+	//damage := maximumTotalDamage(arr)
+	//fmt.Println(damage)
 
-	n := len(nums)
-	dp := make([][]int, n)
-	for i := range dp {
-		dp[i] = make([]int, k+1)
-	}
-	//memo := make(map[int]int) // nums[i] 最后出现的位置
-	val := make([]int, k+1) // val[i] 表示有 i 个 seq[i] != seq[i+1] 的最长序列
-	ans := 1
-	for i, v := range nums {
-		dp[i][0] = 1 // 至少一个
-		//if last, ok := memo[v]; ok { // 出现过
-		//	for j, l := range dp[last] {
-		//		dp[i][j] = l + 1
-		//	}
-		//}
-		idx := sort.SearchInts(temp, v)
-		for j := 1; j <= k; j++ { // 在最长序列后追加
-			dp[i][j] = max(dp[i][j], val[j-1]+1)
-			dp[i][j] = max(dp[i][j], ex[idx][j]+1)
-		}
-		dp[i][0] = max(dp[i][0], ex[idx][0]+1)
-		for j := 0; j <= k; j++ {
-			ans = max(ans, dp[i][j])
-			val[j] = max(val[j], dp[i][j])
-			ex[idx][j] = max(ex[idx][j], dp[i][j])
-		}
-		//memo[v] = i
+	nums := []int{3, 1, 4, 2, 5}
+	queries := [][]int{{2, 3, 4}, {1, 0, 4}}
+	nums = []int{4, 1, 4, 2, 1, 5}
+	queries = [][]int{{2, 2, 4}, {1, 0, 2}, {1, 0, 4}}
+	nums = []int{4, 9, 4, 10, 7}
+	queries = [][]int{{2, 3, 2}, {2, 1, 3}, {1, 2, 3}}
+	nums = []int{5, 4, 8, 6}
+	queries = [][]int{{1, 2, 2}, {1, 1, 2}, {2, 1, 6}}
+	nums = []int{8, 5, 9, 3, 5}
+	queries = [][]int{{1, 2, 4}, {1, 0, 1}, {2, 2, 4}}
+	peaks := countOfPeaks(nums, queries)
+	fmt.Println(peaks)
+}
+func countCompleteDayPairs(hours []int) int {
+	memo := make(map[int]int)
+	ans := 0
+	for _, h := range hours {
+		h %= 24
+		//fmt.Println(h)
+		ans += memo[(24-h)%24]
+		memo[h]++
 	}
 	return ans
+}
 
-	//n := len(nums)
-	//dp := make([][]int, n)
-	//for i := range dp {
-	//	dp[i] = make([]int, k+1)
+//func countCompleteDayPairs(hours []int) int64 {
+//	memo := make(map[int]int)
+//	ans := 0
+//	for _, h := range hours {
+//		h %= 24
+//		//fmt.Println(h)
+//		ans += memo[(24-h)%24]
+//		memo[h]++
+//	}
+//	return int64(ans)
+//}
+
+func maximumTotalDamage(power []int) int64 {
+	//sort.Ints(power)
+	//memo := make(map[int]int)
+	//for _, v := range power {
+	//	memo[v]++
 	//}
-	//memo := make(map[int]int) // nums[i] 最后出现的位置
-	//val := make([]int, k+1)   // val[i] 表示有 i 个 seq[i] != seq[i+1] 的最长序列
-	//ans := 1
-	//for i, v := range nums {
-	//	dp[i][0] = 1                 // 至少一个
-	//	if last, ok := memo[v]; ok { // 出现过
-	//		for j, l := range dp[last] {
-	//			dp[i][j] = l + 1
-	//		}
+	//power = slices.Compact(power) // 去重
+	//n := len(power)
+	//dp := make([]int, n+1)
+	//for i, v := range power {
+	//	j := i
+	//	for j > 0 && power[j-1]+2 >= v {
+	//		j--
 	//	}
-	//	for j := 1; j <= k; j++ { // 在最长序列后追加
-	//		dp[i][j] = max(dp[i][j], val[j-1]+1)
-	//	}
-	//	for j := 0; j <= k; j++ {
-	//		ans = max(ans, dp[i][j])
-	//		val[j] = max(val[j], dp[i][j])
-	//	}
-	//	memo[v] = i
+	//	dp[i+1] = max(dp[i], dp[j]+v*memo[v])
 	//}
-	//return ans
+	//return int64(dp[n])
+
+	sort.Ints(power)
+	memo := make(map[int]int)
+	for _, v := range power {
+		memo[v]++
+	}
+	power = slices.Compact(power)
+	dp := make([]int, len(power))
+	dp[0] = power[0] * memo[power[0]]
+	for i := 1; i < len(power); i++ {
+		v := power[i]
+		j := i - 1
+		dp[i] = max(dp[j], v*memo[v])
+		if power[j]+2 < v {
+			dp[i] = dp[j] + v*memo[v]
+			continue
+		}
+		if j--; j < 0 {
+			continue
+		} else if power[j]+2 < v {
+			dp[i] = max(dp[i], dp[j]+v*memo[v])
+			continue
+		}
+		if j--; j < 0 {
+			continue
+		} else {
+			dp[i] = max(dp[i], dp[j]+v*memo[v])
+		}
+	}
+	return int64(dp[len(power)-1])
+}
+func countOfPeaks(nums []int, queries [][]int) []int {
+	n := len(nums)
+	bit, memo := make([]int, n+1), make([]int, n)
+	for i := 1; i < n-1; i++ {
+		if nums[i] > nums[i-1] && nums[i] > nums[i+1] {
+			memo[i] = 1
+			update(bit, i+1, 1)
+		}
+	}
+	ans := make([]int, 0)
+	for _, q := range queries {
+		if q[0] == 1 {
+			if q[1]+1 >= q[2] {
+				ans = append(ans, 0)
+			} else {
+				ans = append(ans, rangeSum(bit, q[1]+2, q[2])) // 区间需要去首去尾
+			}
+		} else {
+			index := q[1]
+			nums[index] = q[2]
+			for i := -1; i <= 1; i++ {
+				if idx := index + i; idx > 0 && idx < n-1 {
+					v := 0
+					if nums[idx] > nums[idx-1] && nums[idx] > nums[idx+1] {
+						v = 1
+					}
+					if delta := v - memo[idx]; delta != 0 { // 需要更新
+						update(bit, idx+1, delta)
+						memo[idx] = v
+					}
+				}
+			}
+		}
+	}
+	return ans
+}
+func update(b []int, i, delta int) {
+	for ; i < len(b); i += i & -i {
+		b[i] += delta
+	}
+}
+func prefixSum(b []int, i int) int {
+	sum := 0
+	for ; i > 0; i &= i - 1 {
+		sum += b[i]
+	}
+	return sum
+}
+func rangeSum(b []int, f, t int) int {
+	return prefixSum(b, t) - prefixSum(b, f-1)
 }

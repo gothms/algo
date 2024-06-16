@@ -1,7 +1,7 @@
 package main
 
 type LinkedStack struct {
-	h, t *ListNode
+	h *ListNode
 }
 
 func (this *LinkedStack) Push(value int) {
@@ -26,5 +26,5 @@ func (this *LinkedStack) Peek() int {
 }
 
 func (this *LinkedStack) IsEmpty() bool {
-	return this.h == this.t
+	return this.h == nil
 }

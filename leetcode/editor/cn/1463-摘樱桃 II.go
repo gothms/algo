@@ -1,69 +1,3 @@
-//给你一个 rows x cols 的矩阵 grid 来表示一块樱桃地。 grid 中每个格子的数字表示你能获得的樱桃数目。
-//
-// 你有两个机器人帮你收集樱桃，机器人 1 从左上角格子 (0,0) 出发，机器人 2 从右上角格子 (0, cols-1) 出发。
-//
-// 请你按照如下规则，返回两个机器人能收集的最多樱桃数目：
-//
-//
-// 从格子 (i,j) 出发，机器人可以移动到格子 (i+1, j-1)，(i+1, j) 或者 (i+1, j+1) 。
-// 当一个机器人经过某个格子时，它会把该格子内所有的樱桃都摘走，然后这个位置会变成空格子，即没有樱桃的格子。
-// 当两个机器人同时到达同一个格子时，它们中只有一个可以摘到樱桃。
-// 两个机器人在任意时刻都不能移动到 grid 外面。
-// 两个机器人最后都要到达 grid 最底下一行。
-//
-//
-//
-//
-// 示例 1：
-//
-//
-//
-// 输入：grid = [[3,1,1],[2,5,1],[1,5,5],[2,1,1]]
-//输出：24
-//解释：机器人 1 和机器人 2 的路径在上图中分别用绿色和蓝色表示。
-//机器人 1 摘的樱桃数目为 (3 + 2 + 5 + 2) = 12 。
-//机器人 2 摘的樱桃数目为 (1 + 5 + 5 + 1) = 12 。
-//樱桃总数为： 12 + 12 = 24 。
-//
-//
-// 示例 2：
-//
-//
-//
-// 输入：grid = [[1,0,0,0,0,0,1],[2,0,0,0,0,3,0],[2,0,9,0,0,0,0],[0,3,0,5,4,0,0],[1
-//,0,2,3,0,0,6]]
-//输出：28
-//解释：机器人 1 和机器人 2 的路径在上图中分别用绿色和蓝色表示。
-//机器人 1 摘的樱桃数目为 (1 + 9 + 5 + 2) = 17 。
-//机器人 2 摘的樱桃数目为 (1 + 3 + 4 + 3) = 11 。
-//樱桃总数为： 17 + 11 = 28 。
-//
-//
-// 示例 3：
-//
-// 输入：grid = [[1,0,0,3],[0,0,0,3],[0,0,3,3],[9,0,3,3]]
-//输出：22
-//
-//
-// 示例 4：
-//
-// 输入：grid = [[1,1],[1,1]]
-//输出：4
-//
-//
-//
-//
-// 提示：
-//
-//
-// rows == grid.length
-// cols == grid[i].length
-// 2 <= rows, cols <= 70
-// 0 <= grid[i][j] <= 100
-//
-//
-// Related Topics 数组 动态规划 矩阵 👍 88 👎 0
-
 package main
 
 import "fmt"
@@ -91,35 +25,33 @@ func cherryPickup(grid [][]int) int {
 
 //leetcode submit region end(Prohibit modification and deletion)
 
-//func cherryPickup(grid [][]int) int {
-//	// dp：个人
-//	// 考虑每行的任意两个樱桃的组合
-//	// 执行耗时:9 ms,击败了95.45% 的Go用户
-//	// 内存消耗:3.5 MB,击败了86.36% 的Go用户
-//	m, n := len(grid), len(grid[0])
-//	dp, temp := make([][]int, n), make([][]int, n)
-//	for i := 0; i < n; i++ {
-//		dp[i], temp[i] = make([]int, n), make([]int, n)
-//	}
-//	dp[0][n-1] = grid[0][0] + grid[0][n-1] // 第 0 行
-//	for i := 1; i < m; i++ {               // 第 i 行
-//		for l := 0; l <= min(i, n-2); l++ { // 左边机器人
-//			for r := max(l+1, n-1-i); r < n; r++ { // 右边机器人
-//				for nl := max(0, l-1); nl <= min(r, l+1); nl++ { // 当 l,r 相邻时，可以有 nl == r
-//					for nr := max(nl+1, r-1); nr <= min(n-1, r+1); nr++ { // nr 的左边界是 nl+1
-//						temp[l][r] = max(temp[l][r], dp[nl][nr]) // 重点是几个 for 的边界考虑
-//					}
-//				}
-//				temp[l][r] += grid[i][l] + grid[i][r] // 本行采集的草莓
-//			}
-//		}
-//		dp, temp = temp, dp // 滚动
-//	}
-//	var ans int
-//	for i := 0; i < n-1; i++ {
-//		for j := i + 1; j < n; j++ {
-//			ans = max(ans, dp[i][j])
-//		}
-//	}
-//	return ans
-//}
+func cherryPickup_(grid [][]int) int {
+	// dp：个人
+	// 考虑每行的任意两个樱桃的组合
+	m, n := len(grid), len(grid[0])
+	dp, temp := make([][]int, n), make([][]int, n)
+	for i := 0; i < n; i++ {
+		dp[i], temp[i] = make([]int, n), make([]int, n)
+	}
+	dp[0][n-1] = grid[0][0] + grid[0][n-1] // 第 0 行
+	for i := 1; i < m; i++ {               // 第 i 行
+		for l := 0; l <= min(i, n-2); l++ { // 左边机器人
+			for r := max(l+1, n-1-i); r < n; r++ { // 右边机器人
+				for nl := max(0, l-1); nl <= min(r, l+1); nl++ { // 当 l,r 相邻时，可以有 nl == r
+					for nr := max(nl+1, r-1); nr <= min(n-1, r+1); nr++ { // nr 的左边界是 nl+1
+						temp[l][r] = max(temp[l][r], dp[nl][nr]) // 重点是几个 for 的边界考虑
+					}
+				}
+				temp[l][r] += grid[i][l] + grid[i][r] // 本行采集的草莓
+			}
+		}
+		dp, temp = temp, dp // 滚动
+	}
+	var ans int
+	for i := 0; i < n-1; i++ {
+		for j := i + 1; j < n; j++ {
+			ans = max(ans, dp[i][j])
+		}
+	}
+	return ans
+}

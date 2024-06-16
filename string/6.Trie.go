@@ -1,5 +1,10 @@
 package str
 
+/*
+lc
+	676
+*/
+
 type trieNode struct {
 	data         byte
 	children     [26]*trieNode
