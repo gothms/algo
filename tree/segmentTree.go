@@ -11,11 +11,7 @@ Segment Tree
 	从 0 开始：1 << (bits.Len(uint(n-1)) + 1) - 1
 长度修正：
 	方式一
-		k := bits.Len(uint(n - 1))
-		stLen := 1 << (k + 1)
-		if n > 1 {
-			stLen -= 1<<(k-bits.Len(uint(n-stLen>>2))+1) - 2
-		}
+
 		从 0 开始（包括方式二）：stLen := 1 << (k + 1) - 1
 	方式二
 		k := bits.Len(uint(n - 1))
@@ -52,6 +48,7 @@ lc
 	2916：长度修正
 	699：“全量”更新、out of memory 和 动态开点
 	2589
+	2286
 
 https://leetcode.cn/problems/range-module/solutions/1612955/by-lfool-eo50/
 	729. 我的日程安排表 I
