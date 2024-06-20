@@ -14,7 +14,9 @@ func main() {
 	stamp = "oz"
 	target = "ooozz" // [0,3,1,2]
 	stamp = "ozz"
-	target = "ooozzzzzzzzz" // [0 1 4 3 2]
+	target = "ooozzzzzzzzz" // 非最优例子
+	stamp = "mda"
+	target = "mdadddaaaa" // 无法完成戳印例子
 	toStamp := movesToStamp(stamp, target)
 	fmt.Println(toStamp)
 }

@@ -40,20 +40,22 @@ func main() {
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
-type MagicDictionary struct {
-	root *trie676
-}
 type trie676 struct {
 	children [26]*trie676
 	isEnd    bool
 }
 
+type MagicDictionary struct {
+	root *trie676
+}
+
 func Constructor() MagicDictionary {
-	return MagicDictionary{&trie676{}}
+	return MagicDictionary{}
 }
 
 func (this *MagicDictionary) BuildDict(dictionary []string) {
-	for _, s := range dictionary { // 构建 trie 树
+	this.root = &trie676{}
+	for _, s := range dictionary {
 		cur := this.root
 		for _, c := range s {
 			i := c - 'a'
@@ -67,34 +69,26 @@ func (this *MagicDictionary) BuildDict(dictionary []string) {
 }
 
 func (this *MagicDictionary) Search(searchWord string) bool {
-	// 本题题意：在 searchWord 已经存在的情况下，还可以查询其他的可匹配字符串
-	// 那么如果不可以呢？则先用 memo 记录存在的字符串
-	// 其他做法：lc dfs
 	cur := this.root
 	for idx, c := range searchWord {
 		i := int(c - 'a')
-		for j, child := range cur.children { // 枚举：字符 j+'a' 不同
-			if j != i && child != nil && this.check(searchWord, idx+1, child) {
-				return true // 后缀可匹配
+		for j, child := range cur.children {
+			if child != nil && j != i && match(idx+1, child, searchWord) {
+				return true
 			}
 		}
-		cur = cur.children[i]
-		if cur == nil { // 已失败
+		if cur = cur.children[i]; cur == nil {
 			break
 		}
 	}
 	return false
 }
-func (this *MagicDictionary) check(searchWord string, idx int, cur *trie676) bool {
-	n := len(searchWord)
-	for ; idx < n; idx++ {
-		i := searchWord[idx] - 'a'
-		if cur.children[i] == nil {
-			return false
-		}
-		cur = cur.children[i]
+
+func match(i int, cur *trie676, s string) bool {
+	for ; i < len(s) && cur != nil; i++ {
+		cur = cur.children[s[i]-'a']
 	}
-	return cur.isEnd
+	return cur != nil && cur.isEnd
 }
 
 /**
@@ -104,3 +98,60 @@ func (this *MagicDictionary) check(searchWord string, idx int, cur *trie676) boo
  * param_2 := obj.Search(searchWord);
  */
 //leetcode submit region end(Prohibit modification and deletion)
+
+//type MagicDictionary struct {
+//	root *trie676
+//}
+//type trie676 struct {
+//	children [26]*trie676
+//	isEnd    bool
+//}
+//
+//func Constructor() MagicDictionary {
+//	return MagicDictionary{&trie676{}}
+//}
+//
+//func (this *MagicDictionary) BuildDict(dictionary []string) {
+//	for _, s := range dictionary { // 构建 trie 树
+//		cur := this.root
+//		for _, c := range s {
+//			i := c - 'a'
+//			if cur.children[i] == nil {
+//				cur.children[i] = &trie676{}
+//			}
+//			cur = cur.children[i]
+//		}
+//		cur.isEnd = true
+//	}
+//}
+//
+//func (this *MagicDictionary) Search(searchWord string) bool {
+//	// 本题题意：在 searchWord 已经存在的情况下，还可以查询其他的可匹配字符串
+//	// 那么如果不可以呢？则先用 memo 记录存在的字符串
+//	// 其他做法：lc dfs
+//	cur := this.root
+//	for idx, c := range searchWord {
+//		i := int(c - 'a')
+//		for j, child := range cur.children { // 枚举：字符 j+'a' 不同
+//			if j != i && child != nil && this.check(searchWord, idx+1, child) {	// 注意：idx+1
+//				return true // 后缀可匹配
+//			}
+//		}
+//		cur = cur.children[i]
+//		if cur == nil { // 已失败
+//			break
+//		}
+//	}
+//	return false
+//}
+//func (this *MagicDictionary) check(searchWord string, idx int, cur *trie676) bool {
+//	n := len(searchWord)
+//	for ; idx < n; idx++ {
+//		i := searchWord[idx] - 'a'
+//		if cur.children[i] == nil {
+//			return false
+//		}
+//		cur = cur.children[i]
+//	}
+//	return cur.isEnd
+//}

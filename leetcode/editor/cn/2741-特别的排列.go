@@ -37,6 +37,7 @@ func specialPerm(nums []int) int {
 
 func specialPerm_(nums []int) int {
 	// 状压DP
+
 	// 记忆化
 	const mod = 1e9 + 7
 	n := len(nums)

@@ -1,31 +1,62 @@
-//编写一个方法，计算从 0 到 n (含 n) 中数字 2 出现的次数。 
-//
-// 示例: 
-//
-// 输入: 25
-//输出: 9
-//解释: (2, 12, 20, 21, 22, 23, 24, 25)(注意 22 应该算作两次) 
-//
-// 提示： 
-//
-// 
-// n <= 10^9 
-// 
-//
-// Related Topics 递归 数学 动态规划 👍 79 👎 0
-
 package main
 
 import (
-    "fmt"
+	"fmt"
+	"strconv"
 )
 
 func main() {
-
+	n := 25
+	n = 99  // 20
+	n = 100 // 20
+	inRange := numberOf2sInRange(n)
+	fmt.Println(inRange)
 }
 
-//leetcode submit region begin(Prohibit modification and deletion)
+// leetcode submit region begin(Prohibit modification and deletion)
 func numberOf2sInRange(n int) int {
 
 }
+
 //leetcode submit region end(Prohibit modification and deletion)
+
+func numberOf2sInRange_(n int) int {
+	// 数位 dp
+	// https://leetcode.cn/problems/number-of-2s-in-range-lcci/solutions/1750395/by-endlesscheng-x4mf/
+	s := strconv.Itoa(n)
+	m := len(s)
+	dp := make([][]int, m)
+	for i := range dp {
+		dp[i] = make([]int, m)
+		for j := range dp[i] {
+			dp[i][j] = -1
+		}
+	}
+	var dfs func(int, int, bool) int
+	dfs = func(i, cnt int, isLimit bool) int {
+		if i == m {
+			return cnt
+		}
+		ret := 0
+		if !isLimit { // 重要
+			v := &dp[i][cnt]
+			if *v >= 0 {
+				return *v
+			}
+			defer func() { *v = ret }()
+		}
+		up := 9
+		if isLimit { // 重要
+			up = int(s[i] - '0')
+		}
+		for d := 0; d <= up; d++ {
+			c := cnt
+			if d == 2 { // 重要
+				c++
+			}
+			ret += dfs(i+1, c, isLimit && d == up)
+		}
+		return ret
+	}
+	return dfs(0, 0, true)
+}

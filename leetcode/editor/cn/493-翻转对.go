@@ -12,8 +12,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func reversePairs(nums []int) int {
-	// 二叉查找树
 
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func reversePairs_(nums []int) int {
 	// 归并排序
 	var ans int
 	var mergeSort func(int, int)
@@ -75,5 +79,3 @@ func reversePairs(nums []int) int {
 	//}
 	//return ans
 }
-
-//leetcode submit region end(Prohibit modification and deletion)
