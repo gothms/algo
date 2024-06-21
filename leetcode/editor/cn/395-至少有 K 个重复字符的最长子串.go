@@ -18,6 +18,40 @@ func main() {
 // leetcode submit region begin(Prohibit modification and deletion)
 func longestSubstring(s string, k int) int {
 	// 滑动窗体
+	//ans := 0
+	//for i := 1; i <= 26; i++ {
+	//	cache := [26]int{}
+	//	charCnt, kCnt, l := 0, 0, 0
+	//	for r, c := range s {
+	//		c -= 'a'
+	//		if cache[c] == 0 {
+	//			charCnt++
+	//			kCnt++
+	//		}
+	//		cache[c]++
+	//		if cache[c] == k {
+	//			kCnt--
+	//		}
+	//		if charCnt > i {
+	//			for charCnt > i {
+	//				o := s[l] - 'a'
+	//				if cache[o] == k {
+	//					kCnt++
+	//				}
+	//				cache[o]--
+	//				if cache[o] == 0 {
+	//					charCnt--
+	//					kCnt--
+	//				}
+	//				l++
+	//			}
+	//		}
+	//		if kCnt == 0 {
+	//			ans = max(ans, r-l+1)
+	//		}
+	//	}
+	//}
+	//return ans
 
 	// 分治
 	var div func(int, int, [26]int) int
