@@ -1,7 +1,12 @@
 package main
 
-func main() {
+import "fmt"
 
+func main() {
+	bit := 13
+	for k := bit; k != 0; k = bit & (k - 1) {
+		fmt.Println(k)
+	}
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)

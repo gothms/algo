@@ -24,6 +24,4 @@ go.work
 .idea/
 
 # leetcode
-#/leetcode/
-
-# .gitignore test
+/leetcode/editor/cn/doc/

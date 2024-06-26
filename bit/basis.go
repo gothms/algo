@@ -64,10 +64,25 @@ func api() int {
 	return y
 }
 
+// convertInteger 整数转换，确定需要改变几个位才能将整数A转成整数B
+func convertInteger(A int, B int) int {
+	//return bits.OnesCount(uint(A&0xffffffff ^ B&0xffffffff))
+	//return bits.OnesCount(uint(A&math.MaxUint32 ^ B&math.MaxUint32))
+	return bits.OnesCount(uint(uint32(A) ^ (uint32(B))))
+}
+
+// rangeBits 遍历值 bit 的二进制位 1 的所有子集
+// 如 bit=13，k=13,12,9,8,5,4,1
+func rangeBits(bit int) {
+	for k := bit; k != 0; k = bit & (k - 1) {
+		fmt.Println(k)
+	}
+}
+
 // 一个 bug？
 // https://github.com/golang/go/issues/24523
 func uintBug() {
-	var i int
+	var i = 7
 	v := ^(^uint(0) << i) // yes
 	v = ^(^uint(0) << 7)  // no
 	fmt.Println(v)
