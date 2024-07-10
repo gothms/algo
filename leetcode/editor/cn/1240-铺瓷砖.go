@@ -1,59 +1,13 @@
-//你是一位施工队的工长，根据设计师的要求准备为一套设计风格独特的房子进行室内装修。
-//
-// 房子的客厅大小为 n x m，为保持极简的风格，需要使用尽可能少的 正方形 瓷砖来铺盖地面。
-//
-// 假设正方形瓷砖的规格不限，边长都是整数。
-//
-// 请你帮设计师计算一下，最少需要用到多少块方形瓷砖？
-//
-//
-//
-// 示例 1：
-//
-//
-//
-// 输入：n = 2, m = 3
-//输出：3
-//解释：3 块地砖就可以铺满卧室。
-//     2 块 1x1 地砖
-//     1 块 2x2 地砖
-//
-// 示例 2：
-//
-//
-//
-// 输入：n = 5, m = 8
-//输出：5
-//
-//
-// 示例 3：
-//
-//
-//
-// 输入：n = 11, m = 13
-//输出：6
-//
-//
-//
-//
-// 提示：
-//
-//
-// 1 <= n <= 13
-// 1 <= m <= 13
-//
-//
-// Related Topics 动态规划 回溯 👍 101 👎 0
-
 package main
 
 import (
 	"fmt"
+	"math/bits"
 )
 
 func main() {
 	n, m := 2, 3 // 3
-	n, m = 5, 8  // 5
+	//n, m = 5, 8   // 5
 	//n, m = 11, 13 // 6
 	//n, m = 12, 11 // 7
 	//n, m = 12, 13 // 7
@@ -90,192 +44,90 @@ func main() {
 */
 //leetcode submit region begin(Prohibit modification and deletion)
 func tilingRectangle(n int, m int) int {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func tilingRectangle_(n int, m int) int {
 	// 优化：终版
 	if n == m {
 		return 1
 	}
-	minVal := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}
-	minTR, r := n, make([]int, n)
-	if n < m {
-		minTR = m // 初始化 最少 正方形数
-	}
+	ans, row := max(n, m), make([]int, n)
 	var dfs func(int, int, int)
 	dfs = func(i int, j int, cnt int) {
 		if i == n { // 找到 更少 正方形数
-			minTR = cnt
+			ans = cnt
 			return
 		}
-		for b := 1 << j; j < m && b&r[i] > 0; b <<= 1 { // 已被覆盖，跳过
-			j++
-		}
-		if j == m { // 行尾
+		//for j < m && 1<<j&row[i] > 0 { // 已被覆盖，跳过
+		//	j++
+		//}
+		j = bits.TrailingZeros(uint(row[i] + 1)) // 已被覆盖，跳过
+		if j == m {                              // 行尾
 			dfs(i+1, 0, cnt)
 			return
 		}
-		k := minVal(n-i, m-j)
-		v := (1<<k - 1) << j
-		if cnt++; cnt >= minTR || v&r[i] > 0 || k == 0 {
+		k := min(n-i, m-j)
+		mask := (1<<k - 1) << j
+		cnt++
+		if cnt >= ans || mask&row[i] > 0 || k == 0 {
 			return // 剪枝 & 贪心：检测 最大正方形k 能否放下
 		}
 		for idx := 0; idx < k; idx++ { // 标记 最大k 的 二进制位 为 1
-			r[idx+i] ^= v
+			row[idx+i] ^= mask
 		}
-		for b := 1 << (k - 1 + j); k > 0; b >>= 1 {
+		for b := 1 << (k - 1 + j); k > 0; b >>= 1 { // 逆序：包含回溯功能
 			dfs(i, j+k, cnt) // 放下 k
 			k--
 			for idx := 0; idx < k; idx++ {
-				r[idx+i] ^= b // 回溯：j=k-1+j 的 二进制位 置为 0
+				row[idx+i] ^= b // 回溯：j=k-1+j 的 二进制位 置为 0
 			}
-			r[k+i] ^= v // 回溯（最后一行）：i=k-1+i 行中，k覆盖的范围全置为 0
-			v ^= b
+			row[k+i] ^= mask // 回溯（最后一行）：i=k-1+i 行中，k覆盖的范围全置为 0
+			mask ^= b
 		} // 由大到小，放下 k
 	}
 	dfs(0, 0, 0)
-	return minTR
-
-	// 优化
-	//if n == m {
-	//	return 1
-	//}
-	//minVal := func(a, b int) int {
-	//	if a < b {
-	//		return a
-	//	}
-	//	return b
-	//}
-	//minTR := n
-	//if n < m {
-	//	minTR = m // 初始化 最少 正方形数
-	//}
-	//r := make([]int, n)
-	//tiling := func(i, j, k int) { // 正方形k 覆盖范围的 二进制 置为 1/0
-	//	for idx, v := 0, (1<<k-1)<<j; idx < k; idx++ {
-	//		r[idx+i] ^= v
-	//	}
-	//}
-	//var dfs func(int, int, int)
-	//dfs = func(i int, j int, cnt int) {
-	//	if cnt >= minTR { // 剪枝
-	//		return
-	//	}
-	//	if i == n { // 找到 更少 正方形数
-	//		minTR = cnt
-	//		return
-	//	}
-	//	for v := 1 << j; j < m && v&r[i] > 0; v <<= 1 { // 已被覆盖，跳过
-	//		j++
-	//	}
-	//	if j == m { // 行尾
-	//		dfs(i+1, 0, cnt)
-	//		return
-	//	}
-	//	for k := minVal(n-i, m-j); k > 0 && (1<<k-1)<<j&r[i] == 0; k-- {
-	//		if i == 4 && j == 7 {
-	//			fmt.Println(i, j, k, r)
-	//		}
-	//		tiling(i, j, k)    // 标记 二进制位 为 1
-	//		dfs(i, j+k, cnt+1) // 放下 k
-	//		tiling(i, j, k)    // 回溯 二进制位 为 0
-	//	} // 由大到小（贪心），检测 正方形k 能否放下
-	//}
-	//dfs(0, 0, 0)
-	//return minTR
+	return ans
 
 	// 位运算
-	//minVal := func(a, b int) int {
-	//	if a < b {
-	//		return a
-	//	}
-	//	return b
-	//}
-	//minTR := n
+	//ans := n
 	//if n < m {
-	//	minTR = m // 初始化 最少 正方形数
+	//	ans = m // 初始化 最少 正方形数
 	//}
-	//r, c := make([]int, n), make([]int, m)
+	//row, c := make([]int, n), make([]int, m)
 	//ok := func(i, j, k int) bool { // 检测边长为 k 的正方形，是否能放下
-	//	return (1<<k-1)<<i&c[j] == 0 && (1<<k-1)<<j&r[i] == 0
+	//	return (1<<k-1)<<i&c[j] == 0 && (1<<k-1)<<j&row[i] == 0
 	//}
 	//tiling := func(i, j, k int) { // 正方形k 覆盖范围的 二进制 置为 1/0
 	//	for idx := 0; idx < k; idx++ {
 	//		c[idx+j] ^= (1<<k - 1) << i
-	//		r[idx+i] ^= (1<<k - 1) << j
+	//		row[idx+i] ^= (1<<k - 1) << j
 	//	}
 	//}
 	//var dfs func(int, int, int)
 	//dfs = func(i int, j int, cnt int) {
-	//	if cnt >= minTR { // 剪枝
+	//	if cnt >= ans { // 剪枝
 	//		return
 	//	}
 	//	if i == n { // 找到 更少 正方形数
-	//		minTR = cnt
+	//		ans = cnt
 	//		return
 	//	}
-	//	for j < m && 1<<i&c[j] > 0 { // 1<<i&c[j] 和 1<<j&r[i] 正"负"相同
+	//	for j < m && 1<<i&c[j] > 0 { // 1<<i&c[j] 和 1<<j&row[i] 正"负"相同
 	//		j++
 	//	}
 	//	if j == m { // 行尾
 	//		dfs(i+1, 0, cnt)
 	//		return
 	//	}
-	//	for k := minVal(n-i, m-j); k > 0 && ok(i, j, k); k-- {
+	//	for k := min(n-i, m-j); k > 0 && ok(i, j, k); k-- {
 	//		tiling(i, j, k)    // 标记 二进制位 为 1
 	//		dfs(i, j+k, cnt+1) // 可以放下
 	//		tiling(i, j, k)    // 回溯 二进制位 为 0
 	//	} // 由大到小，检测 正方形k 能否放下
 	//}
 	//dfs(0, 0, 0)
-	//return minTR
-
-	// dp：错误
-	//var recursion func(int, int) int
-	//recursion = func(i, j int) int {
-	//	if i == j {
-	//		return 1
-	//	}
-	//	if i == 1 {
-	//		return j
-	//	}
-	//	if j == 1 {
-	//		return i
-	//	}
-	//	if i > j {
-	//		return recursion(i-j, j) + 1
-	//	} else {
-	//		return recursion(i, j-i) + 1
-	//	}
-	//}
-	//return recursion(n, m)
-
-	//minVal := func(a, b int) int {
-	//	if a < b {
-	//		return a
-	//	}
-	//	return b
-	//}
-	//if n > m {
-	//	n, m = m, n
-	//}
-	//dp := make([][]int, n)
-	//for i := 0; i < n; i++ {
-	//	dp[i] = make([]int, m)
-	//}
-	//for i := 0; i < n; i++ {
-	//	dp[i][0], dp[i][i] = i+1, 1
-	//}
-	//for i := 0; i < m; i++ {
-	//	dp[0][i] = i + 1
-	//}
-	//for i := 1; i < n; i++ {
-	//	for j := 1; j < m; j++ {
-	//
-	//	}
-	//}
+	//return ans
 }
-
-//leetcode submit region end(Prohibit modification and deletion)
