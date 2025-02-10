@@ -1,7 +1,11 @@
 package main
 
-func main() {
+import "fmt"
 
+func main() {
+	nums := []int{2, 3, 1, 0} // 2
+	array := waysToSplitArray(nums)
+	fmt.Println(array)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
@@ -12,8 +16,8 @@ func waysToSplitArray(nums []int) int {
 		nums[i] += nums[i-1]
 	}
 	ans, last := 0, nums[n-1]
-	for i, v := range nums[:n-1] {
-		if v >= last-nums[i] {
+	for _, v := range nums[:n-1] {
+		if v >= last-v {
 			ans++
 		}
 	}

@@ -1,63 +1,3 @@
-//给你一个长度为 n 的整数数组 nums 和一个 正 整数 k 。
-//
-// 一个子序列的 能量 定义为子序列中 任意 两个元素的差值绝对值的 最小值 。
-//
-// 请你返回 nums 中长度 等于 k 的 所有 子序列的 能量和 。
-//
-// 由于答案可能会很大，将答案对 109 + 7 取余 后返回。
-//
-//
-//
-// 示例 1：
-//
-//
-// 输入：nums = [1,2,3,4], k = 3
-//
-//
-// 输出：4
-//
-// 解释：
-//
-// nums 中总共有 4 个长度为 3 的子序列：[1,2,3] ，[1,3,4] ，[1,2,4] 和 [2,3,4] 。能量和为 |2 - 3| + |
-//3 - 4| + |2 - 1| + |3 - 4| = 4 。
-//
-// 示例 2：
-//
-//
-// 输入：nums = [2,2], k = 2
-//
-//
-// 输出：0
-//
-// 解释：
-//
-// nums 中唯一一个长度为 2 的子序列是 [2,2] 。能量和为 |2 - 2| = 0 。
-//
-// 示例 3：
-//
-//
-// 输入：nums = [4,3,-1], k = 2
-//
-//
-// 输出：10
-//
-// 解释：
-//
-// nums 总共有 3 个长度为 2 的子序列：[4,3] ，[4,-1] 和 [3,-1] 。能量和为 |4 - 3| + |4 - (-1)| + |3
-// - (-1)| = 10 。
-//
-//
-//
-// 提示：
-//
-//
-// 2 <= n == nums.length <= 50
-// -10⁸ <= nums[i] <= 10⁸
-// 2 <= k <= n
-//
-//
-// Related Topics 数组 动态规划 排序 👍 3 👎 0
-
 package main
 
 import (
@@ -66,68 +6,96 @@ import (
 )
 
 func main() {
-	arr := []int{1, 2, 3, 4}
+	arr := []int{1, 2, 3, 4} // 4
 	k := 3
 	arr = []int{1, 2, 3, 4, 8, 2, 5, 4, 6} // 100
 	k = 3
-	// [-999 -977 -959 -928 -921 -877 -855 -846 -653 -628 -599 -592 -423 -295 -294 -291 -119 -79 -65 -24 -10 44 67 85 119 274 349 372 554 759 826 833 857 962]
-	arr = []int{-24, -921, 119, -291, -65, -628, 372, 274, 962, -592, -10, 67, -977, 85, -294, 349, -119, -846, -959, -79, -877, 833, 857, 44, 826, -295, -855, 554, -999, 759, -653, -423, -599, -928}
-	k = 19 // 990202285
+	arr = []int{-100000000, 100000000}
+	k = 2 // 200000000
+	//// [-999 -977 -959 -928 -921 -877 -855 -846 -653 -628 -599 -592 -423 -295 -294 -291 -119 -79 -65 -24 -10 44 67 85 119 274 349 372 554 759 826 833 857 962]
+	//arr = []int{-24, -921, 119, -291, -65, -628, 372, 274, 962, -592, -10, 67, -977, 85, -294, 349, -119, -846, -959, -79, -877, 833, 857, 44, 826, -295, -855, 554, -999, 759, -653, -423, -599, -928}
+	//k = 19 // 990202285
 	//arr = []int{6, 738018, 1490730, 2258772, 3042408, 3842244, 4658364, 5491344, 6341316, 7208862, 8094180, 8997648, 9919602, 10860426, 11820252, 12799560, 13798482, 14817654, 15857328, 16917948, 17999964, 19103508, 20228772, 21376368, 22546968, 23740842, 24958596, 26200638, 27467316, 28759188, 30076824, 31420794, 32791794, 34190520, 35617296, 37072716, 38557308, 40071558, 41615832, 43190712, 44796402, 46433112, 48101148, 49800642, 51532176, 53295876, 55092324, 56921802, 58784718, 60681360}
 	//k = 28 // 78733672
 	powers := sumOfPowers(arr, k)
 	fmt.Println(powers)
-
-	//fmt.Println(math.MaxInt32)
-	//fmt.Println(int64(315858793) * 7)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
-
-//func sumOfPowers(nums []int, k int) int {
-//	// dp
-//	const mod = 1_000_000_007
-//	sort.Ints(nums)
-//	ret, n := 0, len(nums)
-//	dp := make([][]map[int]int, n) // 索引 i，子序列长度 kk，最小值 v，数量 c
-//	for i := 1; i < n; i++ {       // 索引 i：不精简时，i 从 1 开始
-//		//for i := 0; i < n; i++ {       // 索引 i：不精简时，i 从 1 开始
-//		dp[i] = make([]map[int]int, k+1)
-//		for j := 1; j <= k; j++ {
-//			dp[i][j] = make(map[int]int)
-//		}
-//		for j := 0; j < i; j++ { // 长度为 2
-//			dp[i][2][nums[i]-nums[j]]++
-//		}
-//		for kk := 3; kk <= k; kk++ { // 目标子序列长度 kk+1，从 3 开始
-//			for j := kk - 2; j < i; j++ { // 索引 j
-//				for v, c := range dp[j][kk-1] {
-//					mi := min(v, nums[i]-nums[j])
-//					dp[i][kk][mi] += c
-//				}
-//			}
-//		}
-//
-//		// 精简上面的代码
-//		//dp[i][1][mod] = 1
-//		//for kk := 2; kk <= k; kk++ { // 目标子序列长度 kk+1，从 3 开始
-//		//	for j := kk - 2; j < i; j++ { // 索引 j
-//		//		for v, c := range dp[j][kk-1] {
-//		//			mi := min(v, nums[i]-nums[j])
-//		//			dp[i][kk][mi] += c
-//		//		}
-//		//	}
-//		//}
-//	}
-//	for i := k - 1; i < n; i++ {
-//		for v, c := range dp[i][k] {
-//			ret = (ret + c%mod*v) % mod // c 可能很大，所以先 mod
-//		}
-//	}
-//	return ret
-//}
-
 func sumOfPowers(nums []int, k int) int {
+	// dp
+	const mod = 1_000_000_007
+	n := len(nums)
+	sort.Ints(nums) // 排序
+	dp := make([][]map[int]int, n)
+	for i := 0; i < n; i++ {
+		dp[i] = make([]map[int]int, k+1) // 索引 i，子序列长度 l，最小值 d，数量 c
+		for j := 1; j <= min(i+1, k); j++ {
+			dp[i][j] = make(map[int]int)
+		}
+		dp[i][1][mod] = 1
+		for l := 2; l <= min(i+1, k); l++ {
+			for j := l - 2; j < i; j++ {
+				cur := nums[i] - nums[j]
+				for d, c := range dp[j][l-1] {
+					dp[i][l][min(d, cur)] += c // 状态转移方程
+				}
+			}
+		}
+	}
+	ans := 0
+	for _, dk := range dp[k-1:] { // 统计结果
+		for d, c := range dk[k] {
+			ans = (ans + c%mod*d) % mod
+		}
+	}
+	return ans
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func sumOfPowers_(nums []int, k int) int {
+	//	// dp
+	//	const mod = 1_000_000_007
+	//	sort.Ints(nums)
+	//	ret, n := 0, len(nums)
+	//	dp := make([][]map[int]int, n) // 索引 i，子序列长度 kk，最小值 v，数量 c
+	//	for i := 1; i < n; i++ {       // 索引 i：不精简时，i 从 1 开始
+	//		//for i := 0; i < n; i++ {       // 索引 i：不精简时，i 从 1 开始
+	//		dp[i] = make([]map[int]int, k+1)
+	//		for j := 1; j <= k; j++ {
+	//			dp[i][j] = make(map[int]int)
+	//		}
+	//		for j := 0; j < i; j++ { // 长度为 2
+	//			dp[i][2][nums[i]-nums[j]]++
+	//		}
+	//		for kk := 3; kk <= k; kk++ { // 目标子序列长度 kk+1，从 3 开始
+	//			for j := kk - 2; j < i; j++ { // 索引 j
+	//				for v, c := range dp[j][kk-1] {
+	//					mi := min(v, nums[i]-nums[j])
+	//					dp[i][kk][mi] += c
+	//				}
+	//			}
+	//		}
+	//
+	//		// 精简上面的代码
+	//		//dp[i][1][mod] = 1
+	//		//for kk := 2; kk <= k; kk++ { // 目标子序列长度 kk+1，从 3 开始
+	//		//	for j := kk - 2; j < i; j++ { // 索引 j
+	//		//		for v, c := range dp[j][kk-1] {
+	//		//			mi := min(v, nums[i]-nums[j])
+	//		//			dp[i][kk][mi] += c
+	//		//		}
+	//		//	}
+	//		//}
+	//	}
+	//	for i := k - 1; i < n; i++ {
+	//		for v, c := range dp[i][k] {
+	//			ret = (ret + c%mod*v) % mod // c 可能很大，所以先 mod
+	//		}
+	//	}
+	//	return ret
+
 	// 记忆化搜索
 	sort.Ints(nums)
 	const mod = 1_000_000_007
@@ -204,8 +172,6 @@ func sumOfPowers(nums []int, k int) int {
 //	ans := dfs(0, k, -INF, INF)
 //	return ans
 //}
-
-//leetcode submit region end(Prohibit modification and deletion)
 
 // 读错题意：任意两个元素差值绝对值的最大值
 //const mod = 1_000_000_009
