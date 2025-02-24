@@ -1,85 +1,89 @@
-//不使用任何库函数，设计一个 跳表 。
-//
-// 跳表 是在 O(log(n)) 时间内完成增加、删除、搜索操作的数据结构。跳表相比于树堆与红黑树，其功能与性能相当，并且跳表的代码长度相较下更短，其设计思
-//想与链表相似。
-//
-// 例如，一个跳表包含 [30, 40, 50, 60, 70, 90] ，然后增加 80、45 到跳表中，以下图的方式操作：
-//
-// Artyom Kalinin [CC BY-SA 3.0], via Wikimedia Commons
-//
-// 跳表中有很多层，每一层是一个短的链表。在第一层的作用下，增加、删除和搜索操作的时间复杂度不超过 O(n)。跳表的每一个操作的平均时间复杂度是 O(log(
-//n))，空间复杂度是 O(n)。
-//
-// 了解更多 : https://en.wikipedia.org/wiki/Skip_list
-//
-// 在本题中，你的设计应该要包含这些函数：
-//
-//
-// bool search(int target) : 返回target是否存在于跳表中。
-// void add(int num): 插入一个元素到跳表。
-// bool erase(int num): 在跳表中删除一个值，如果 num 不存在，直接返回false. 如果存在多个 num ，删除其中任意一个即可。
-//
-//
-//
-// 注意，跳表中可能存在多个相同的值，你的代码需要处理这种情况。
-//
-//
-//
-// 示例 1:
-//
-//
-//输入
-//["Skiplist", "add", "add", "add", "search", "add", "search", "erase", "erase",
-// "search"]
-//[[], [1], [2], [3], [0], [4], [1], [0], [1], [1]]
-//输出
-//[null, null, null, null, false, null, true, false, true, false]
-//
-//解释
-//Skiplist skiplist = new Skiplist();
-//skiplist.add(1);
-//skiplist.add(2);
-//skiplist.add(3);
-//skiplist.search(0);   // 返回 false
-//skiplist.add(4);
-//skiplist.search(1);   // 返回 true
-//skiplist.erase(0);    // 返回 false，0 不在跳表中
-//skiplist.erase(1);    // 返回 true
-//skiplist.search(1);   // 返回 false，1 已被擦除
-//
-//
-//
-//
-// 提示:
-//
-//
-// 0 <= num, target <= 2 * 10⁴
-// 调用search, add, erase操作次数不大于 5 * 10⁴
-//
-//
-// Related Topics 设计 链表 👍 266 👎 0
-
 package main
+
+import "math/rand"
 
 func main() {
 
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
+
+const (
+	maxLevel         = 32
+	p        float64 = 0.5
+)
+
 type Skiplist struct {
+	level int
+	head  *SkiplistNode
+}
+type SkiplistNode struct {
+	val  int
+	next []*SkiplistNode
 }
 
 func Constructor() Skiplist {
-
+	return Skiplist{0, &SkiplistNode{-1, make([]*SkiplistNode, maxLevel)}}
 }
 func (this *Skiplist) Search(target int) bool {
-
+	cur := this.head
+	for i := this.level - 1; i >= 0; i-- {
+		for cur.next[i] != nil && cur.next[i].val < target {
+			cur = cur.next[i]
+		}
+	}
+	cur = cur.next[0]
+	return cur != nil && cur.val == target
 }
 func (this *Skiplist) Add(num int) {
-
+	update := make([]*SkiplistNode, maxLevel)
+	cur := this.head
+	for i := this.level - 1; i >= 0; i-- {
+		for cur.next[i] != nil && cur.next[i].val < num {
+			cur = cur.next[i]
+		}
+		update[i] = cur
+	}
+	lv := this.randomLevel()
+	if lv > this.level {
+		for i := this.level; i < lv; i++ {
+			update[i] = this.head
+		}
+		this.level = lv
+	}
+	newNode := &SkiplistNode{num, make([]*SkiplistNode, maxLevel)}
+	for i := 0; i < this.level; i++ {
+		update[i].next[i], newNode.next[i] = newNode, update[i].next[i]
+	}
 }
 func (this *Skiplist) Erase(num int) bool {
+	update := make([]*SkiplistNode, maxLevel)
+	cur := this.head
+	for i := this.level - 1; i >= 0; i-- {
+		for cur.next[i] != nil && cur.next[i].val < num {
+			cur = cur.next[i]
+		}
+		update[i] = cur
+	}
+	cur = cur.next[0]
+	if cur == nil || cur.val != num {
+		return false
+	}
+	for i := 0; i < this.level && update[i].next[i] == cur; i++ {
+		update[i].next[i] = cur.next[i]
+	}
+	for this.level > 1 && this.head.next[this.level-1] == nil {
+		this.level--
+	}
+	return true
+}
 
+func (this *Skiplist) randomLevel() int {
+	level := 1
+	for level < maxLevel && rand.Float64() < p {
+		level++
+	}
+	return level
 }
 
 /**
@@ -90,3 +94,113 @@ func (this *Skiplist) Erase(num int) bool {
  * param_3 := obj.Erase(num);
  */
 //leetcode submit region end(Prohibit modification and deletion)
+
+//type SkiplistNode struct {
+//	value int
+//	next  []*SkiplistNode
+//}
+//
+//type Skiplist struct {
+//	head  *SkiplistNode
+//	level int
+//}
+//
+//func Constructor() Skiplist {
+//	return Skiplist{
+//		level: 0,
+//		head: &SkiplistNode{
+//			value: -1 << 31, // 头节点存储最小整数值
+//			next:  make([]*SkiplistNode, maxLevel),
+//		},
+//	}
+//}
+//
+//func (s *Skiplist) randomLevel() int {
+//	level := 1
+//	for rand.Float64() < p && level < s.level {
+//		level++
+//	}
+//	return level
+//}
+//
+//func (s *Skiplist) Add(num int) {
+//	update := make([]*SkiplistNode, maxLevel)
+//	current := s.head
+//
+//	// 从最高层开始查找插入位置
+//	for i := s.level - 1; i >= 0; i-- {
+//		for current.next[i] != nil && current.next[i].value < num {
+//			current = current.next[i]
+//		}
+//		update[i] = current
+//	}
+//
+//	// 检查是否已存在
+//	//if current.next[0] != nil && current.next[0].value == num {
+//	//	return
+//	//}
+//
+//	// 生成新节点层数
+//	level := s.randomLevel()
+//	if level > s.level {
+//		for i := s.level; i < level; i++ {
+//			update[i] = s.head
+//		}
+//		s.level = level
+//	}
+//
+//	// 创建新节点
+//	newNode := &SkiplistNode{
+//		value: num,
+//		next:  make([]*SkiplistNode, level),
+//	}
+//
+//	// 更新各层指针
+//	for i := 0; i < level; i++ {
+//		newNode.next[i], update[i].next[i] = update[i].next[i], newNode
+//	}
+//}
+//
+//func (s *Skiplist) Search(num int) bool {
+//	current := s.head
+//	for i := s.level - 1; i >= 0; i-- {
+//		for current.next[i] != nil && current.next[i].value < num {
+//			current = current.next[i]
+//		}
+//	}
+//	current = current.next[0]
+//	return current != nil && current.value == num
+//}
+//
+//func (s *Skiplist) Erase(num int) bool {
+//	update := make([]*SkiplistNode, s.level)
+//	current := s.head
+//
+//	// 查找需要更新的节点
+//	for i := s.level - 1; i >= 0; i-- {
+//		for current.next[i] != nil && current.next[i].value < num {
+//			current = current.next[i]
+//		}
+//		update[i] = current
+//	}
+//
+//	// 定位目标节点
+//	target := current.next[0]
+//	if target == nil || target.value != num {
+//		return false
+//	}
+//
+//	// 更新各层指针
+//	for i := 0; i < s.level; i++ {
+//		if update[i].next[i] != target {
+//			break
+//		}
+//		update[i].next[i] = target.next[i]
+//	}
+//
+//	// 调整当前层数
+//	for s.level > 1 && s.head.next[s.level-1] == nil {
+//		s.level--
+//	}
+//	return true
+//}
