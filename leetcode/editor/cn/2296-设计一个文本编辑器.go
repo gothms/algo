@@ -33,6 +33,28 @@ func main() {
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
+type TextEditor struct {
+}
+
+func Constructor() TextEditor {
+
+}
+
+func (this *TextEditor) AddText(text string) {
+
+}
+
+func (this *TextEditor) DeleteText(k int) int {
+
+}
+
+func (this *TextEditor) CursorLeft(k int) string {
+
+}
+
+func (this *TextEditor) CursorRight(k int) string {
+
+}
 
 /**
  * Your TextEditor object will be instantiated and called as such:

@@ -17,7 +17,7 @@ func main() {
 	//scatter = con.Scatter(5, 1)
 	//fmt.Println(scatter)
 
-	n, m := 19, 37
+	n, m := 0, 37
 	con := Constructor(n, m)
 	gather := con.Gather(28, 8)
 	fmt.Println(gather)

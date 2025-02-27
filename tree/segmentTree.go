@@ -20,6 +20,15 @@ Segment Tree
 			d := bits.Len(uint(n - 1<<(k-1)))
 			stLen += (1 << d) << (k - d + 1)
 		}
+		换种写法：n=0时，t长度为0
+		t := make(seg2286, func(n int) int {
+			k := bits.Len(uint(n - 1))
+			stLen := 1 << (k + 1)
+			if n > 1 {
+				stLen -= 1<<(k-bits.Len(uint(n-stLen>>2))+1) - 2
+			}
+			return stLen
+		}(n))
 	示例
 		n	stLen	未修正时最深层节点值						有效值的对数	位数	末尾无效值的对数			修正0的个数
 		0	0
@@ -49,6 +58,7 @@ lc
 	699：“全量”更新、out of memory 和 动态开点
 	2589
 	2286
+	2502：设计内存分配器，重点研究
 
 https://leetcode.cn/problems/range-module/solutions/1612955/by-lfool-eo50/
 	729. 我的日程安排表 I

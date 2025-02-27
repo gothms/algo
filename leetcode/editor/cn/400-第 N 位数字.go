@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"sort"
 )
 
@@ -10,13 +11,14 @@ func main() {
 	n = 1000 // 3
 	n = 3    // 3
 	n = 10   // 1
+	n = 983
 	digit := findNthDigit(n)
 	fmt.Println(digit)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 
-//var counter400 [11]int
+//var counter400 = make([]int, 11)
 //
 //func init() {
 //	maxV, minV := 9, 1
@@ -35,15 +37,17 @@ func findNthDigit(n int) int {
 	if n < 10 { // fast path
 		return n
 	}
-	i := sort.SearchInts(counter400, n) // 预处理
-	d := n - counter400[i-1]
+	// 先找第 n 位所在数有几位
+	i := sort.SearchInts(counter400, n) // i+1 位
+	d := n - counter400[i-1]            // 从 i+1 位的数开始数，求第 d 位
 	// x, y := int(math.Pow10(i))+(d-1)/(i+1), i-(d-1)%(i+1)
-	x, y := (d-1)/(i+1), i-(d-1)%(i+1)
-	for j := 0; j < y; j++ {
-		x /= 10
-	}
+	x, y := (d-1)/(i+1), i-(d-1)%(i+1) // x：第 x 个数，y：x 的倒数第 y 位
+	//for j := 0; j < y; j++ {
+	//	x /= 10
+	//}
+	x /= int(math.Pow10(y)) // for 的简写，现在 x 的个位就是所求
 	if y == i {
-		return x%10 + 1 // 修正最高位
+		return x%10 + 1 // +1 修正最高位
 	}
 	return x % 10
 }
