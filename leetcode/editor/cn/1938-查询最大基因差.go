@@ -10,28 +10,28 @@ func main() {
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
-const L = 17
+const L1938 = 17
 
-type trie struct {
-	child [2]*trie
+type trie1938 struct {
+	child [2]*trie1938
 	cnt   int
 }
 
-func (t *trie) insert(v int) {
+func (t *trie1938) insert(v int) {
 	cur := t
-	for i := L; i >= 0; i-- {
+	for i := L1938; i >= 0; i-- {
 		bit := v >> i & 1
 		if cur.child[bit] == nil {
-			cur.child[bit] = &trie{}
+			cur.child[bit] = &trie1938{}
 		}
 		cur = cur.child[bit]
 		cur.cnt++
 	}
 }
-func (t *trie) maxXor(v int) int {
+func (t *trie1938) maxXor(v int) int {
 	cur := t
 	ans := 0
-	for i := L; i >= 0; i-- {
+	for i := L1938; i >= 0; i-- {
 		bit := v >> i & 1
 		if c := cur.child[bit^1]; c != nil && c.cnt > 0 {
 			ans |= 1 << i
@@ -41,9 +41,9 @@ func (t *trie) maxXor(v int) int {
 	}
 	return ans
 }
-func (t *trie) delete(v int) {
+func (t *trie1938) delete(v int) {
 	cur := t
-	for i := L; i >= 0; i-- {
+	for i := L1938; i >= 0; i-- {
 		cur = cur.child[v>>i&1]
 		cur.cnt--
 	}
@@ -66,7 +66,7 @@ func maxGeneticDifference(parents []int, queries [][]int) []int {
 	}
 
 	ans := make([]int, m)
-	t := &trie{}
+	t := &trie1938{}
 	var dfs func(int)
 	dfs = func(i int) {
 		t.insert(i) // 插入节点

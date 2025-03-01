@@ -8,12 +8,17 @@ import (
 /*
 https://pkg.go.dev/github.com/emirpasic/gods/trees/redblacktree
 	go get github.com/emirpasic/gods
+https://pkg.go.dev/github.com/emirpasic/gods/v2/trees/redblacktree
+	go get github.com/emirpasic/gods/v2
 
 lc
 	2034
 	3161
 	2612
 	493：https://leetcode.cn/problems/reverse-pairs/solutions/1452977/by-univar-xil4/
+
+	2353
+		红黑树 / 懒删除堆，对比了 heapSort 和红黑树的区别
 */
 
 // getResults lc 3161

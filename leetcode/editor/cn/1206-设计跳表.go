@@ -10,7 +10,7 @@ func main() {
 
 const (
 	maxLevel         = 32
-	p        float64 = 0.5
+	p1206    float64 = 0.5
 )
 
 type Skiplist struct {
@@ -80,7 +80,7 @@ func (this *Skiplist) Erase(num int) bool {
 
 func (this *Skiplist) randomLevel() int {
 	level := 1
-	for level < maxLevel && rand.Float64() < p {
+	for level < maxLevel && rand.Float64() < p1206 {
 		level++
 	}
 	return level
