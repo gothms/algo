@@ -14,24 +14,24 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func findMaximumXOR(nums []int) int {
-	k := bits.Len(uint(slices.Max(nums))) - 1 // 最大位
-	ans, mask := 0, 0
-	m := make(map[int]struct{})
-out:
-	for i := k; i >= 0; i-- {
-		clear(m)
-		mask |= 1 << i
-		ans |= 1 << i            // 目标值
-		for _, v := range nums { // 两数之和
-			b := v & mask
-			if _, ok := m[ans^b]; ok {
-				continue out // 找到目标值
-			}
-			m[b] = struct{}{}
-		}
-		ans ^= 1 << i // 目标值未找到，回溯
-	}
-	return ans
+	//	k := bits.Len(uint(slices.Max(nums))) - 1 // 最大位
+	//	ans, mask := 0, 0
+	//	m := make(map[int]struct{})
+	//out:
+	//	for i := k; i >= 0; i-- {
+	//		clear(m)
+	//		mask |= 1 << i
+	//		ans |= 1 << i            // 目标值
+	//		for _, v := range nums { // 两数之和
+	//			b := v & mask
+	//			if _, ok := m[ans^b]; ok {
+	//				continue out // 找到目标值
+	//			}
+	//			m[b] = struct{}{}
+	//		}
+	//		ans ^= 1 << i // 目标值未找到，回溯
+	//	}
+	//	return ans
 
 	// 个人：找出第二个数的集合
 	// lc
