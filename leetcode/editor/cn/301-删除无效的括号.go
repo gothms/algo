@@ -10,6 +10,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func removeInvalidParentheses(s string) []string {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func removeInvalidParentheses_(s string) []string {
 	n := len(s)
 	memo, path := make(map[string]struct{}), make([]byte, 0, n)
 	l, r := 0, 0 // 需要删除 ( 和 ) 各 l r 个
@@ -65,5 +71,3 @@ func removeInvalidParentheses(s string) []string {
 	}
 	return ans
 }
-
-//leetcode submit region end(Prohibit modification and deletion)
