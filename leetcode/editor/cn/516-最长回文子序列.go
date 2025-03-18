@@ -18,6 +18,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func longestPalindromeSubseq(s string) int {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func longestPalindromeSubseq_(s string) int {
 	// dp：可滚动数组优化
 	n := len(s)
 	dp := make([]int, n)
@@ -54,5 +60,3 @@ func longestPalindromeSubseq(s string) int {
 	//}
 	//return ans
 }
-
-//leetcode submit region end(Prohibit modification and deletion)
