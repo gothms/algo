@@ -8,6 +8,13 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func largestVariance(s string) int {
+	// dp
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func largestVariance_(s string) int {
 	ans := 0
 	for ax := 'a'; ax <= 'z'; ax++ {
 		for in := 'a'; in <= 'z'; in++ {
@@ -28,5 +35,3 @@ func largestVariance(s string) int {
 	}
 	return ans
 }
-
-//leetcode submit region end(Prohibit modification and deletion)
