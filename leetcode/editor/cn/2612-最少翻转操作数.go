@@ -31,6 +31,46 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func minReverseOperations(n int, p int, banned []int, k int) []int {
+	m := len(banned)
+	sort.Ints(banned) // banned 可能无序，也可以使用 map
+	rbt := [2]*redblacktree.Tree{redblacktree.NewWithIntComparator(), redblacktree.NewWithIntComparator()}
+	for i, j := 0, 0; i < n+2; i++ { // n+2：增加哨兵
+		if j < m && i == banned[j] {
+			j++
+			continue
+		}
+		rbt[i&1].Put(i, struct{}{})
+	}
+	ans := make([]int, n)
+	for i := range ans {
+		ans[i] = -1
+	}
+	rbt[p&1].Remove(p)
+	q := []int{p}
+	for length, cnt := 1, 0; length > 0; length = len(q) {
+		for _, i := range q[:length] {
+			ans[i] = cnt
+			l := max(i-k+1, k-i-1)
+			r := min(i+k-1, n<<1-i-k-1)
+			rbtId := rbt[l&1]
+			right, _ := rbtId.Ceiling(l)
+			j := right.Key.(int)
+			for j <= r {
+				q = append(q, j)
+				rbtId.Remove(j) // 移除节点
+				right, _ = rbtId.Ceiling(j)
+				j = right.Key.(int)
+			}
+		}
+		cnt++
+		q = q[length:]
+	}
+	return ans
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func minReverseOperations_(n int, p int, banned []int, k int) []int {
 	// bfs + 并查集
 	// 参考另一种写法：https://leetcode.cn/problems/minimum-reverse-operations/solutions/2204092/liang-chong-zuo-fa-ping-heng-shu-bing-ch-vr0z/
 	//uni := make([]int, n+2) // 初始化并查集，长度是 n+2（哨兵）
@@ -136,5 +176,3 @@ func minReverseOperations(n int, p int, banned []int, k int) []int {
 	//}
 	//return ans
 }
-
-//leetcode submit region end(Prohibit modification and deletion)
