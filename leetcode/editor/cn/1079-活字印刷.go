@@ -57,12 +57,12 @@ func numTilePossibilities(tiles string) int {
 
 //leetcode submit region end(Prohibit modification and deletion)
 
-const mx = 8
+const mx1079 = 8
 
-var combineNTP [mx][mx]int
+var combineNTP [mx1079][mx1079]int
 
 func init() {
-	for i := 0; i < mx; i++ {
+	for i := 0; i < mx1079; i++ {
 		combineNTP[i][0], combineNTP[i][i] = 1, 1
 		for j := 1; j < i; j++ {
 			combineNTP[i][j] = combineNTP[i-1][j-1] + combineNTP[i-1][j] // 预处理组合数
