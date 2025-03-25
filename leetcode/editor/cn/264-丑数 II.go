@@ -13,6 +13,27 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func nthUglyNumber(n int) int {
+	nums := [3]int{2, 3, 5}
+	idx := make([]int, len(nums))
+	dp := make([]int, n)
+	dp[0] = 1
+	for i := 1; i < n; i++ {
+		dp[i] = math.MaxInt32
+		for j, k := range idx {
+			dp[i] = min(dp[i], dp[k]*nums[j])
+		}
+		for j, k := range idx {
+			if dp[k]*nums[j] == dp[i] {
+				idx[j]++
+			}
+		}
+	}
+	return dp[n-1]
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func nthUglyNumber_(n int) int {
 	// dp
 	nums := []int{2, 3, 5}
 	dp := make([]int, n)
@@ -57,5 +78,3 @@ func (h *hp) Pop() any {
 	*h = (*h)[:len(*h)-1]
 	return v
 }
-
-//leetcode submit region end(Prohibit modification and deletion)
