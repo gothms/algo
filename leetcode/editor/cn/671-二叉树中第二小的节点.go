@@ -17,7 +17,7 @@ func findSecondMinimumValue(root *TreeNode) int {
 	ans, v := -1, root.Val
 	var dfs func(*TreeNode)
 	dfs = func(root *TreeNode) {
-		if root == nil || ans > 0 && root.Val >= ans {
+		if root == nil || ans > 0 && ans < root.Val {
 			return
 		}
 		if root.Val > v {
@@ -29,39 +29,6 @@ func findSecondMinimumValue(root *TreeNode) int {
 	}
 	dfs(root)
 	return ans
-
-	// 个人
-	//if root.Left == nil {
-	//	return -1
-	//}
-	//mn := root.Val
-	//var f func(*TreeNode) *TreeNode
-	//f = func(root *TreeNode) *TreeNode {
-	//	if root == nil {
-	//		return nil
-	//	}
-	//	if v := root.Val; v == mn {
-	//		l, r := f(root.Left), f(root.Right)
-	//		if l == nil {
-	//			return r
-	//		} else if r == nil {
-	//			return l
-	//		} else if l.Val < r.Val {
-	//			return l
-	//		} else {
-	//			return r
-	//		}
-	//	}
-	//	return root
-	//}
-	//l, r := f(root.Left), f(root.Right)
-	//if l == nil && r == nil {
-	//	return -1
-	//} else if r == nil || l != nil && l.Val < r.Val {
-	//	return l.Val
-	//} else {
-	//	return r.Val
-	//}
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
@@ -114,6 +81,7 @@ func findSecondMinimumValue_(root *TreeNode) int {
 		}
 		if r.Val > v {
 			ans = r.Val
+			return
 		}
 		dfs(r.Left)
 		dfs(r.Right)

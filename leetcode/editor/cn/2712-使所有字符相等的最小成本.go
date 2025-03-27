@@ -5,16 +5,26 @@ import (
 )
 
 func main() {
-	s := "010101"
-	s = "000000001"
-	s = "0011"
+	s := "010101" // 9
+	//s = "000000001"
+	//s = "0011"
 	cost := minimumCost(s)
 	fmt.Println(cost)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func minimumCost(s string) int64 {
+	// dp
 
+	// 迭代
+	n := len(s)
+	ans := 0
+	for i := 1; i < n; i++ {
+		if s[i] != s[i-1] {
+			ans += min(i, n-i)
+		}
+	}
+	return int64(ans)
 }
 
 //leetcode submit region end(Prohibit modification and deletion)

@@ -34,4 +34,32 @@ func largestVariance_(s string) int {
 		}
 	}
 	return ans
+
+	//pos := make(map[rune][]int)
+	//for i, c := range s {
+	//	pos[c] = append(pos[c], i)
+	//}
+	//ans := 0
+	//for cMax, pMax := range pos {
+	//	for cMin, pMin := range pos {
+	//		if cMax == cMin {
+	//			continue
+	//		}
+	//		mxCnt, dis := 0, math.MinInt32
+	//		i, j, m, n := 0, 0, len(pMax), len(pMin)
+	//		for i < m || j < n {
+	//			if j == n || i < m && pMax[i] < pMin[j] {
+	//				mxCnt, dis = max(mxCnt, 0)+1, dis+1
+	//				i++
+	//			} else {
+	//				//mxCnt, dis = max(mxCnt, 0)-1, max(mxCnt, dis, 0)-1
+	//				mxCnt = max(mxCnt, 0) - 1
+	//				dis = mxCnt
+	//				j++
+	//			}
+	//			ans = max(ans, dis)
+	//		}
+	//	}
+	//}
+	//return ans
 }

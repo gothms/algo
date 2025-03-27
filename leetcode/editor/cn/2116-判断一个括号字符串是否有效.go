@@ -6,6 +6,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func canBeValid(s string, locked string) bool {
+	
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func canBeValid_(s string, locked string) bool {
 	if len(s)&1 != 0 {
 		return false
 	}
@@ -29,5 +35,3 @@ func canBeValid(s string, locked string) bool {
 	}
 	return mn == 0
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

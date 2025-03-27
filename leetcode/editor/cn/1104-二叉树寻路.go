@@ -14,6 +14,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func pathInZigZagTree(label int) []int {
+	
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func pathInZigZagTree_(label int) []int {
 	ans := make([]int, 0)
 	var (
 		level = bits.Len(uint(label))
@@ -38,5 +44,3 @@ func pathInZigZagTree(label int) []int {
 	slices.Reverse(ans)
 	return ans
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

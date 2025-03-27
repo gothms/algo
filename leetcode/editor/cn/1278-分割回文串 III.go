@@ -8,36 +8,38 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func palindromePartition(s string, k int) int {
-	n := len(s)
-	memo := make([][]int, n)
-	for i := n - 1; i >= 0; i-- {
-		memo[i] = make([]int, n)
-		for j := i + 1; j < n; j++ {
-			memo[i][j] = memo[i+1][j-1] // s[i:j+1] 是回文串，需要修改的字符数
-			if s[i] != s[j] {
-				memo[i][j]++
-			}
-		}
-	}
-	dp := make([][]int, k)
-	for i := range dp {
-		dp[i] = make([]int, n)
-	}
-	dp[0] = memo[0] // k=1
-	for i := 1; i < k; i++ {
-		for r := i; r < n; r++ { // 优化：r<=n-k+i
-			dp[i][r] = 100
-			for l := i; l <= r; l++ { // s[0:l] 分割为 i-1 个回文串，s[l:r+1] 为第 i 个回文串
-				dp[i][r] = min(dp[i][r], dp[i-1][l-1]+memo[l][r])
-			}
-		}
-	}
-	return dp[k-1][n-1]
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
 
 func palindromePartition_(s string, k int) int {
+	//n := len(s)
+	//memo := make([][]int, n)
+	//for i := n - 1; i >= 0; i-- {
+	//	memo[i] = make([]int, n)
+	//	for j := i + 1; j < n; j++ {
+	//		memo[i][j] = memo[i+1][j-1] // s[i:j+1] 是回文串，需要修改的字符数
+	//		if s[i] != s[j] {
+	//			memo[i][j]++
+	//		}
+	//	}
+	//}
+	//dp := make([][]int, k)
+	//for i := range dp {
+	//	dp[i] = make([]int, n)
+	//}
+	//dp[0] = memo[0] // k=1
+	//for i := 1; i < k; i++ {
+	//	for r := i; r < n; r++ { // 优化：r<=n-k+i
+	//		dp[i][r] = 100
+	//		for l := i; l <= r; l++ { // s[0:l] 分割为 i-1 个回文串，s[l:r+1] 为第 i 个回文串
+	//			dp[i][r] = min(dp[i][r], dp[i-1][l-1]+memo[l][r])
+	//		}
+	//	}
+	//}
+	//return dp[k-1][n-1]
+
 	n := len(s)
 	memoChange := make([][]int, n)
 	for i := range memoChange {

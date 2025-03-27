@@ -13,6 +13,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func minDistance(word1 string, word2 string) int {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func minDistance_(word1 string, word2 string) int {
 	// 优化
 	m := len(word2)
 	dp := make([]int, m+1)
@@ -49,5 +55,3 @@ func minDistance(word1 string, word2 string) int {
 	//}
 	//return n + m - dp[n][m]<<1
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

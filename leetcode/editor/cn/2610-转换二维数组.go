@@ -6,25 +6,45 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func findMatrix(nums []int) [][]int {
-	// lc
 	memo := make(map[int]int)
+	n := 0
 	for _, v := range nums {
 		memo[v]++
+		n = max(n, memo[v])
 	}
-	ans := make([][]int, 0)
-	for len(memo) > 0 {
-		arr := make([]int, 0, len(memo))
+	ans := make([][]int, n)
+	for i := range ans {
+		ans[i] = make([]int, 0, len(memo))
 		for k, v := range memo {
-			arr = append(arr, k)
+			ans[i] = append(ans[i], k)
 			if v == 1 {
 				delete(memo, k)
 			} else {
 				memo[k]--
 			}
 		}
-		ans = append(ans, arr)
 	}
 	return ans
+
+	// lc
+	//memo := make(map[int]int)
+	//for _, v := range nums {
+	//	memo[v]++
+	//}
+	//ans := make([][]int, 0)
+	//for len(memo) > 0 {
+	//	arr := make([]int, 0, len(memo))
+	//	for k, v := range memo {
+	//		arr = append(arr, k)
+	//		if v == 1 {
+	//			delete(memo, k)
+	//		} else {
+	//			memo[k]--
+	//		}
+	//	}
+	//	ans = append(ans, arr)
+	//}
+	//return ans
 
 	// 个人
 	//sort.Ints(nums)
