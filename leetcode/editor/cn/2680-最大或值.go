@@ -6,7 +6,7 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func maximumOr(nums []int, k int) int64 {
-	
+
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
@@ -23,6 +23,19 @@ func maximumOr_(nums []int, k int) int64 {
 		ans = max(ans, (or^v)|fix|v<<k)
 	}
 	return int64(ans)
+
+	// 个人
+	//n := len(nums)
+	//or := make([]int, n)
+	//for i := n - 2; i >= 0; i-- {
+	//	or[i] = or[i+1] | nums[i+1]
+	//}
+	//ans, pre := 0, 0
+	//for i, v := range nums {
+	//	ans = max(ans, or[i]|v<<k|pre)
+	//	pre |= v
+	//}
+	//return int64(ans)
 
 	//n := len(nums)
 	//memo := make([]int, n)
