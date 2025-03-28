@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"slices"
 )
 
 func main() {
@@ -10,7 +11,17 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func countPairs(deliciousness []int) int {
-	return 0
+	mx := slices.Max(deliciousness)
+	maxSum := mx << 1
+	memo := make(map[int]int)
+	ans := 0
+	for _, v := range deliciousness {
+		for sum := 1; sum <= maxSum; sum <<= 1 {
+			ans += memo[sum-v]
+		}
+		memo[v]++
+	}
+	return ans % (1e9 + 7)
 
 	// 超时
 	//const mod = 1e9 + 7
