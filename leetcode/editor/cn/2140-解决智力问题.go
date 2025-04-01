@@ -19,6 +19,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func mostPoints(questions [][]int) int64 {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func mostPoints_(questions [][]int) int64 {
 	// lc
 	n := len(questions)
 	dp := make([]int, n+1)
@@ -55,5 +61,3 @@ func mostPoints(questions [][]int) int64 {
 	//}
 	//return int64(ans)
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

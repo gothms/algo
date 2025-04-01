@@ -3,16 +3,28 @@ package main
 import "fmt"
 
 func main() {
-	nums := []int{0, 1, 0, 0, 1}
+	nums := []int{0, 1, 0, 0, 1} // 9
 	goal := 1
-	//nums = []int{ 0, 0, 0, 0, 0}
-	//goal = 0
+	nums = []int{0, 0, 0, 0, 0} // 15
+	goal = 0
 	withSum := numSubarraysWithSum(nums, goal)
 	fmt.Println(withSum)
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func numSubarraysWithSum(nums []int, goal int) int {
+	memo := make(map[int]int)
+	ans, s := 0, 0
+	for _, v := range nums {
+		memo[s]++
+		s += v
+		ans += memo[s-goal]
+	}
+	return ans
+}
+
+// leetcode submit region end(Prohibit modification and deletion)
+func numSubarraysWithSum_(nums []int, goal int) int {
 	// lc
 	memo := make(map[int]int)
 	ans, sum := 0, 0
@@ -48,5 +60,3 @@ func numSubarraysWithSum(nums []int, goal int) int {
 	//}
 	//return ans
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

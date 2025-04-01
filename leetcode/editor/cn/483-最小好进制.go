@@ -20,7 +20,7 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func smallestGoodBase(n string) string {
-
+	
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
