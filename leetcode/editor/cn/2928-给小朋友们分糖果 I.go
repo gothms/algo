@@ -5,6 +5,29 @@ func main() {
 }
 
 // leetcode submit region begin(Prohibit modification and deletion)
+//var comb [][]int
+//
+//func init() {
+//	comb = make([][]int, 51)
+//	for i := range comb {
+//		comb[i] = make([]int, 3)
+//		for j := 0; j <= min(i, 2); j++ {
+//			comb[i][j] = comb[i-1][j-1] + comb[i-1][j]
+//		}
+//	}
+//}
+
+func distributeCandies(n int, limit int) int {
+	c := func(n int) int {
+		if n <= 0 {
+			return 0
+		}
+		return n * (n - 1) >> 1
+	}
+	return c(n+2) - 3*c(n-limit+1) + 3*c(n-limit<<1) - c(n-limit*3-1)
+}
+
+// leetcode submit region end(Prohibit modification and deletion)
 var comb2928 [][]int
 
 func init() {
@@ -18,7 +41,7 @@ func init() {
 		}
 	}
 }
-func distributeCandies(n int, limit int) int {
+func distributeCandie_s(n int, limit int) int {
 	// lc：O(1)
 	comb := func(n int) int {
 		if n <= 1 {
@@ -38,5 +61,3 @@ func distributeCandies(n int, limit int) int {
 	//}
 	//return dp[n]
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

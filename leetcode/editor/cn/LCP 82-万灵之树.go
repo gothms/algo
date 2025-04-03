@@ -111,15 +111,15 @@ main 函数：
 //	S  = 16
 //	S1 = 32 - S
 //	M  = 1996090921
-//	N  = 9
+//	N82  = 9
 //	M0 = 205
 //)
 //
 //var (
 //	pow10           [M0]int
 //	pinv            [M0]int
-//	l               [N]int
-//	length          [1 << N]int
+//	l               [N82]int
+//	length          [1 << N82]int
 //	n, ans, p, r, B int
 //	T               = 1
 //	h               [1<<S + 105]hnode
@@ -202,7 +202,7 @@ main 函数：
 //// 使用 calc 方法进行详细的计算，calc 方法通过递归和动态规划来解决问题
 //// calc 方法依赖于三个函数 f1, f2, f3，它们定义了特定的条件和逻辑，用于在计算过程中进行不同的操作
 //func calc(t0 int, f1, f2 func(int, int) bool, f3 func(int) bool) {
-//	//var d [1 << (N + 1)][]Node82
+//	//var d [1 << (N82 + 1)][]Node82
 //	for i := (1 << n) + 1; i < (1 << (n + 1)); i++ {
 //		d[i] = nil
 //	}
@@ -248,8 +248,8 @@ main 函数：
 //	}
 //}
 //
-//var c [1 << N][]int
-//var d [1 << (N + 1)][]Node82
+//var c [1 << N82][]int
+//var d [1 << (N82 + 1)][]Node82
 //
 //// 首先初始化各种变量和数组
 //// 通过位运算和动态规划计算特定组合的值，并使用哈希表来计数和查找这些组合
@@ -324,8 +324,8 @@ main 函数：
 //}
 
 const (
-	N  = 9
-	M0 = 205
+	N82 = 9
+	M0  = 205
 )
 
 type Node struct {
@@ -334,13 +334,13 @@ type Node struct {
 type Solution struct {
 	pow10           [M0]int
 	pinv            [M0]int
-	l               [N]int
-	len             [1 << N]int
+	l               [N82]int
+	len             [1 << N82]int
 	n, ans, p, r, B int
 	//c               map[int][]int
 	//d               map[int][]Node
-	c    [1 << N][]int
-	d    [1 << (N + 1)][]Node
+	c    [1 << N82][]int
+	d    [1 << (N82 + 1)][]Node
 	hash map[int]int
 }
 
@@ -348,8 +348,8 @@ func NewSolution() *Solution {
 	return &Solution{
 		//c:    make(map[int][]int),
 		//d:    make(map[int][]Node),
-		c: [1 << N][]int{},
-		d: [1 << (N + 1)][]Node{},
+		c: [1 << N82][]int{},
+		d: [1 << (N82 + 1)][]Node{},
 		//c:    make(map[int][]int),
 		//d:    make(map[int][]Node),
 		hash: make(map[int]int),

@@ -19,6 +19,21 @@ import (
 	216
 	377：dp
 
+隔板法：三种类型
+	1.标准型：C(n-1, m-1)
+		被分配的 n 个元素无差别
+		n 个元素分给 m 个不同对象
+		每个对象至少分一个元素
+	2.多分型：C(n-(x-1)*m, m-1)
+		被分配的 n 个元素无差别
+		n 个元素分给 m 个不同对象
+		每个对象至少分 x 个元素
+	3.少分型：C(n+m-1, m-1)
+		被分配的 n 个元素无差别
+		n 个元素分给 m 个不同对象
+		每个对象可以有任意个元素（包括 0）
+	https://zhuanlan.zhihu.com/p/144997851
+
 其他类似题型
 	https://leetcode.cn/problems/permutations/solutions/9914/hui-su-suan-fa-python-dai-ma-java-dai-ma-by-liweiw/
 */

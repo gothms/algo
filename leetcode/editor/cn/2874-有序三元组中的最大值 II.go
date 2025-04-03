@@ -10,7 +10,14 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func maximumTripletValue(nums []int) int64 {
-
+	// 枚举 k
+	ans, maxDif, mx := 0, 0, 0
+	for _, v := range nums {
+		ans = max(ans, maxDif*v)
+		maxDif = max(maxDif, mx-v)
+		mx = max(mx, v)
+	}
+	return int64(ans)
 }
 
 // leetcode submit region end(Prohibit modification and deletion)
