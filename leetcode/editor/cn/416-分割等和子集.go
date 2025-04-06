@@ -6,6 +6,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func canPartition(nums []int) bool {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func canPartition_(nums []int) bool {
 	// dp
 	s := 0
 	for _, v := range nums {
@@ -50,5 +56,3 @@ func canPartition(nums []int) bool {
 	//}
 	//return false
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

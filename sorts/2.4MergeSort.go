@@ -11,8 +11,8 @@ func MergeSort(arr []int, l, r int) {
 	mid := l + (r-l)>>1
 	MergeSort(arr, l, mid)
 	MergeSort(arr, mid+1, r)
-	//merge(arr, l, mid, r)
-	mergeSentinel(arr, l, mid, r)
+	merge(arr, l, mid, r)
+	//mergeSentinel(arr, l, mid, r)
 }
 
 func merge(arr []int, l, m, r int) {
