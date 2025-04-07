@@ -43,6 +43,10 @@ func Basis(x, n int) int {
 	y = ^x & (x + 1) // 取出最低位的 0，用 1 标识
 	y = (x + 1) &^ x // 同上
 
+	y = x & (x - 1) // y==0 判断 x 为 2 的幂
+	y = ^x + 1      // 即 y = -x，^x+1 = -x
+	//(x ^ x >> size(x) - 1) - (x >> size(x) - 1)	// 取绝对值
+
 	return y
 }
 

@@ -18,18 +18,39 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func maxIceCream(costs []int, coins int) int {
+
+}
+
+// leetcode submit region end(Prohibit modification and deletion)
+func maxIceCream_(costs []int, coins int) int {
 	// 计数排序
+	const n int = 1e5 + 1
+	buckets := make([]int, n)
+	for _, c := range costs {
+		buckets[c]++
+	}
+	ans := 0
+	for i := 1; i < n; i++ {
+		if buckets[i] > 0 {
+			c := min(buckets[i], coins/i)
+			ans += c
+			if coins -= i * c; coins <= i {
+				break
+			}
+		}
+	}
+	return ans
 
 	// lc
-	sort.Ints(costs)
-	for i, v := range costs {
-		if coins >= v {
-			coins -= v
-			continue
-		}
-		return i
-	}
-	return len(costs)
+	//sort.Ints(costs)
+	//for i, v := range costs {
+	//	if coins >= v {
+	//		coins -= v
+	//		continue
+	//	}
+	//	return i
+	//}
+	//return len(costs)
 
 	// 个人
 	//n := len(costs)
@@ -68,5 +89,3 @@ func maxIceCream(costs []int, coins int) int {
 	//i, _ := qSort(0, n-1, coins)
 	//return i
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

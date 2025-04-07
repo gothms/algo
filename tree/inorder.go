@@ -52,12 +52,14 @@ func InorderTraversal(root *TreeNode) []int {
 	//for curr != nil || len(stack) > 0 {
 	//	if curr != nil {
 	//		for curr.Left != nil {
-	//			curr, stack = curr.Left, append(stack, curr)
+	//			stack = append(stack, curr)
+	//			curr = curr.Left
 	//		}
 	//	} else {
 	//		curr, stack = stack[len(stack)-1], stack[:len(stack)-1]
 	//	}
-	//	inorder, curr = append(inorder, curr.Val), curr.Right
+	//	inorder = append(inorder, curr.Val)
+	//	curr = curr.Right
 	//}
 	//return inorder
 
