@@ -91,3 +91,25 @@ func uintBug() {
 	v = ^(^uint(0) << 7)  // no
 	fmt.Println(v)
 }
+
+// 返回 big 和 small，它们是与 x 二进制表达式中 1 的个数相同，且大小最接近的那两个数（一个略大，一个略小）
+func bigAndSmall(x int) (int, int) {
+	// 略大：101110 变 110011
+	zeroCnt := bits.TrailingZeros(uint(x))
+	big := x + x&-x                                         // 110000
+	big |= 1<<(bits.TrailingZeros(uint(big))-zeroCnt-1) - 1 // |= 11
+
+	// 略小：100111 变 011110
+	onesCnt := bits.TrailingZeros(uint(x + 1))
+	small := x >> onesCnt // 100
+	zCnt := bits.TrailingZeros(uint(small))
+	small = (1<<(onesCnt+2)-1)<<(zCnt-1) ^ small<<onesCnt // 111110 ^ 100000
+
+	return big, small
+}
+func swap(x, y int) (int, int) {
+	x ^= y
+	y ^= x
+	x ^= y
+	return x, y
+}

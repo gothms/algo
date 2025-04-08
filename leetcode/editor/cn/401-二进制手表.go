@@ -57,7 +57,6 @@ func init() {
 				//v = v | (w-1)>>1 // 1100011
 
 				// 方法二
-				
 
 				// 方法三
 				//c := bits.TrailingZeros(uint(v))              // 2
@@ -73,6 +72,7 @@ func init() {
 
 func readBinaryWatch(turnedOn int) []string {
 	// 个人
+	// 参考：面试题 05.04-下一个数
 	if turnedOn > 8 {
 		return nil
 	}
