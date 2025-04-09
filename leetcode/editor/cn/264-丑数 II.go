@@ -54,7 +54,7 @@ func nthUglyNumber_(n int) int {
 
 	// 堆
 	//nums, memo := []int{2, 3, 5}, make(map[int]bool)
-	//h := &hp{1}
+	//h := &hp264{1}
 	//for k := 0; k < n-1; k++ {
 	//	top := heap.Pop(h).(int)
 	//	for _, v := range nums {
@@ -67,13 +67,13 @@ func nthUglyNumber_(n int) int {
 	//return heap.Pop(h).(int)
 }
 
-type hp []int
+type hp264 []int
 
-func (h hp) Len() int           { return len(h) }
-func (h hp) Less(i, j int) bool { return h[i] < h[j] }
-func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
-func (h *hp) Push(x any)        { *h = append(*h, x.(int)) }
-func (h *hp) Pop() any {
+func (h hp264) Len() int           { return len(h) }
+func (h hp264) Less(i, j int) bool { return h[i] < h[j] }
+func (h hp264) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *hp264) Push(x any)        { *h = append(*h, x.(int)) }
+func (h *hp264) Pop() any {
 	v := (*h)[len(*h)-1]
 	*h = (*h)[:len(*h)-1]
 	return v

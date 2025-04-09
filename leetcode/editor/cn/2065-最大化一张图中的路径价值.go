@@ -25,9 +25,9 @@ func maximalPathQuality(values []int, edges [][]int, maxTime int) int {
 	for i := 1; i < n; i++ {
 		dis[i] = math.MaxInt
 	}
-	h := hp{{0, 0}}
+	h := hp2065{{0, 0}}
 	for len(h) > 0 {
-		p := heap.Pop(&h).(pair)
+		p := heap.Pop(&h).(pair2065)
 		dx := p.dis
 		x := p.x
 		if dx > dis[x] { // x 之前出堆过
@@ -38,7 +38,7 @@ func maximalPathQuality(values []int, edges [][]int, maxTime int) int {
 			newDis := dx + e.time
 			if newDis < dis[y] {
 				dis[y] = newDis // 更新 x 的邻居的最短路
-				heap.Push(&h, pair{newDis, y})
+				heap.Push(&h, pair2065{newDis, y})
 			}
 		}
 	}
@@ -71,13 +71,13 @@ func maximalPathQuality(values []int, edges [][]int, maxTime int) int {
 	return ans
 }
 
-type pair struct{ dis, x int }
-type hp []pair
+type pair2065 struct{ dis, x int }
+type hp2065 []pair2065
 
-func (h hp) Len() int           { return len(h) }
-func (h hp) Less(i, j int) bool { return h[i].dis < h[j].dis }
-func (h hp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
-func (h *hp) Push(v any)        { *h = append(*h, v.(pair)) }
-func (h *hp) Pop() (v any)      { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
+func (h hp2065) Len() int           { return len(h) }
+func (h hp2065) Less(i, j int) bool { return h[i].dis < h[j].dis }
+func (h hp2065) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *hp2065) Push(v any)        { *h = append(*h, v.(pair2065)) }
+func (h *hp2065) Pop() (v any)      { a := *h; *h, v = a[:len(a)-1], a[len(a)-1]; return }
 
 //leetcode submit region end(Prohibit modification and deletion)

@@ -2,6 +2,10 @@ package bit
 
 import "math/bits"
 
+/*
+lc：面试题 16.09-运算
+*/
+
 func Add(a, b int) int {
 	for b != 0 {
 		a, b = a^b, a&b<<1
