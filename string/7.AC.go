@@ -11,6 +11,9 @@ https://github.com/ctdk/go-trie
 
 https://github.com/appscodelabs/release-automaton
 
+lc
+	面试题 17.17-多次搜索
+
 */
 
 var acRoot = &acNode{} // 模拟 Tire 树的根
@@ -86,17 +89,20 @@ func match(text string) {
 	}
 }
 
+// ====================AC 自动机，简单版====================
+
 //type acTrie struct {
 //}
 
 const ALPHABET_SIZE = 26
 
-var tot int
-var tr [][ALPHABET_SIZE]int
-var e []int
-var fail []int
+var (
+	tot  int
+	tr   [][ALPHABET_SIZE]int
+	e    []int
+	fail []int
+)
 
-// ====================AC 自动机，简单版====================
 func insert(s []byte) {
 	u := 0
 	for i := 1; i < len(s); i++ {
