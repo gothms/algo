@@ -12,11 +12,13 @@ func main() {
 	//num = 181
 	//num = 13     // false
 	//num = 100000 // false
-	num = 187   // true
-	num = 190   // false
-	num = 211   // false
-	num = 20442 // false
-	num = 99998 // false
+	num = 187           // true
+	num = 190           // false
+	num = 211           // false
+	num = 20442         // false
+	num = 99998         // false
+	num = 1291          // true
+	num = 111_1111_1111 // false
 	reverse := sumOfNumberAndReverse(num)
 	fmt.Println(reverse)
 
@@ -25,10 +27,14 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func sumOfNumberAndReverse(num int) bool {
+	// 其他：https://leetcode.cn/problems/sum-of-number-and-its-reverse/solutions/1896433/ji-yi-hua-sou-suo-geng-da-shu-ju-fan-wei-xyer/
+
 	// 个人：dfs
-	s := strconv.Itoa(num)
+	//cnt := 0
 	var dfs func([]byte, bool) bool
 	dfs = func(buf []byte, adv bool) bool { // adv 标记“是否进位”
+		//cnt++
+		fmt.Println(string(buf))
 		n := len(buf)
 		switch n {
 		case 0: // 因为判断了 case 2，所以没有 case 0
@@ -45,7 +51,7 @@ func sumOfNumberAndReverse(num int) bool {
 			if l == r && dfs(buf[1:n-1], false) { // 不用进位
 				return true
 			}
-			// 必须进位
+			// 必须进位，判断次高位与个位的关系
 			if buf[1] != r && buf[1] != r+1 || buf[n-1] == '9' { // 两个个位数相加，不可能是 19
 				return false
 			}
@@ -58,22 +64,32 @@ func sumOfNumberAndReverse(num int) bool {
 				return false
 			}
 			buf[j]--
-			switch buf[1] {
-			case r: // 下一轮不进位
-				return dfs(buf[2:n-1], false)
-			case r + 1: // 下一轮进位
-				buf[1] = '1'
-				return dfs(buf[1:n-1], true)
-			}
-		case r:
-			return dfs(buf[1:n-1], false)
-		case r + 1:
-			buf[0] = '1'
-			return dfs(buf[:n-1], true)
+			// 写法一
+			//switch buf[1] {
+			//case r: // 下一轮不进位
+			//	return dfs(buf[2:n-1], false)
+			//case r + 1: // 下一轮进位
+			//	buf[1] = '1'
+			//	return dfs(buf[1:n-1], true)
+			//}
+			// 写法二
+			buf[1] -= r - '0'
+			return dfs(buf[1:n-1], buf[1] == '1')
+		// 写法一
+		//case r:
+		//	return dfs(buf[1:n-1], false)
+		//case r + 1:
+		//	buf[0] = '1'
+		//	return dfs(buf[:n-1], true)
+		// 写法二
+		case r, r + 1:
+			buf[0] -= r - '0'
+			return dfs(buf[:n-1], buf[0] == '1')
 		}
 		return false
 	}
-	return dfs([]byte(s), false)
+	//defer func() { fmt.Println(cnt) }()
+	return dfs([]byte(strconv.Itoa(num)), false)
 
 	// 暴力：根据题意，可以前导 0
 	//	n := len(strconv.Itoa(num))

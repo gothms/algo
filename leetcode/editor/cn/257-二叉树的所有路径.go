@@ -18,6 +18,12 @@ func main() {
  *     Right *TreeNode
  * }
  */
+func binaryTreePaths_(root *TreeNode) []string {
+	
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
 func binaryTreePaths(root *TreeNode) []string {
 	// lc
 	ans, path := make([]string, 0), make([]string, 0)
@@ -61,5 +67,3 @@ func binaryTreePaths(root *TreeNode) []string {
 	//dfs(root)
 	//return ans
 }
-
-//leetcode submit region end(Prohibit modification and deletion)
