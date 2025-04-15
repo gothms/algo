@@ -19,8 +19,9 @@ func RadixSort(arr []int) {
 			radix[idx] = append(radix[idx], arr[j])
 		}
 		for j, k := 0, 0; j < 10; j++ {
-			copy(arr[k:], radix[j])
-			radix[j], k = radix[j][len(radix[j]):], k+len(radix[j])
+			copy(arr[k:], radix[j]) // 或者先清空 arr，即 arr[:0]
+			k += len(radix[j])
+			radix[j] = radix[j][:0]
 		}
 	}
 }

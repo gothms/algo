@@ -60,6 +60,8 @@ lc
 	2286
 	2502：设计内存分配器，重点研究
 
+	1476：尚未解决
+
 https://leetcode.cn/problems/range-module/solutions/1612955/by-lfool-eo50/
 	729. 我的日程安排表 I
 	731. 我的日程安排表 II
