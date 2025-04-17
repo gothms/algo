@@ -28,6 +28,10 @@ func Basis(x, n int) int {
 	y = x & ((1 << n) - 1)          // 将 x 最高位至第 n 位（含）清零
 	y = x & (^((1 << (n + 1)) - 1)) // 将第 n 位至第 0 位（含）清零
 
+	y = x & (^0 << n)   // 将最左边的 n 位清零
+	y = x & (^(1 << n)) // 仅将第 n 位置为 0
+	y = x ^ (1 << n)    // 取反第 n 位
+
 	if ^x&x == 0 {
 		// forever true
 	}
@@ -45,7 +49,7 @@ func Basis(x, n int) int {
 
 	y = x & (x - 1) // y==0 判断 x 为 2 的幂
 	y = ^x + 1      // 即 y = -x，^x+1 = -x
-	//(x ^ x >> size(x) - 1) - (x >> size(x) - 1)	// 取绝对值
+	//(x ^ x >> size(x) - 1) - (x >> size(x) - 1)	// 取绝对值？未验证
 
 	return y
 }
@@ -98,12 +102,19 @@ func bigAndSmall(x int) (int, int) {
 	zeroCnt := bits.TrailingZeros(uint(x))
 	big := x + x&-x                                         // 110000
 	big |= 1<<(bits.TrailingZeros(uint(big))-zeroCnt-1) - 1 // |= 11
+	// 略大：另外的写法
+	//y := x + x&-x                                  // 1100000
+	//big = y | (y^x)>>(bits.TrailingZeros(uint(x))+2) // y^x = 0111100
 
-	// 略小：100111 变 011110
+	// 略小：100111 变 011110，更普遍情况为 100100 变 100010
+	//onesCnt := bits.TrailingZeros(uint(x + 1))
+	//small := x >> onesCnt // 100
+	//zCnt := bits.TrailingZeros(uint(small))
+	//small = (1<<(onesCnt+2)-1)<<(zCnt-1) ^ small<<onesCnt // 111110 ^ 100000
+	// 略小：另外的写法
 	onesCnt := bits.TrailingZeros(uint(x + 1))
-	small := x >> onesCnt // 100
-	zCnt := bits.TrailingZeros(uint(small))
-	small = (1<<(onesCnt+2)-1)<<(zCnt-1) ^ small<<onesCnt // 111110 ^ 100000
+	small := x & (x + 1)                                                             // 100000
+	small ^= (1<<(onesCnt+2) - 1) << (bits.TrailingZeros(uint(small)) - onesCnt - 1) // 111110 ^ 100000
 
 	return big, small
 }

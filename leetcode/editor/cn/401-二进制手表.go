@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/bits"
 )
 
 func main() {
@@ -11,6 +12,22 @@ func main() {
 	turnedOn := 8
 	watch := readBinaryWatch(turnedOn)
 	fmt.Println(watch)
+
+	v := 92
+	fmt.Printf("%b\n", v)
+	w := v + v&-v
+	v = w | (w^v)>>(bits.TrailingZeros(uint(v))+2)
+	fmt.Printf("big:%b\n", v)
+	fmt.Println(v)
+
+	x := 39 // 30
+	x = 10
+	fmt.Printf("%b\n", x)
+	onesCnt := bits.TrailingZeros(uint(x + 1))
+	small := x & (x + 1)
+	small ^= (1<<(onesCnt+2) - 1) << (bits.TrailingZeros(uint(small)) - onesCnt - 1)
+	fmt.Printf("small:%b\n", small)
+	fmt.Println(small)
 }
 
 // 穷举的方式
@@ -62,6 +79,10 @@ func init() {
 				//c := bits.TrailingZeros(uint(v))              // 2
 				//v += v & -v                                   // 1100000
 				//v |= 1<<(bits.TrailingZeros(uint(v))-c-1) - 1 // v | 11
+
+				// 方法四
+				w := v + v&-v                                  // 1100000
+				v = w | (w^v)>>(bits.TrailingZeros(uint(v))+2) // w^v = 0111100
 			}
 		}
 		return ans

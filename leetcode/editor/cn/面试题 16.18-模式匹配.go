@@ -10,6 +10,8 @@ func main() {
 	v := "dogcatcatdog"
 	p = "ab" // false
 	v = ""
+	p = "aaaaab" // true
+	v = "xahnxdxyaahnxdxyaahnxdxyaahnxdxyaauxuhuo"
 	//p = "baabab"
 	//v = "eimmieimmieeimmiee"
 	//p = "bbbbbbbbabbbbbbbbbbbabbbbbbba" // true
@@ -29,13 +31,14 @@ func patternMatching(pattern string, value string) bool {
 		ac, bc int // 可能 =0
 		a, b   string
 	)
-	if pattern[0] == 'b' { // 将 pattern 换为 a 开头，或者其他写法
-		buf := make([]rune, 0, len(pattern))
-		for _, c := range pattern {
-			buf = append(buf, 'a'+c&1)
-		}
-		pattern = string(buf)
-	}
+	// 也可以不替换，动态设置 a b 的值即可
+	//if pattern[0] == 'b' { // 将 pattern 换为 a 开头，或者其他写法
+	//	buf := make([]rune, 0, len(pattern))
+	//	for _, c := range pattern {
+	//		buf = append(buf, 'a'+c&1)
+	//	}
+	//	pattern = string(buf)
+	//}
 
 	for _, c := range pattern { // 统计频率
 		if c == 'a' {
@@ -60,17 +63,25 @@ out:
 			continue
 		}
 		j := (n - ac*i) / bc // b 的长度
-		bNil := true         // b 尚未赋值
-		a, b = value[:i], ""
+		//bNil := true             // b 尚未赋值
+		aNil, bNil := true, true // b 尚未赋值
+		//a, b = value[:i], ""
 		var sb strings.Builder
 		for _, c := range pattern {
 			switch c {
 			case 'a':
+				if aNil {
+					a = value[sb.Len() : sb.Len()+i]
+					if !bNil && a == b {
+						continue out // 终止本次循环
+					}
+					aNil = false
+				}
 				sb.WriteString(a)
 			case 'b':
 				if bNil { // 赋值
 					b = value[sb.Len() : sb.Len()+j]
-					if a == b {
+					if !aNil && a == b {
 						continue out // 终止本次循环
 					}
 					bNil = false

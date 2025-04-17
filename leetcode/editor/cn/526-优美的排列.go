@@ -8,6 +8,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func countArrangement(n int) int {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func countArrangement_(n int) int {
 	// 状压dp
 	m := 1 << n
 	dp := make([]int, m)
@@ -77,5 +83,3 @@ func countArrangement(n int) int {
 	//}
 	//return dfs(m-1, n)
 }
-
-//leetcode submit region end(Prohibit modification and deletion)
