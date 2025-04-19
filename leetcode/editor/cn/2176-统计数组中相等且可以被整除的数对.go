@@ -6,11 +6,11 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func countPairs(nums []int, k int) int {
-	ans := 0
 	memo := make(map[int][]int)
+	ans := 0
 	for i, v := range nums {
-		if idx, ok := memo[v]; ok {
-			for _, j := range idx {
+		if arr := memo[v]; len(arr) > 0 {
+			for _, j := range arr {
 				if i*j%k == 0 {
 					ans++
 				}

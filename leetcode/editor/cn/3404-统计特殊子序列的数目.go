@@ -11,6 +11,12 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func numberOfSubsequences(nums []int) int64 {
+
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func numberOfSubsequences_(nums []int) int64 {
 	// 枚举右，维护左
 
 	// 前后缀
@@ -43,5 +49,3 @@ func numberOfSubsequences(nums []int) int64 {
 	//}
 	//return int64(ans)
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

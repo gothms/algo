@@ -6,15 +6,15 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func search(nums []int, target int) int {
-	l, r := 0, len(nums)-1
-	for l <= r {
-		mid := (l + r) / 2
-		if nums[mid] == target {
-			return mid
-		} else if nums[mid] < target {
-			l = mid + 1
+	for l, r := 0, len(nums)-1; l <= r; {
+		m := (l + r) >> 1
+		if nums[m] == target {
+			return m
+		}
+		if nums[m] < target {
+			l = m + 1
 		} else {
-			r = mid - 1
+			r = m - 1
 		}
 	}
 	return -1
