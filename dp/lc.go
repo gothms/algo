@@ -35,11 +35,6 @@ lc
 	1742. 盒子中小球的最大数量 *非暴力做法
 	2843. 统计对称整数的数目 *非暴力做法
 
-作者：灵茶山艾府
-链接：https://leetcode.cn/problems/number-of-2s-in-range-lcci/solutions/1750395/by-endlesscheng-x4mf/
-来源：力扣（LeetCode）
-著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
-
 状压 dp
 	2741
 	526

@@ -9,6 +9,7 @@ func main() {
 	s := ""
 	s = "[[0,0],[1,1],[1,0],[-1,1]]"
 	s = "[[1,2,3],[4,5,6],[7,8,9]]"
+	s = "[[7,1000000000,1],[15,3,0],[5,999999995,0],[5,1,1]]"
 	array := LCArray2GoArray(s)
 	fmt.Println(array)
 	//fmt.Println(len(array))

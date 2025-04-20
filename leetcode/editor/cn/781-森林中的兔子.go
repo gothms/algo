@@ -10,6 +10,21 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func numRabbits(answers []int) int {
+	ans := 0
+	memo := make(map[int]int)
+	for _, v := range answers {
+		v++
+		memo[v] = (memo[v] + 1) % v
+		if v == 1 || memo[v] == 1 {
+			ans += v
+		}
+	}
+	return ans
+}
+
+//leetcode submit region end(Prohibit modification and deletion)
+
+func numRabbits_(answers []int) int {
 	memo := make(map[int]int)
 	for _, a := range answers {
 		memo[a]++
@@ -20,5 +35,3 @@ func numRabbits(answers []int) int {
 	}
 	return ans
 }
-
-//leetcode submit region end(Prohibit modification and deletion)
