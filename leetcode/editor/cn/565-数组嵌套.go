@@ -6,6 +6,21 @@ func main() {
 
 // leetcode submit region begin(Prohibit modification and deletion)
 func arrayNesting(nums []int) int {
+	ans := 0
+	for i, v := range nums {
+		nums[i] = -1
+		c := 0
+		for ; v >= 0; v, nums[v] = nums[v], -1 {
+			c++
+		}
+		ans = max(ans, c)
+	}
+	return ans
+}
+
+// leetcode submit region end(Prohibit modification and deletion)
+
+func arrayNesting_(nums []int) int {
 	// lc
 	ans := 0
 	for i := range nums {
@@ -33,5 +48,3 @@ func arrayNesting(nums []int) int {
 	//}
 	//return ans
 }
-
-//leetcode submit region end(Prohibit modification and deletion)

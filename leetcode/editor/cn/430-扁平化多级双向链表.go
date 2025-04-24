@@ -41,27 +41,31 @@ type Node struct {
  *     Child *Node
  * }
  */
-
 func flatten(root *Node) *Node {
+
+}
+
+// leetcode submit region end(Prohibit modification and deletion)
+
+func flatten_(root *Node) *Node {
 	var dfs func(*Node) *Node
-	dfs = func(r *Node) (tail *Node) { // 返回尾结点
-		var next *Node
-		for r != nil {
-			if next = r.Next; r.Child != nil {
-				tail = dfs(r.Child)                             // dfs Child
-				r.Next, r.Child.Prev, r.Child = r.Child, r, nil // Child 为 Next
-				if next != nil {                                // r.Next 有可能为 nil
+	dfs = func(root *Node) *Node { // 返回尾结点
+		var next, tail *Node
+		for root != nil {
+			next = root.Next
+			if root.Child != nil {
+				tail = dfs(root.Child)                                         // dfs Child
+				root.Next, root.Child.Prev, root.Child = root.Child, root, nil // Child 为 Next
+				if next != nil {                                               // root.Next 有可能为 nil
 					tail.Next, next.Prev = next, tail
 				}
 			} else {
-				tail = r // 记录上一个节点
+				tail = root // 记录上一个节点
 			}
-			r = next // 提前记录了 r.Next
+			root = next // 提前记录了 root.Next
 		}
-		return
+		return tail
 	}
 	dfs(root)
 	return root
 }
-
-// leetcode submit region end(Prohibit modification and deletion)

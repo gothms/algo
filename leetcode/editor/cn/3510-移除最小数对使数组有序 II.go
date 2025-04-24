@@ -55,43 +55,40 @@ func minimumPairRemoval(nums []int) int {
 		preV = v
 	}
 	for cnt > 0 /*&& (*h).Len() > 0*/ {
-		top := (*h)[0]
+		top := heap.Pop(h).([4]int) // 无论如何都要弹出
 		i, j, iv, jv := top[0], top[1], top[2], top[3]
-		heap.Pop(h)                             // 无论如何都要弹出
-		if findSuf(j) == j && findSuf(i) == i { // find(i) == i，说明 [i-1,i] 还没被操作
-			if nums[j] != jv { // nums[j] 已被修改
-				continue
-			}
-			// 1.删除 j
-			// 找到 i 的 前缀 和 后缀 p s
-			// j 的后缀修改为 s，如果 s 合法时 j 的前缀修改为 i
-			// 2.作废旧的对，新增新的对
-			// 作废时尝试 cnt--，新增时尝试 cnt++
-			if iv > jv { // 逆序对减少
+		if findSuf(j) != j || findSuf(i) != i || nums[j] != jv { // find(i) == i，说明 [i-1,i] 还没被操作，但 nums[j] 可能已被修改
+			continue
+		}
+		// 1.删除 j
+		// 找到 i 的 前缀 和 后缀 p s
+		// j 的后缀修改为 s，如果 s 合法时 j 的前缀修改为 i
+		// 2.作废旧的对，新增新的对
+		// 作废时尝试 cnt--，新增时尝试 cnt++
+		if iv > jv { // 逆序对减少
+			cnt--
+		}
+		ans++         // 操作一次
+		nums[i] += jv // 合并
+		p, s := findPre(i-1), findSuf(j+1)
+		suf[j] = s
+		if s < n { // 新对
+			pre[j+1] = i // 修改前缀
+			heap.Push(h, [4]int{i, s, nums[i], nums[s]})
+			if jv > nums[s] { // 作废的对
 				cnt--
 			}
-			ans++         // 操作一次
-			nums[i] += jv // 合并
-			p, s := findPre(i-1), findSuf(j+1)
-			suf[j] = s
-			if s < n { // 新对
-				pre[j+1] = i
-				heap.Push(h, [4]int{i, s, nums[i], nums[s]})
-				if jv > nums[s] { // 作废的对
-					cnt--
-				}
-				if nums[i] > nums[s] { // 新增的对
-					cnt++
-				}
+			if nums[i] > nums[s] { // 新增的对
+				cnt++
 			}
-			if p >= 0 {
-				heap.Push(h, [4]int{p, i, nums[p], nums[i]})
-				if nums[p] > iv {
-					cnt--
-				}
-				if nums[p] > nums[i] {
-					cnt++
-				}
+		}
+		if p >= 0 {
+			heap.Push(h, [4]int{p, i, nums[p], nums[i]})
+			if nums[p] > iv {
+				cnt--
+			}
+			if nums[p] > nums[i] {
+				cnt++
 			}
 		}
 	}

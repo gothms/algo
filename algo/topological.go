@@ -10,7 +10,7 @@ import "fmt"
 	lc-1462
 */
 
-// TopoSortByKahn Kahn 算法实现拓扑排序
+// TopoSortByKahn Kahn 算法实现拓扑排序，可检测是否有环
 // n 为顶点数，edges 为所有边
 func TopoSortByKahn(n int, edges [][]int) {
 	inDegree, adj := make([]int, n), make([][]int, n)
